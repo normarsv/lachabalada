@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Chabalada · Generación 2006</title>
+<meta property="og:title" content="La Chabalada · Generación 2006">
+<meta property="og:description" content="20 años después. Casino Social de Navojoa, 25 de Julio 2026.">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:     #090909;
+  --gray:      #141414;
+  --gray-mid:  #1e1e1e;
+  --red:       #c0281e;
+  --red-bright:#e8352a;
+  --red-dark:  #7a1510;
+  --white:     #f0ece4;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Oswald', sans-serif;
+  overflow-x: hidden;
+}
+
+/* grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  opacity: 0.5; mix-blend-mode: overlay;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(9,9,9,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(192,40,30,0.15);
+}
+.nav-logo {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 22px; color: var(--red);
+  text-shadow: 0 0 12px rgba(192,40,30,0.4);
+}
+.nav-links {
+  display: flex; gap: 2rem; list-style: none;
+}
+.nav-links a {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; letter-spacing: 4px;
+  color: rgba(240,236,228,0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--red-bright); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  padding: 7rem 1.5rem 4rem;
+  background: radial-gradient(ellipse at 50% 55%, rgba(160,30,20,0.15) 0%, transparent 65%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 800px; height: 800px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,40,30,0.1) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  animation: pulse 5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform:translate(-50%,-50%) scale(1);   opacity:.7; }
+  50%      { transform:translate(-50%,-50%) scale(1.1); opacity:1;  }
+}
+
+.hero-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: repeating-linear-gradient(90deg,
+    var(--red) 0, var(--red) 18px, transparent 18px, transparent 26px);
+}
+
+/* drips */
+.drips { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.drip {
+  position: absolute; top: -20px; border-radius: 0 0 4px 4px;
+  background: linear-gradient(to bottom, var(--red-dark), transparent);
+  animation: drip linear infinite; opacity: 0;
+}
+@keyframes drip {
+  0%  { transform:translateY(0);    opacity:0;    }
+  8%  { opacity:.3; }
+  92% { opacity:.3; }
+  100%{ transform:translateY(105vh);opacity:0;    }
+}
+.drip:nth-child(1){ left:6%;  width:2px; height:110px; animation-duration:7s;  animation-delay:0s;   }
+.drip:nth-child(2){ left:18%; width:3px; height:80px;  animation-duration:9s;  animation-delay:1.8s; }
+.drip:nth-child(3){ left:31%; width:2px; height:140px; animation-duration:6.5s;animation-delay:.6s;  }
+.drip:nth-child(4){ left:49%; width:4px; height:95px;  animation-duration:8s;  animation-delay:2.3s; }
+.drip:nth-child(5){ left:63%; width:2px; height:120px; animation-duration:7.5s;animation-delay:.3s;  }
+.drip:nth-child(6){ left:77%; width:3px; height:75px;  animation-duration:10s; animation-delay:3.1s; }
+.drip:nth-child(7){ left:89%; width:2px; height:100px; animation-duration:6s;  animation-delay:1.2s; }
+
+/* logo */
+.logo-wrap { position:relative; z-index:2; text-align:center; animation: fadeUp .9s ease both; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.logo-la {
+  font-family:'Permanent Marker',cursive;
+  font-size:clamp(22px,5vw,38px);
+  color:var(--red); letter-spacing:6px;
+  margin-bottom:-.15em; opacity:.9;
+  text-shadow:0 0 20px rgba(192,40,30,.5);
+}
+.logo-main {
+  font-family:'Permanent Marker',cursive;
+  font-size:clamp(62px,15vw,140px);
+  line-height:.9; color:var(--red-bright);
+  text-shadow:
+    -2px -2px 0 var(--red-dark),
+     2px  2px 0 var(--red-dark),
+     0 0 40px rgba(232,53,42,.35),
+     0 0 90px rgba(192,40,30,.15);
+  letter-spacing:-2px;
+}
+.logo-main::after {
+  content:'';
+  display:block; height:5px; border-radius:2px;
+  background:var(--red); width:80%; margin:.12em auto 0;
+  opacity:.6; clip-path:polygon(0 0,100% 15%,98% 100%,2% 85%);
+}
+.logo-years {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(14px,2.8vw,24px);
+  letter-spacing:8px; color:var(--white); opacity:.4; margin-top:.5em;
+}
+
+.hero-tagline {
+  font-family:'Oswald',sans-serif; font-weight:300;
+  font-size:clamp(12px,2vw,17px); letter-spacing:5px;
+  color:var(--white); opacity:.3; text-transform:uppercase;
+  margin-top:2.5rem; z-index:2; position:relative;
+  animation:fadeUp .9s ease .25s both;
+}
+
+.scroll-cue {
+  position:absolute; bottom:2.5rem; z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  animation:fadeUp .9s ease .6s both;
+}
+.scroll-cue span {
+  font-family:'Bebas Neue',sans-serif; font-size:10px;
+  letter-spacing:4px; color:var(--red); opacity:.5;
+}
+.scroll-line {
+  width:1px; height:44px;
+  background:linear-gradient(to bottom, var(--red), transparent);
+  animation:bob 2s ease-in-out infinite;
+}
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+
+/* ── COUNTDOWN ── */
+.countdown-section {
+  background:var(--gray);
+  padding:5rem 2rem;
+  text-align:center;
+  border-top:1px solid rgba(192,40,30,.2);
+  border-bottom:1px solid rgba(192,40,30,.2);
+  position:relative;
+}
+.section-eye {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:11px; letter-spacing:6px;
+  color:var(--red); opacity:.55; display:block; margin-bottom:2.5rem;
+}
+.countdown {
+  display:flex; justify-content:center; flex-wrap:wrap; gap:0;
+  margin-bottom:2rem;
+}
+.cd-unit { padding:1.5rem 2.5rem; position:relative; }
+.cd-unit:not(:last-child)::after {
+  content:':'; position:absolute; right:-4px; top:50%;
+  transform:translateY(-58%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,7vw,70px);
+  color:var(--red); opacity:.35;
+}
+.cd-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,11vw,96px);
+  line-height:1; color:var(--white);
+  text-shadow:0 0 30px rgba(192,40,30,.25);
+  display:block; text-align:center; min-width:2ch;
+}
+.cd-label {
+  font-size:10px; letter-spacing:4px;
+  color:rgba(240,236,228,.28); font-weight:300;
+  display:block; text-align:center; margin-top:6px;
+}
+.cd-event {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(14px,2.5vw,20px);
+  letter-spacing:5px; color:rgba(240,236,228,.35);
+  margin-top:.5rem;
+}
+
+/* ── INFO STRIP ── */
+.info-strip {
+  background:var(--black);
+  padding:5rem 2rem;
+}
+.info-inner {
+  max-width:800px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1px; border:1px solid rgba(192,40,30,.18);
+  background:rgba(192,40,30,.08);
+}
+.info-cell {
+  background:var(--black); padding:2.5rem 2rem; text-align:center;
+  transition:background .2s;
+}
+.info-cell:hover { background:var(--gray); }
+.info-cell-icon {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:10px; letter-spacing:5px;
+  color:var(--red); opacity:.6; display:block; margin-bottom:.75rem;
+}
+.info-cell-val {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(20px,3.5vw,28px);
+  letter-spacing:2px; color:var(--white); line-height:1.15;
+}
+.info-cell-sub {
+  font-size:12px; font-weight:300; letter-spacing:1px;
+  color:rgba(240,236,228,.32); margin-top:8px;
+}
+
+/* ── ANUARIO SECTION ── */
+.anuario-section {
+  background:var(--gray);
+  padding:6rem 2rem;
+  text-align:center;
+  border-top:1px solid rgba(192,40,30,.2);
+}
+.section-heading {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(38px,8vw,72px);
+  letter-spacing:3px; line-height:1;
+  color:var(--white); margin-bottom:1.25rem;
+}
+.section-heading em { font-style:normal; color:var(--red-bright); }
+.section-body {
+  font-size:clamp(14px,2vw,17px); font-weight:300;
+  line-height:1.8; color:rgba(240,236,228,.5);
+  letter-spacing:.3px; max-width:520px; margin:0 auto 3rem;
+}
+
+/* polaroid mosaic preview */
+.mosaic {
+  display:flex; justify-content:center; flex-wrap:wrap;
+  gap:1.5rem; margin:3rem auto; max-width:700px;
+}
+.mosaico-card {
+  background:#fdfaf4;
+  padding:8px 8px 36px;
+  box-shadow:2px 4px 0 rgba(0,0,0,.5), 6px 10px 0 rgba(0,0,0,.2);
+  width:140px; cursor:pointer;
+  transition:transform .25s, box-shadow .25s;
+}
+.mosaico-card:nth-child(1){ transform:rotate(-3deg); }
+.mosaico-card:nth-child(2){ transform:rotate(1.5deg); }
+.mosaico-card:nth-child(3){ transform:rotate(-1deg); }
+.mosaico-card:nth-child(4){ transform:rotate(2.5deg); }
+.mosaico-card:nth-child(5){ transform:rotate(-2deg); }
+.mosaico-card:hover{ transform:rotate(0) scale(1.08); z-index:10;
+  box-shadow:4px 12px 0 rgba(0,0,0,.55), 10px 24px 0 rgba(0,0,0,.15); }
+.mc-img {
+  width:100%; aspect-ratio:1; background:var(--gray-mid);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.mc-img img { width:100%; height:100%; object-fit:cover; filter:sepia(30%) contrast(.93); }
+.mc-placeholder {
+  font-family:'Oswald',sans-serif; font-size:11px;
+  letter-spacing:1px; color:#888; text-align:center; padding:.5rem;
+}
+.mc-label {
+  font-family:'Caveat',cursive; font-size:13px;
+  color:#6b5740; text-align:center; margin-top:8px;
+  line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* Caveat for captions */
+@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
+
+.btn-anuario {
+  display:inline-block;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:17px; letter-spacing:6px;
+  color:var(--black); background:var(--red-bright);
+  padding:17px 48px; border:none; cursor:pointer;
+  text-decoration:none;
+  clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
+  transition:background .2s, transform .15s;
+  position:relative; overflow:hidden;
+}
+.btn-anuario::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 50%);
+}
+.btn-anuario:hover { background:#ff3d31; transform:scale(1.03); }
+.btn-sub-text {
+  display:block; margin-top:1rem;
+  font-size:11px; letter-spacing:3px;
+  color:rgba(240,236,228,.25); font-weight:300;
+}
+
+/* ── FOOTER ── */
+footer {
+  background:var(--gray);
+  padding:3rem 2rem; text-align:center;
+  border-top:1px solid rgba(192,40,30,.18);
+}
+.foot-logo {
+  font-family:'Permanent Marker',cursive;
+  font-size:26px; color:var(--red); opacity:.45; margin-bottom:.5rem;
+}
+.foot-sub {
+  font-size:11px; letter-spacing:3px;
+  color:rgba(240,236,228,.18); font-weight:300;
+}
+
+/* ── LIGHTBOX ── */
+.lb-bg {
+  display:none; position:fixed; inset:0;
+  background:rgba(4,2,0,.96); z-index:1000;
+  padding:2rem; align-items:center;
+  justify-content:center; flex-direction:column;
+}
+.lb-bg.open { display:flex; }
+.lb-frame {
+  background:#fdfaf4; padding:12px 12px 52px;
+  max-width:min(90vw,780px);
+  box-shadow:0 0 100px rgba(0,0,0,.9); position:relative;
+}
+.lb-frame img {
+  display:block; width:100%; max-height:64vh;
+  object-fit:contain; filter:sepia(12%) contrast(.96);
+}
+.lb-cap {
+  font-family:'Caveat',cursive; font-size:18px;
+  color:#6b5740; text-align:center;
+  position:absolute; bottom:12px; left:0; right:0;
+}
+.lb-close {
+  position:absolute; top:-2.5rem; right:0;
+  background:none; border:none;
+  font-size:26px; color:rgba(240,236,228,.35);
+  cursor:pointer; line-height:1;
+}
+.lb-close:hover { color:rgba(240,236,228,.8); }
+.lb-nav { display:flex; gap:1.5rem; margin-top:1.5rem; }
+.lb-nav button {
+  background:none; border:1px solid rgba(240,236,228,.18);
+  color:rgba(240,236,228,.45);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:12px; letter-spacing:2px;
+  padding:7px 20px; cursor:pointer; border-radius:2px;
+  transition:all .15s;
+}
+.lb-nav button:hover { border-color:rgba(240,236,228,.45); color:rgba(240,236,228,.85); }
+
+@media(max-width:520px){
+  .nav-links { display:none; }
+  .cd-unit { padding:1rem 1.5rem; }
+  .mosaic { gap:1rem; }
+  .mosaico-card { width:110px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">La Chabalada</div>
+  <ul class="nav-links">
+    <li><a href="#evento">El Evento</a></li>
+    <li><a href="#anuario">Anuario</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-stripe"></div>
+  <div class="drips">
+    <div class="drip"></div><div class="drip"></div><div class="drip"></div>
+    <div class="drip"></div><div class="drip"></div><div class="drip"></div>
+    <div class="drip"></div>
+  </div>
+  <div style="position:absolute;width:350px;height:350px;border-radius:50%;
+    background:radial-gradient(circle,rgba(192,40,30,.08) 0%,transparent 70%);
+    top:10%;left:-8%;pointer-events:none;"></div>
+  <div style="position:absolute;width:250px;height:250px;border-radius:50%;
+    background:radial-gradient(circle,rgba(192,40,30,.07) 0%,transparent 70%);
+    bottom:18%;right:-5%;pointer-events:none;"></div>
+
+  <div class="logo-wrap">
+    <div class="logo-la">La</div>
+    <div class="logo-main">Chabalada</div>
+    <div class="logo-years">2006 &nbsp;·&nbsp; 2026</div>
+  </div>
+  <div class="hero-tagline">La generación que no se olvida</div>
+
+  <div class="scroll-cue">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section class="countdown-section" id="evento">
+  <span class="section-eye">&#9632;&nbsp; Cuenta regresiva &nbsp;&#9632;</span>
+  <div class="countdown">
+    <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-label">días</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-label">horas</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-label">minutos</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-label">segundos</span></div>
+  </div>
+  <div class="cd-event">25 de Julio 2026</div>
+</section>
+
+<!-- INFO -->
+<div class="info-strip">
+  <div class="info-inner">
+    <div class="info-cell">
+      <span class="info-cell-icon">&#128197;&nbsp; Fecha</span>
+      <div class="info-cell-val">Sábado<br>25 Julio 2026</div>
+      <div class="info-cell-sub">Marquen el calendario</div>
+    </div>
+    <div class="info-cell">
+      <span class="info-cell-icon">&#128205;&nbsp; Lugar</span>
+      <div class="info-cell-val">Casino Social<br>de Navojoa</div>
+      <div class="info-cell-sub">Navojoa, Sonora</div>
+    </div>
+    <div class="info-cell">
+      <span class="info-cell-icon">&#127881;&nbsp; Generación</span>
+      <div class="info-cell-val">Clase<br>del 2006</div>
+      <div class="info-cell-sub">20 años después</div>
+    </div>
+  </div>
+</div>
+
+<!-- ANUARIO -->
+<section class="anuario-section" id="anuario">
+  <span class="section-eye">&#9632;&nbsp; Anuario de la generación &nbsp;&#9632;</span>
+  <h2 class="section-heading">Las fotos<br>que <em>sobrevivieron</em></h2>
+  <p class="section-body">
+    Todas las fotos de la generación, en un solo lugar.
+    Polaroids digitales de los mejores (y peores) momentos de La Chabalada.
+  </p>
+
+  <!-- photo mosaic preview -->
+  <div class="mosaic" id="mosaic">
+    <div class="mosaico-card">
+      <div class="mc-img"><div class="mc-placeholder">cargando...</div></div>
+      <div class="mc-label">foto</div>
+    </div>
+    <div class="mosaico-card">
+      <div class="mc-img"><div class="mc-placeholder">cargando...</div></div>
+      <div class="mc-label">foto</div>
+    </div>
+    <div class="mosaico-card">
+      <div class="mc-img"><div class="mc-placeholder">cargando...</div></div>
+      <div class="mc-label">foto</div>
+    </div>
+    <div class="mosaico-card">
+      <div class="mc-img"><div class="mc-placeholder">cargando...</div></div>
+      <div class="mc-label">foto</div>
+    </div>
+    <div class="mosaico-card">
+      <div class="mc-img"><div class="mc-placeholder">cargando...</div></div>
+      <div class="mc-label">foto</div>
+    </div>
+  </div>
+
+  <a href="anuario.html" class="btn-anuario">Ver anuario completo</a>
+  <span class="btn-sub-text">Todas las fotos de la Chabalada ↗</span>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">La Chabalada</div>
+  <div class="foot-sub">Generación 2006 &nbsp;·&nbsp; Navojoa, Sonora &nbsp;·&nbsp; lachabalada.com</div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lb-bg" id="lb">
+  <div class="lb-frame">
+    <button class="lb-close" onclick="closeLb()">&#215;</button>
+    <img id="lb-img" src="" alt="">
+    <div class="lb-cap" id="lb-cap"></div>
+  </div>
+  <div class="lb-nav">
+    <button onclick="lbStep(-1)">&#8592; anterior</button>
+    <button onclick="lbStep(1)">siguiente &#8594;</button>
+  </div>
+</div>
+
+<script>
+/* ── COUNTDOWN ── */
+const EVENT = new Date('2026-07-25T20:00:00');
+function tick() {
+  const diff = EVENT - new Date();
+  if (diff <= 0) {
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor(diff%86400000/3600000);
+  const m = Math.floor(diff%3600000/60000);
+  const s = Math.floor(diff%60000/1000);
+  document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+
+/* ── DRIVE PHOTOS preview mosaic ── */
+const FOLDER_ID = '1nT6CuzJwstpPuxKld8oqZPz5jVnL385Y';
+let allFiles = [], lbIdx = 0;
+
+function thumb(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=w${sz||400}`; }
+function friendly(n)   { return n.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim(); }
+
+async function loadMosaic() {
+  try {
+    const url = `https://www.googleapis.com/drive/v3/files`
+      + `?q=%271nT6CuzJwstpPuxKld8oqZPz5jVnL385Y%27+in+parents+and+trashed%3Dfalse`
+      + `&fields=files(id%2Cname%2CmimeType)&orderBy=name&pageSize=200`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('api');
+    const data = await res.json();
+    allFiles   = (data.files||[]).filter(f => f.mimeType && f.mimeType.startsWith('image/'));
+    renderMosaic(allFiles.slice(0,5));
+  } catch(_) {
+    /* silently leave placeholder cards */
+  }
+}
+
+function renderMosaic(files) {
+  if (!files.length) return;
+  const mosaic = document.getElementById('mosaic');
+  mosaic.innerHTML = '';
+  files.forEach((f,i) => {
+    const cap = friendly(f.name);
+    const card = document.createElement('div');
+    card.className = 'mosaico-card';
+    card.innerHTML = `<div class="mc-img">
+      <img src="${thumb(f.id,400)}" alt="${cap}" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=\\'mc-placeholder\\'>${cap}</div>'">
+    </div><div class="mc-label">${cap}</div>`;
+    card.addEventListener('click', () => openLb(i));
+    mosaic.appendChild(card);
+  });
+}
+
+function openLb(idx) {
+  lbIdx = idx; updateLb();
+  document.getElementById('lb').classList.add('open');
+}
+function closeLb() { document.getElementById('lb').classList.remove('open'); }
+function lbStep(d) { lbIdx=(lbIdx+d+allFiles.length)%allFiles.length; updateLb(); }
+function updateLb() {
+  const f = allFiles[lbIdx];
+  document.getElementById('lb-img').src = thumb(f.id,800);
+  document.getElementById('lb-cap').textContent = friendly(f.name);
+}
+document.getElementById('lb').addEventListener('click', e => {
+  if (e.target===document.getElementById('lb')) closeLb();
+});
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lb').classList.contains('open')) return;
+  if (e.key==='Escape') closeLb();
+  if (e.key==='ArrowRight') lbStep(1);
+  if (e.key==='ArrowLeft')  lbStep(-1);
+});
+
+loadMosaic();
+</script>
+</body>
+</html>
