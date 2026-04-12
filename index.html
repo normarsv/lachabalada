@@ -594,79 +594,36 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-/* ── GITHUB + FIREBASE MOSAIC (top liked photos) ── */
-const GITHUB_USER   = 'normarsv';
-const GITHUB_REPO   = 'lachabalada';
-const GITHUB_BRANCH = 'main';
-const PHOTOS_FOLDER = 'fotos';
-const RAW_BASE  = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${PHOTOS_FOLDER}/`;
-const API_URL   = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${PHOTOS_FOLDER}?ref=${GITHUB_BRANCH}`;
-const IMAGE_EXT = /\.(jpe?g|png|gif|webp|bmp|tiff?)$/i;
-const FB_LIKES  = 'https://lachabalada-6c3c3-default-rtdb.firebaseio.com/foto_likes.json';
+/* ── MOSAIC — reads from fotos.json (same as anuario) ── */
+const FOTOS_JSON = 'https://raw.githubusercontent.com/normarsv/lachabalada/main/fotos.json';
 
 let allFiles = [], lbIdx = 0;
 
 function friendly(n) { return n.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim(); }
-function fileKey(n)  { return n.replace(/[^a-zA-Z0-9]/g,'_'); }
 
 async function loadMosaic() {
   try {
-    /* 1. All images from GitHub including subfolders */
-    const res  = await fetch(API_URL, { headers:{'Accept':'application/vnd.github.v3+json'} });
-    if (!res.ok) throw new Error('api');
-    const root = await res.json();
-
-    let imgs = root
-      .filter(f => f.type==='file' && IMAGE_EXT.test(f.name))
-      .map(f => ({ name:f.name, src: RAW_BASE + encodeURIComponent(f.name) }));
-
-    const dirs = root.filter(f => f.type==='dir');
-    await Promise.all(dirs.map(async dir => {
-      try {
-        const r2 = await fetch(
-          `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${dir.path}?ref=${GITHUB_BRANCH}`,
-          { headers:{'Accept':'application/vnd.github.v3+json'} }
-        );
-        if (!r2.ok) return;
-        const sub = await r2.json();
-        sub.filter(f => f.type==='file' && IMAGE_EXT.test(f.name)).forEach(f => {
-          imgs.push({
-            name: f.name,
-            src: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${dir.path}/${encodeURIComponent(f.name)}`
-          });
-        });
-      } catch(_){}
-    }));
+    /* 1. Load fotos.json — fast, no rate limits */
+    const res = await fetch(FOTOS_JSON + '?t=' + Date.now());
+    if (!res.ok) throw new Error('fotos.json not found');
+    const imgs = await res.json();
+    if (!imgs.length) throw new Error('empty');
 
     allFiles = imgs;
 
-    /* 2. Likes from Firebase REST (no SDK needed) */
-    let likesData = {};
-    try {
-      const lr = await fetch(FB_LIKES);
-      if (lr.ok) likesData = (await lr.json()) || {};
-    } catch(_){}
-
-    /* 3. Score and sort */
-    const scored = imgs.map(f => ({
-      ...f, score: (likesData[fileKey(f.name)] && likesData[fileKey(f.name)].likes) || 0
-    }));
-    scored.sort((a,b) => b.score - a.score);
-
-    const hasLikes = scored.some(f => f.score > 0);
-    const preview  = hasLikes ? scored.slice(0,5) : [...imgs].sort(()=>Math.random()-.5).slice(0,5);
-    renderMosaic(preview, hasLikes);
-  } catch(_) {}
+    /* 2. Pick 5 random photos for the mosaic */
+    const preview = [...imgs].sort(() => Math.random() - .5).slice(0, 5);
+    renderMosaic(preview);
+  } catch(err) {
+    /* fotos.json missing or empty — hide mosaic gracefully */
+    document.getElementById('mosaic').style.display = 'none';
+  }
 }
 
-function renderMosaic(files, showLikes) {
+function renderMosaic(files) {
   if (!files.length) return;
   const mosaic = document.getElementById('mosaic');
   mosaic.innerHTML = '';
-  if (showLikes) {
-    const sub = document.querySelector('#anuario .section-body');
-    if (sub) sub.innerHTML = 'Las fotos con más likes de la generación.<br><small style="opacity:.45;font-size:13px;letter-spacing:1px;font-weight:300">Dale &#128077; a tus favoritas en el anuario.</small>';
-  }
   files.forEach((f,i) => {
     const cap  = friendly(f.name);
     const card = document.createElement('div');
@@ -677,7 +634,6 @@ function renderMosaic(files, showLikes) {
           onerror="this.parentElement.innerHTML='<div class=\'mc-placeholder\'>${cap}</div>'">
       </div>
       <div class="mc-label">${cap}</div>
-      ${f.score > 0 ? `<div style="font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;color:var(--red);opacity:.75;text-align:center;padding-top:3px">&#128077; ${f.score}</div>` : ''}
     `;
     card.addEventListener('click', () => openLb(i, files));
     mosaic.appendChild(card);
