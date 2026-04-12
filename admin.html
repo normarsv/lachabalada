@@ -226,8 +226,12 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
         <div class="stat-value" id="st-money">$0</div>
       </div>
       <div class="stat-card orange">
-        <span class="stat-label">Gastos totales</span>
+        <span class="stat-label">Gastos pagados</span>
         <div class="stat-value" id="st-expenses">$0</div>
+      </div>
+      <div class="stat-card red">
+        <span class="stat-label">Gastos pendientes</span>
+        <div class="stat-value" id="st-pending">$0</div>
       </div>
       <div class="stat-card blue">
         <span class="stat-label">Balance neto</span>
@@ -239,6 +243,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
       <button class="admin-tab"        onclick="switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
+      <button class="admin-tab"        onclick="switchTab('todo',this)">&#9989;&nbsp; To Do</button>
     </div>
 
     <!-- TAB: BOLETOS -->
@@ -329,8 +334,8 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             <input type="text" id="g-desc" placeholder="Ej: Decoración, comida, DJ...">
           </div>
           <div class="field-group">
-            <label>Monto ($)</label>
-            <input type="number" id="g-monto" placeholder="0" min="0">
+            <label>Monto total ($)</label>
+            <input type="number" id="g-monto" placeholder="15000" min="0">
           </div>
           <div class="field-group">
             <label>Categoría</label>
@@ -345,11 +350,8 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             </select>
           </div>
           <div class="field-group">
-            <label>Estado de pago</label>
-            <select id="g-status">
-              <option value="pagado">Pagado</option>
-              <option value="pendiente">Pendiente de pagar</option>
-            </select>
+            <label>Anticipo / primer abono ($)</label>
+            <input type="number" id="g-abono" placeholder="0 si no hay anticipo" min="0" value="0">
           </div>
           <div class="field-group">
             <label>Notas (opcional)</label>
@@ -365,12 +367,46 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Descripción</th><th>Categoría</th><th>Monto</th><th>Estado</th><th>Fecha</th><th></th>
+            <th>Descripción</th><th>Categoría</th><th>Total</th><th>Abonado</th><th>Pendiente</th><th>Progreso</th><th>Fecha</th><th></th>
           </tr></thead>
           <tbody id="expenses-tbody"></tbody>
         </table>
         <div class="empty-state" id="empty-gastos">Aún no hay gastos registrados</div>
       </div>
+    </div>
+
+    <!-- TAB: TODO -->
+    <div class="tab-panel" id="tab-todo">
+      <div class="section-head">
+        <div class="section-title">&#9632;&nbsp; Nueva tarea</div>
+        <span class="todo-progress" id="todo-progress"></span>
+      </div>
+      <div class="panel-card">
+        <div class="form-grid">
+          <div class="field-group" style="grid-column:1/-1">
+            <label>Tarea</label>
+            <input type="text" id="td-text" placeholder="Ej: Confirmar menú con el venue...">
+          </div>
+          <div class="field-group">
+            <label>Prioridad</label>
+            <select id="td-prio">
+              <option value="alta">Alta</option>
+              <option value="media" selected>Media</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Fecha límite (opcional)</label>
+            <input type="date" id="td-date">
+          </div>
+        </div>
+        <button class="btn-todo" onclick="addTodo()">Agregar tarea &#9654;</button>
+      </div>
+      <div class="section-head" style="margin-top:1rem">
+        <div class="section-title">&#9632;&nbsp; Lista de tareas</div>
+      </div>
+      <div id="todo-list"></div>
+      <div class="empty-state" id="empty-todo">Sin tareas por ahora 🎉</div>
     </div>
 
   </div>
@@ -600,8 +636,12 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
         <div class="stat-value" id="st-money">$0</div>
       </div>
       <div class="stat-card orange">
-        <span class="stat-label">Gastos totales</span>
+        <span class="stat-label">Gastos pagados</span>
         <div class="stat-value" id="st-expenses">$0</div>
+      </div>
+      <div class="stat-card red">
+        <span class="stat-label">Gastos pendientes</span>
+        <div class="stat-value" id="st-pending">$0</div>
       </div>
       <div class="stat-card blue">
         <span class="stat-label">Balance neto</span>
@@ -613,6 +653,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
       <button class="admin-tab"        onclick="switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
+      <button class="admin-tab"        onclick="switchTab('todo',this)">&#9989;&nbsp; To Do</button>
     </div>
 
     <!-- TAB: BOLETOS -->
@@ -703,8 +744,8 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             <input type="text" id="g-desc" placeholder="Ej: Decoración, comida, DJ...">
           </div>
           <div class="field-group">
-            <label>Monto ($)</label>
-            <input type="number" id="g-monto" placeholder="0" min="0">
+            <label>Monto total ($)</label>
+            <input type="number" id="g-monto" placeholder="15000" min="0">
           </div>
           <div class="field-group">
             <label>Categoría</label>
@@ -719,11 +760,8 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             </select>
           </div>
           <div class="field-group">
-            <label>Estado de pago</label>
-            <select id="g-status">
-              <option value="pagado">Pagado</option>
-              <option value="pendiente">Pendiente de pagar</option>
-            </select>
+            <label>Anticipo / primer abono ($)</label>
+            <input type="number" id="g-abono" placeholder="0 si no hay anticipo" min="0" value="0">
           </div>
           <div class="field-group">
             <label>Notas (opcional)</label>
@@ -739,12 +777,46 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Descripción</th><th>Categoría</th><th>Monto</th><th>Estado</th><th>Fecha</th><th></th>
+            <th>Descripción</th><th>Categoría</th><th>Total</th><th>Abonado</th><th>Pendiente</th><th>Progreso</th><th>Fecha</th><th></th>
           </tr></thead>
           <tbody id="expenses-tbody"></tbody>
         </table>
         <div class="empty-state" id="empty-gastos">Aún no hay gastos registrados</div>
       </div>
+    </div>
+
+    <!-- TAB: TODO -->
+    <div class="tab-panel" id="tab-todo">
+      <div class="section-head">
+        <div class="section-title">&#9632;&nbsp; Nueva tarea</div>
+        <span class="todo-progress" id="todo-progress"></span>
+      </div>
+      <div class="panel-card">
+        <div class="form-grid">
+          <div class="field-group" style="grid-column:1/-1">
+            <label>Tarea</label>
+            <input type="text" id="td-text" placeholder="Ej: Confirmar menú con el venue...">
+          </div>
+          <div class="field-group">
+            <label>Prioridad</label>
+            <select id="td-prio">
+              <option value="alta">Alta</option>
+              <option value="media" selected>Media</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Fecha límite (opcional)</label>
+            <input type="date" id="td-date">
+          </div>
+        </div>
+        <button class="btn-todo" onclick="addTodo()">Agregar tarea &#9654;</button>
+      </div>
+      <div class="section-head" style="margin-top:1rem">
+        <div class="section-title">&#9632;&nbsp; Lista de tareas</div>
+      </div>
+      <div id="todo-list"></div>
+      <div class="empty-state" id="empty-todo">Sin tareas por ahora 🎉</div>
     </div>
 
   </div>
@@ -826,7 +898,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 
 <script type="module">
 import { initializeApp }                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, update }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
@@ -842,12 +914,14 @@ const app        = initializeApp(firebaseConfig);
 const db         = getDatabase(app);
 const ticketRef  = ref(db, 'boletos');
 const expenseRef = ref(db, 'gastos');
+const todoRef    = ref(db, 'todos');
 
 const PRICE_PP       = 700;
 const ADMIN_PASSWORD = 'chabalada2026';
 
 let allTickets  = [];
 let allExpenses = [];
+let allTodos    = [];
 let nextTicket  = 1;
 
 /* build perf dots */
@@ -883,7 +957,8 @@ window.switchTab = (name, btn) => {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
+  const panel = document.getElementById('tab-'+name);
+  if (panel) panel.classList.add('active');
 };
 
 /* ── +1 TOGGLE ── */
@@ -907,20 +982,38 @@ onValue(expenseRef, snap => {
   updateStats(); renderExpenses(allExpenses);
 });
 
+onValue(todoRef, snap => {
+  const data = snap.val() || {};
+  allTodos = Object.entries(data).map(([k,v]) => ({...v, _key:k})).sort((a,b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    const pmap = {alta:0, media:1, baja:2};
+    return (pmap[a.prio]||1) - (pmap[b.prio]||1);
+  });
+  renderTodos();
+});
+
 /* ── STATS ── */
 function updateStats() {
-  const total       = allTickets.length;
-  const guests      = allTickets.reduce((s,t) => s + (t.plus1 ? 2 : 1), 0);
-  const money       = allTickets.filter(t => t.status==='pagado').reduce((s,t) => s+(t.precio||0), 0);
-  const expPaid     = allExpenses.filter(e => e.status!=='pendiente').reduce((s,e) => s+(e.monto||0), 0);
-  const expPending  = allExpenses.filter(e => e.status==='pendiente').reduce((s,e) => s+(e.monto||0), 0);
-  const expTotal    = expPaid + expPending;
-  const balance     = money - expPaid;
+  const total      = allTickets.length;
+  const guests     = allTickets.reduce((s,t) => s + (t.plus1 ? 2 : 1), 0);
+  const money      = allTickets.filter(t => t.status==='pagado').reduce((s,t) => s+(t.precio||0), 0);
+  /* gastos: sum of abonos for paid expenses, monto for fully paid ones */
+  const expPaid    = allExpenses.reduce((s,e) => {
+    const abonado = (e.abonos||[]).reduce((a,b) => a + (b.monto||0), 0);
+    return s + abonado;
+  }, 0);
+  const expPending = allExpenses.reduce((s,e) => {
+    const abonado = (e.abonos||[]).reduce((a,b) => a + (b.monto||0), 0);
+    return s + Math.max(0, (e.monto||0) - abonado);
+  }, 0);
+  const balance    = money - expPaid;
 
   document.getElementById('st-total').textContent    = total;
   document.getElementById('st-guests').textContent   = guests;
   document.getElementById('st-money').textContent    = '$' + money.toLocaleString('es-MX');
-  document.getElementById('st-expenses').textContent = '$' + expTotal.toLocaleString('es-MX');
+  document.getElementById('st-expenses').textContent = '$' + expPaid.toLocaleString('es-MX');
+  const pendEl = document.getElementById('st-pending');
+  if (pendEl) pendEl.textContent = '$' + expPending.toLocaleString('es-MX');
   const balEl = document.getElementById('st-balance');
   balEl.textContent = (balance >= 0 ? '+' : '') + '$' + balance.toLocaleString('es-MX');
   balEl.style.color = balance >= 0 ? 'var(--green-light)' : 'var(--red-bright)';
@@ -1031,15 +1124,28 @@ window.addExpense = async () => {
     if (!monto) document.getElementById('g-monto').focus();
     return;
   }
+  const abono = parseFloat(document.getElementById('g-abono').value) || 0;
+  const abonos = abono > 0 ? [{ monto: abono, ts: Date.now(), nota: 'Anticipo inicial' }] : [];
   await push(expenseRef, {
-    desc, monto,
-    cat:    document.getElementById('g-cat').value,
-    status: document.getElementById('g-status').value,
-    notas:  document.getElementById('g-notas').value.trim(),
-    ts:     Date.now()
+    desc, monto, abonos,
+    cat:   document.getElementById('g-cat').value,
+    notas: document.getElementById('g-notas').value.trim(),
+    ts:    Date.now()
   });
-  ['g-desc','g-monto','g-notas'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('g-status').value = 'pagado';
+  ['g-desc','g-monto','g-abono','g-notas'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('g-abono').value = '0';
+};
+
+window.addAbono = async (key) => {
+  const montoStr = prompt('¿Cuánto vas a abonar? ($)');
+  if (!montoStr) return;
+  const monto = parseFloat(montoStr);
+  if (!monto || monto <= 0) return;
+  const nota = prompt('Nota del abono (opcional):') || '';
+  const expense = allExpenses.find(e => e._key === key);
+  if (!expense) return;
+  const abonos = [...(expense.abonos || []), { monto, ts: Date.now(), nota }];
+  await update(ref(db, 'gastos/' + key), { abonos });
 };
 
 function renderExpenses(list) {
@@ -1048,16 +1154,34 @@ function renderExpenses(list) {
   tbody.innerHTML = '';
   empty.style.display = list.length ? 'none' : 'block';
   list.forEach(e => {
-    const isPaid = e.status !== 'pendiente';
+    const total    = e.monto || 0;
+    const abonado  = (e.abonos||[]).reduce((s,a) => s+(a.monto||0), 0);
+    const pendiente = Math.max(0, total - abonado);
+    const pct      = total > 0 ? Math.min(100, Math.round(abonado/total*100)) : 0;
+    const isDone   = pendiente === 0;
     const tr = document.createElement('tr');
     tr.className = 'expense-row';
     tr.innerHTML = `
-      <td>${escHtml(e.desc)}${e.notas ? `<span style="font-size:11px;color:rgba(240,236,228,.35);display:block">${escHtml(e.notas)}</span>` : ''}</td>
+      <td>
+        <div>${escHtml(e.desc)}</div>
+        ${e.notas ? `<span style="font-size:11px;color:rgba(240,236,228,.35)">${escHtml(e.notas)}</span>` : ''}
+        ${(e.abonos||[]).length > 0 ? `<div style="font-size:10px;color:rgba(240,236,228,.25);margin-top:3px">${(e.abonos||[]).map(a=>'$'+a.monto.toLocaleString('es-MX')+(a.nota?' — '+escHtml(a.nota):'')).join(' · ')}</div>` : ''}
+      </td>
       <td style="font-size:12px;color:rgba(240,236,228,.45)">${escHtml(e.cat||'—')}</td>
-      <td style="color:var(--orange-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${(e.monto||0).toLocaleString('es-MX')}</td>
-      <td><span class="badge ${isPaid?'badge-paid':'badge-pend'}">${isPaid?'Pagado':'Pendiente'}</span></td>
+      <td style="color:var(--orange-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${total.toLocaleString('es-MX')}</td>
+      <td style="color:var(--green-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${abonado.toLocaleString('es-MX')}</td>
+      <td style="color:${isDone?'var(--green-light)':'var(--red-bright)'};font-family:'Bebas Neue',sans-serif;font-size:15px">
+        ${isDone ? '✓ Liquidado' : '$'+pendiente.toLocaleString('es-MX')}
+      </td>
+      <td>
+        <div class="abono-bar-wrap"><div class="abono-bar" style="width:${pct}%"></div></div>
+        <div class="abono-txt">${pct}%</div>
+      </td>
       <td style="font-size:11px;color:rgba(240,236,228,.3)">${formatDate(e.ts)}</td>
-      <td><button class="btn-del" onclick="window.deleteExpense('${e._key}')">✕</button></td>`;
+      <td>
+        ${!isDone ? `<button class="btn-abono" onclick="window.addAbono('${e._key}')">+ Abono</button>` : ''}
+        <button class="btn-del" onclick="window.deleteExpense('${e._key}')">✕</button>
+      </td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1066,6 +1190,67 @@ window.deleteExpense = async key => {
   if (!confirm('¿Borrar este gasto?')) return;
   await remove(ref(db,'gastos/'+key));
 };
+
+/* ── TO DO ── */
+window.addTodo = async () => {
+  const text = document.getElementById('td-text').value.trim();
+  if (!text) { document.getElementById('td-text').focus(); return; }
+  await push(todoRef, {
+    text,
+    prio:  document.getElementById('td-prio').value,
+    date:  document.getElementById('td-date').value || '',
+    done:  false,
+    ts:    Date.now()
+  });
+  document.getElementById('td-text').value = '';
+  document.getElementById('td-date').value = '';
+  document.getElementById('td-prio').value = 'media';
+};
+
+window.toggleTodo = async (key, current) => {
+  await update(ref(db, 'todos/' + key), { done: !current });
+};
+
+window.deleteTodo = async key => {
+  if (!confirm('¿Borrar esta tarea?')) return;
+  await remove(ref(db, 'todos/' + key));
+};
+
+function renderTodos() {
+  const list  = document.getElementById('todo-list');
+  const empty = document.getElementById('empty-todo');
+  if (!list) return;
+  list.innerHTML = '';
+  const pending = allTodos.filter(t => !t.done);
+  const done    = allTodos.filter(t =>  t.done);
+  const sorted  = [...pending, ...done];
+  const prog    = document.getElementById('todo-progress');
+  if (prog) prog.textContent = allTodos.length
+    ? `${done.length} / ${allTodos.length} completadas`
+    : '';
+  empty.style.display = sorted.length ? 'none' : 'block';
+
+  const prioLabel = { alta: 'ALTA', media: 'MEDIA', baja: 'BAJA' };
+  const prioClass = { alta: 'prio-alta', media: 'prio-media', baja: 'prio-baja' };
+
+  sorted.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'todo-item' + (t.done ? ' done' : '');
+    div.innerHTML = `
+      <div class="todo-check ${t.done?'checked':''}" onclick="window.toggleTodo('${t._key}', ${t.done})">
+        ${t.done ? '✓' : ''}
+      </div>
+      <div class="todo-body">
+        <div class="todo-text">${escHtml(t.text)}</div>
+        <div class="todo-meta">
+          <span class="todo-prio ${prioClass[t.prio]||'prio-media'}">${prioLabel[t.prio]||'MEDIA'}</span>
+          ${t.date ? `<span class="todo-date">📅 ${t.date}</span>` : ''}
+        </div>
+      </div>
+      <button class="todo-del" onclick="window.deleteTodo('${t._key}')">✕</button>`;
+    list.appendChild(div);
+  });
+}
 
 window.closeModal = () => {
   document.getElementById('ticket-modal').classList.remove('open');
