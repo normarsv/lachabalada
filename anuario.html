@@ -347,6 +347,28 @@ footer {
   .album-tab{padding:.75rem 1rem;font-size:11px;}
   .form-row{flex-direction:column;}
 }
+
+/* LIKE BUTTONS */
+.like-bar {
+  display:flex; align-items:center; gap:.5rem;
+  margin-top:.5rem; padding-top:.4rem;
+  border-top:1px solid rgba(200,191,168,.3);
+}
+.like-btn {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:2px;
+  background:none; border:1px solid rgba(42,31,14,.2);
+  color:var(--ink-faded); padding:4px 10px; cursor:pointer;
+  border-radius:2px; transition:all .15s; display:flex; align-items:center; gap:4px;
+}
+.like-btn:hover { border-color:var(--red); color:var(--red); }
+.like-btn.liked { background:rgba(192,40,30,.12); border-color:var(--red); color:var(--red); }
+.like-btn.disliked { background:rgba(42,31,14,.08); border-color:rgba(42,31,14,.35); color:var(--ink-mid); }
+.like-count { font-size:13px; color:var(--ink-faded); margin-left:2px; }
+.like-spacer { flex:1; }
+.total-likes {
+  font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:3px;
+  color:rgba(240,236,228,.22); margin-left:auto;
+}
 </style>
 </head>
 <body>
@@ -640,6 +662,40 @@ function formatTs(ts) {
   return d.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})
     + ' · ' + d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
+
+async function vote(key, dir, btn) {
+  const myVote = localStorage.getItem('vote_'+key);
+  if (myVote === dir) return;
+
+  const ref2 = dbRef(db, 'foto_likes/'+key);
+  await runTransaction(ref2, current => {
+    if (!current) current = { likes:0, dislikes:0 };
+    if (myVote === 'up')   current.likes    = Math.max(0, (current.likes||0)-1);
+    if (myVote === 'down') current.dislikes = Math.max(0, (current.dislikes||0)-1);
+    if (dir === 'up')   current.likes    = (current.likes||0)+1;
+    if (dir === 'down') current.dislikes = (current.dislikes||0)+1;
+    return current;
+  });
+  localStorage.setItem('vote_'+key, dir);
+
+  const snap = await get(dbRef(db,'foto_likes/'+key));
+  const d = snap.val() || {};
+  const upEl = document.getElementById('lc-up-'+key);
+  const dnEl = document.getElementById('lc-dn-'+key);
+  if (upEl) upEl.textContent = d.likes    || 0;
+  if (dnEl) dnEl.textContent = d.dislikes || 0;
+
+  document.querySelectorAll('.like-btn').forEach(b => {
+    if (b.onclick && b.onclick.toString().includes("'"+key+"'")) {
+      b.classList.remove('liked','disliked');
+    }
+  });
+  btn.closest('.like-bar').querySelectorAll('.like-btn').forEach(b => {
+    b.classList.remove('liked','disliked');
+  });
+  btn.classList.add(dir==='up'?'liked':'disliked');
+}
+
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
