@@ -624,14 +624,14 @@ async function loadMosaic() {
       /* No subfolders — try root images directly */
       const imgs = root
         .filter(e => e.type === 'file' && IMG_EXT.test(e.name))
-        .map(e => ({ name: e.name, src: `${GH_RAW}/${GH_FOLDER}/${encodeURIComponent(e.name)}` }));
+        .map(e => ({ name: e.name, src: e.download_url }));
       if (!imgs.length) throw new Error('no images');
       allFiles = imgs;
       renderMosaic([...imgs].sort(() => Math.random() - .5).slice(0, 5));
       return;
     }
 
-    /* 2. Pick up to 3 random subfolders and grab one random photo from each */
+    /* 2. Pick up to 3 random subfolders and grab photos from each */
     const shuffledDirs = [...dirs].sort(() => Math.random() - .5).slice(0, 3);
     const picks = [];
 
@@ -640,11 +640,11 @@ async function loadMosaic() {
         const contents = await ghFetch(dir.path);
         const imgs = contents.filter(e => e.type === 'file' && IMG_EXT.test(e.name));
         if (!imgs.length) return;
-        /* pick random images from this folder */
         const shuffled = [...imgs].sort(() => Math.random() - .5).slice(0, 2);
         shuffled.forEach(e => picks.push({
           name: e.name,
-          src:  `${GH_RAW}/${dir.path}/${encodeURIComponent(e.name)}`
+          /* use download_url — GitHub gives us the exact ready-to-use URL */
+          src: e.download_url
         }));
       } catch(_) {}
     }));
