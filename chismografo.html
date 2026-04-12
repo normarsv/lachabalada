@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chismógrafo · La Chabalada</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Caveat+Brush&family=Permanent+Marker&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper:     #faf6ea;
+  --paper2:    #f5f0e0;
+  --paper3:    #ede8d5;
+  --lines:     #c8bfa8;
+  --ink:       #2a1f0e;
+  --ink-faded: #6b5740;
+  --red:       #c0281e;
+  --red-bright:#e8352a;
+  --blue-ink:  #1a3a6b;
+  --black:     #090909;
+  --gray:      #141414;
+  --white:     #f0ece4;
+  --margin-line: #e8a0a0;
+  --spiral:    #888;
+}
+
+html, body { height: 100%; }
+
+body {
+  background: #1a1208;
+  background-image:
+    radial-gradient(ellipse at 30% 50%, rgba(60,35,10,.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(40,22,4,.3) 0%, transparent 50%);
+  font-family: 'Caveat', cursive;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+/* NAV */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .9rem 2rem;
+  background: rgba(9,9,9,.9); backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(192,40,30,.15);
+  flex-shrink: 0;
+}
+.nav-logo {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 20px; color: var(--red);
+  text-decoration: none;
+  text-shadow: 0 0 10px rgba(192,40,30,.35);
+}
+.nav-back {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px; letter-spacing: 4px;
+  color: rgba(240,236,228,.38); text-decoration: none; transition: color .2s;
+}
+.nav-back:hover { color: var(--red-bright); }
+
+/* MAIN LAYOUT */
+.main {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 3rem 1rem 5rem;
+}
+
+/* BOOK CONTAINER */
+.book-wrap {
+  width: 100%; max-width: 680px;
+  position: relative;
+}
+
+/* spiral binding */
+.spirals {
+  position: absolute; left: 28px; top: -8px; bottom: -8px;
+  display: flex; flex-direction: column;
+  justify-content: space-evenly; z-index: 30;
+  pointer-events: none;
+}
+.spiral-ring {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 3px solid var(--spiral);
+  background: #1a1208;
+  box-shadow: inset 0 0 0 2px #333;
+}
+
+/* THE PAGE */
+.page {
+  background: var(--paper);
+  border-radius: 2px 6px 6px 2px;
+  min-height: 560px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    -4px 0 0 #d4cdb8,
+    4px 4px 0 rgba(0,0,0,.35),
+    8px 8px 0 rgba(0,0,0,.18),
+    12px 12px 0 rgba(0,0,0,.08);
+  margin-left: 40px;
+}
+
+/* ruled lines */
+.page::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 31px,
+    var(--lines) 31px,
+    var(--lines) 32px
+  );
+  background-position: 0 52px;
+}
+
+/* red margin line */
+.page::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: 68px; width: 1.5px;
+  background: var(--margin-line); pointer-events: none; z-index: 1;
+}
+
+/* PAGE HEADER */
+.page-header {
+  padding: 1rem 1.5rem 0 5rem;
+  border-bottom: 2px solid var(--lines);
+  margin-bottom: 0; position: relative; z-index: 2;
+}
+.page-title {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 32px; color: var(--red);
+  text-shadow: 1px 1px 0 rgba(192,40,30,.2);
+  line-height: 1;
+}
+.page-subtitle {
+  font-family: 'Caveat', cursive; font-size: 16px;
+  color: var(--ink-faded); margin-top: 2px; padding-bottom: .5rem;
+}
+
+/* PAGE CONTENT */
+.page-body {
+  padding: 1.5rem 1.75rem 2rem 5rem;
+  position: relative; z-index: 2;
+}
+
+/* ── COVER VIEW ── */
+.cover-art {
+  text-align: center; padding: 2rem 1rem 1rem;
+}
+.cover-doodle {
+  font-size: 14px; color: var(--ink-faded);
+  font-family: 'Caveat', cursive;
+  opacity: .5; margin-bottom: .5rem;
+  border-top: 1px dashed var(--lines);
+  border-bottom: 1px dashed var(--lines);
+  padding: .3rem 0;
+}
+.cover-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 80px; color: var(--paper3); line-height: 1;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.08);
+  margin: .25rem 0;
+}
+.cover-label {
+  font-family: 'Caveat Brush', cursive;
+  font-size: 22px; color: var(--ink);
+}
+.total-entries {
+  display: inline-block; margin-top: .5rem;
+  font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 4px;
+  color: var(--red); opacity: .6;
+}
+
+/* ENTRY CARD in cuaderno view */
+.entry-page {
+  display: none;
+  animation: pageFlip .35s ease both;
+}
+.entry-page.active { display: block; }
+
+@keyframes pageFlip {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.entry-num-badge {
+  position: absolute; top: 1rem; right: 1.25rem;
+  font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 3px;
+  color: var(--red); opacity: .55; z-index: 5;
+}
+
+.entry-name {
+  font-family: 'Caveat', cursive; font-weight: 700;
+  font-size: 28px; color: var(--blue-ink);
+  margin-bottom: .25rem;
+}
+.entry-date-loc {
+  font-size: 14px; color: var(--ink-faded); margin-bottom: 1.25rem;
+  border-bottom: 1px dashed var(--lines); padding-bottom: .5rem;
+}
+
+.q-label {
+  font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 3px;
+  color: var(--red); opacity: .6; margin-bottom: 2px; margin-top: 1.1rem;
+}
+.q-answer {
+  font-family: 'Caveat', cursive; font-size: 20px;
+  color: var(--ink); line-height: 1.5;
+}
+.q-answer.blue { color: var(--blue-ink); }
+.q-answer.red  { color: var(--red); }
+
+/* NAVIGATION ARROWS */
+.page-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 1.5rem; padding-top: 1rem;
+  border-top: 1px dashed var(--lines);
+}
+.page-nav button {
+  font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 3px;
+  background: none; border: 1px solid rgba(42,31,14,.2);
+  color: var(--ink-faded); padding: 6px 16px; cursor: pointer;
+  border-radius: 2px; transition: all .15s;
+}
+.page-nav button:hover { border-color: var(--red); color: var(--red); }
+.page-nav button:disabled { opacity: .25; cursor: default; }
+.page-counter {
+  font-family: 'Caveat', cursive; font-size: 15px; color: var(--ink-faded);
+}
+
+/* ── NEW ENTRY FORM ── */
+.new-entry-btn {
+  display: block; width: 100%;
+  margin-top: 1.5rem;
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 5px;
+  color: #fff; background: var(--red-bright); border: none;
+  padding: 14px; cursor: pointer;
+  clip-path: polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
+  transition: background .15s, transform .1s;
+}
+.new-entry-btn:hover { background: #ff3d31; transform: scale(1.01); }
+
+/* FORM inside page */
+.form-view { display: none; }
+.form-view.active { display: block; }
+
+.form-step { display: none; }
+.form-step.active { display: block; animation: pageFlip .3s ease both; }
+
+.step-indicator {
+  font-family: 'Bebas Neue', sans-serif; font-size: 10px; letter-spacing: 4px;
+  color: var(--red); opacity: .55; margin-bottom: 1.5rem;
+}
+
+.form-q {
+  font-family: 'Caveat Brush', cursive; font-size: 22px;
+  color: var(--ink); margin-bottom: .75rem; line-height: 1.3;
+}
+
+.handwritten-input {
+  width: 100%; background: transparent; border: none;
+  border-bottom: 1.5px solid var(--lines);
+  font-family: 'Caveat', cursive; font-size: 22px;
+  color: var(--blue-ink); padding: 4px 0 2px;
+  outline: none; transition: border-color .2s;
+  margin-bottom: 1.2rem;
+}
+.handwritten-input:focus { border-bottom-color: var(--blue-ink); }
+.handwritten-input::placeholder { color: var(--lines); font-style: italic; }
+
+.handwritten-textarea {
+  width: 100%; background: transparent; border: none;
+  border-bottom: 1.5px solid var(--lines);
+  font-family: 'Caveat', cursive; font-size: 20px;
+  color: var(--blue-ink); padding: 4px 0 2px;
+  outline: none; resize: none; line-height: 2;
+  transition: border-color .2s; margin-bottom: 1.2rem;
+}
+.handwritten-textarea:focus { border-bottom-color: var(--blue-ink); }
+.handwritten-textarea::placeholder { color: var(--lines); font-style: italic; }
+
+.form-btns { display: flex; gap: .75rem; margin-top: 1rem; }
+.btn-next {
+  flex: 1; font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; letter-spacing: 4px;
+  background: var(--ink); color: var(--paper); border: none;
+  padding: 10px; cursor: pointer; border-radius: 2px; transition: opacity .15s;
+}
+.btn-next:hover { opacity: .8; }
+.btn-back-form {
+  font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 3px;
+  background: none; border: 1px solid rgba(42,31,14,.2);
+  color: var(--ink-faded); padding: 10px 16px; cursor: pointer; border-radius: 2px;
+}
+.btn-back-form:hover { border-color: var(--ink); color: var(--ink); }
+
+.submit-btn {
+  width: 100%; font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 5px;
+  background: var(--red-bright); color: #fff; border: none;
+  padding: 12px; cursor: pointer;
+  clip-path: polygon(3px 0%,100% 0%,calc(100% - 3px) 100%,0% 100%);
+  transition: background .15s;
+}
+.submit-btn:hover { background: #ff3d31; }
+.submit-btn:disabled { background: rgba(192,40,30,.35); cursor: not-allowed; }
+
+/* loading / success state */
+.page-loading {
+  text-align: center; padding: 3rem 1rem;
+}
+.page-loading .spin {
+  width: 32px; height: 32px;
+  border: 2px solid rgba(42,31,14,.1);
+  border-top-color: var(--red);
+  border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.page-loading p { font-family: 'Caveat', cursive; font-size: 20px; color: var(--ink-faded); }
+
+.success-msg {
+  text-align: center; padding: 2rem 1rem;
+  font-family: 'Caveat', cursive; font-size: 22px; color: var(--ink);
+  line-height: 1.6;
+}
+.success-msg strong { color: var(--red); font-size: 28px; display: block; margin-bottom: .5rem; }
+
+/* sticker doodles */
+.doodle {
+  position: absolute; font-family: 'Caveat', cursive;
+  color: var(--ink-faded); pointer-events: none; opacity: .18;
+  font-size: 13px;
+}
+
+/* TABS below book */
+.book-tabs {
+  display: flex; gap: .5rem; margin-top: 1.5rem;
+  justify-content: center; flex-wrap: wrap;
+}
+.book-tab {
+  font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 3px;
+  background: rgba(245,240,224,.08); border: 1px solid rgba(245,240,224,.15);
+  color: rgba(245,240,224,.4); padding: 6px 16px; cursor: pointer;
+  border-radius: 2px; transition: all .15s;
+}
+.book-tab:hover,.book-tab.active {
+  background: rgba(192,40,30,.15); border-color: var(--red); color: var(--red-bright);
+}
+
+@media(max-width:520px){
+  .page-body { padding: 1.25rem 1.25rem 1.5rem 1.1rem; }
+  .page::after { left: 0; display: none; }
+  .spirals { left: 10px; }
+  .page { margin-left: 28px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">La Chabalada</a>
+  <a href="index.html" class="nav-back">&#8592;&nbsp; Volver</a>
+</nav>
+
+<div class="main">
+  <div class="book-wrap">
+
+    <!-- spiral rings -->
+    <div class="spirals" id="spirals"></div>
+
+    <!-- THE NOTEBOOK PAGE -->
+    <div class="page" id="page">
+
+      <!-- doodles -->
+      <div class="doodle" style="top:38px;right:60px;transform:rotate(12deg);font-size:18px;">&#9829;</div>
+      <div class="doodle" style="bottom:80px;right:40px;transform:rotate(-8deg);">La Chabalada '06</div>
+      <div class="doodle" style="bottom:55px;left:80px;transform:rotate(3deg);">&#9733; &#9733; &#9733;</div>
+
+      <div class="entry-num-badge" id="entry-num-badge"></div>
+
+      <!-- COVER / INDEX VIEW -->
+      <div id="view-cover">
+        <div class="page-header">
+          <div class="page-title">Chismógrafo</div>
+          <div class="page-subtitle">La Chabalada · Generación 2006</div>
+        </div>
+        <div class="page-body">
+          <div class="cover-art">
+            <div class="cover-doodle">~ el cuaderno que todos querían leer ~</div>
+            <div class="cover-num" id="cover-num">0</div>
+            <div class="cover-label">entradas registradas</div>
+            <div class="total-entries" id="total-entries-label">cargando...</div>
+          </div>
+          <div id="loading-cover" class="page-loading" style="display:none">
+            <div class="spin"></div><p>Cargando el chismógrafo...</p>
+          </div>
+          <button class="new-entry-btn" onclick="startNewEntry()">+ Agregar mi entrada</button>
+        </div>
+      </div>
+
+      <!-- ENTRY READ VIEW -->
+      <div id="view-entry" style="display:none">
+        <div class="page-header">
+          <div class="page-title" id="entry-view-name">—</div>
+          <div class="page-subtitle" id="entry-view-date">—</div>
+        </div>
+        <div class="page-body">
+          <div id="entry-view-body"></div>
+          <div class="page-nav">
+            <button id="btn-prev" onclick="goEntry(-1)">&#8592; anterior</button>
+            <span class="page-counter" id="page-counter"></span>
+            <button id="btn-next-entry" onclick="goEntry(1)">siguiente &#8594;</button>
+          </div>
+          <button class="new-entry-btn" style="margin-top:1rem" onclick="startNewEntry()">+ Agregar mi entrada</button>
+        </div>
+      </div>
+
+      <!-- NEW ENTRY FORM VIEW -->
+      <div id="view-form" style="display:none">
+        <div class="page-header">
+          <div class="page-title">Nueva entrada</div>
+          <div class="page-subtitle" id="form-entry-num">Entrada #—</div>
+        </div>
+        <div class="page-body" id="form-body">
+          <!-- steps injected by JS -->
+        </div>
+      </div>
+
+    </div><!-- /page -->
+
+    <!-- TABS -->
+    <div class="book-tabs">
+      <button class="book-tab active" id="tab-cover" onclick="showCover()">Portada</button>
+      <button class="book-tab" id="tab-entries" onclick="showEntries()">Leer entradas</button>
+    </div>
+
+  </div><!-- /book-wrap -->
+</div><!-- /main -->
+
+<!-- Firebase ES modules -->
+<script type="module">
+import { initializeApp }                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref as dbRef, push, onValue }        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
+  authDomain:        "lachabalada-6c3c3.firebaseapp.com",
+  databaseURL:       "https://lachabalada-6c3c3-default-rtdb.firebaseio.com",
+  projectId:         "lachabalada-6c3c3",
+  storageBucket:     "lachabalada-6c3c3.firebasestorage.app",
+  messagingSenderId: "412828348018",
+  appId:             "1:412828348018:web:2bf7de6ebdd6ba5e8e1ceb"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+const ref = dbRef(db, 'chismografo');
+
+/* ══════════════════════════════════════════
+   PREGUNTAS DEL CHISMÓGRAFO
+   ══════════════════════════════════════════ */
+const QUESTIONS = [
+  { id:'nombre',    label:'¿Cómo te llamas?',                                        type:'text',  placeholder:'Tu nombre completo',           color:'blue' },
+  { id:'apodo',     label:'¿Cuál era tu apodo en La Chabalada?',                     type:'text',  placeholder:'El que todos te decían...',    color:'blue' },
+  { id:'cancion',   label:'¿Cuál era tu canción del 2006?',                          type:'text',  placeholder:'La que te da pena admitir',    color:'ink'  },
+  { id:'crush',     label:'¿Quién era tu crush? (o sin nombres, ¿cómo era?)',        type:'area',  placeholder:'El secreto mejor guardado...', color:'red'  },
+  { id:'recuerdo',  label:'¿Cuál es el recuerdo que más tienes de la escuela?',      type:'area',  placeholder:'Esa historia que no se olvida',color:'ink'  },
+  { id:'secreto',   label:'Confiesa algo que nadie sabía de ti en la escuela',       type:'area',  placeholder:'Ahora puedes decirlo...',      color:'blue' },
+  { id:'ahora',     label:'¿En qué terminaste trabajando? ¿Lo imaginabas?',          type:'area',  placeholder:'La vida adulta es rara...',    color:'ink'  },
+  { id:'consejo',   label:'¿Qué le dirías a tu yo de 17 años?',                     type:'area',  placeholder:'Una sola cosa...',             color:'red'  },
+  { id:'palabra',   label:'Una palabra para describir cómo estás hoy',               type:'text',  placeholder:'Solo una',                     color:'blue' },
+];
+
+/* ══════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════ */
+let entries    = [];   // sorted array
+let entryIdx   = 0;    // which entry we're reading
+let formStep   = 0;    // current form page
+let formData   = {};
+let nextNum    = 1;
+
+/* ══════════════════════════════════════════
+   SPIRAL RINGS
+   ══════════════════════════════════════════ */
+function buildSpirals() {
+  const s = document.getElementById('spirals');
+  s.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const r = document.createElement('div');
+    r.className = 'spiral-ring'; s.appendChild(r);
+  }
+}
+buildSpirals();
+
+/* ══════════════════════════════════════════
+   FIREBASE LOAD
+   ══════════════════════════════════════════ */
+onValue(ref, snap => {
+  const data = snap.val() || {};
+  entries = Object.values(data).sort((a,b) => a.num - b.num);
+  nextNum = entries.length ? entries[entries.length-1].num + 1 : 1;
+  updateCoverCount();
+  if (document.getElementById('view-entry').style.display !== 'none') {
+    renderEntry(entryIdx);
+  }
+});
+
+function updateCoverCount() {
+  const n = entries.length;
+  document.getElementById('cover-num').textContent = n;
+  document.getElementById('total-entries-label').textContent =
+    n === 0 ? '¡sé el primero!' : `entrada${n!==1?'s':''} en el cuaderno`;
+}
+
+/* ══════════════════════════════════════════
+   VIEWS
+   ══════════════════════════════════════════ */
+function showView(name) {
+  ['cover','entry','form'].forEach(v =>
+    document.getElementById('view-'+v).style.display = v===name ? 'block' : 'none'
+  );
+}
+
+function showCover() {
+  showView('cover');
+  document.getElementById('entry-num-badge').textContent = '';
+  setActiveTab('tab-cover');
+}
+
+function showEntries() {
+  if (!entries.length) { showCover(); return; }
+  entryIdx = 0;
+  showView('entry');
+  renderEntry(0);
+  setActiveTab('tab-entries');
+}
+
+function setActiveTab(id) {
+  document.querySelectorAll('.book-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ══════════════════════════════════════════
+   READ ENTRIES
+   ══════════════════════════════════════════ */
+function renderEntry(idx) {
+  if (!entries.length) { showCover(); return; }
+  entryIdx = Math.max(0, Math.min(idx, entries.length-1));
+  const e = entries[entryIdx];
+
+  document.getElementById('entry-view-name').textContent = e.nombre || '—';
+  document.getElementById('entry-view-date').textContent =
+    `Entrada #${e.num} · ${formatDate(e.ts)}`;
+  document.getElementById('entry-num-badge').textContent = `#${e.num}`;
+
+  let html = '';
+  QUESTIONS.filter(q => q.id !== 'nombre').forEach(q => {
+    const val = e[q.id];
+    if (!val) return;
+    html += `<div class="q-label">${q.label}</div>
+             <div class="q-answer ${q.color}">${escHtml(val)}</div>`;
+  });
+  document.getElementById('entry-view-body').innerHTML = html;
+
+  document.getElementById('btn-prev').disabled      = entryIdx === 0;
+  document.getElementById('btn-next-entry').disabled = entryIdx === entries.length-1;
+  document.getElementById('page-counter').textContent =
+    `${entryIdx+1} / ${entries.length}`;
+}
+
+function goEntry(d) {
+  renderEntry(entryIdx + d);
+  document.getElementById('page').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function formatDate(ts) {
+  if (!ts) return '';
+  return new Date(ts).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+}
+
+/* ══════════════════════════════════════════
+   NEW ENTRY FORM
+   ══════════════════════════════════════════ */
+function startNewEntry() {
+  formData  = {};
+  formStep  = 0;
+  document.getElementById('form-entry-num').textContent = `Entrada #${nextNum}`;
+  showView('form');
+  buildFormStep(0);
+  setActiveTab('');
+}
+
+function buildFormStep(idx) {
+  const q   = QUESTIONS[idx];
+  const isLast = idx === QUESTIONS.length - 1;
+  const body = document.getElementById('form-body');
+
+  const inputHtml = q.type === 'area'
+    ? `<textarea class="handwritten-textarea" id="fi-${q.id}" rows="3" placeholder="${q.placeholder}" maxlength="300">${formData[q.id]||''}</textarea>`
+    : `<input class="handwritten-input" id="fi-${q.id}" type="text" placeholder="${q.placeholder}" maxlength="120" value="${escAttr(formData[q.id]||'')}">`;
+
+  body.innerHTML = `
+    <div class="step-indicator">Pregunta ${idx+1} de ${QUESTIONS.length}</div>
+    <div class="form-q">${q.label}</div>
+    ${inputHtml}
+    <div class="form-btns">
+      ${idx > 0 ? `<button class="btn-back-form" onclick="formBack()">&#8592;</button>` : ''}
+      ${isLast
+        ? `<button class="submit-btn" onclick="submitEntry()">Guardar en el cuaderno &#10003;</button>`
+        : `<button class="btn-next" onclick="formNext()">Siguiente &#8594;</button>`
+      }
+    </div>
+  `;
+
+  /* focus */
+  setTimeout(() => {
+    const el = document.getElementById('fi-'+q.id);
+    if (el) el.focus();
+  }, 80);
+}
+
+function formNext() {
+  const q  = QUESTIONS[formStep];
+  const el = document.getElementById('fi-'+q.id);
+  const val = el ? el.value.trim() : '';
+  if (!val && formStep === 0) {
+    el.style.borderBottomColor = '#e8352a'; el.focus(); return;
+  }
+  if (val) formData[q.id] = val;
+  formStep++;
+  buildFormStep(formStep);
+}
+
+function formBack() {
+  const q  = QUESTIONS[formStep];
+  const el = document.getElementById('fi-'+q.id);
+  if (el) formData[q.id] = el.value.trim();
+  formStep--;
+  buildFormStep(formStep);
+}
+
+async function submitEntry() {
+  const q  = QUESTIONS[formStep];
+  const el = document.getElementById('fi-'+q.id);
+  if (el) formData[q.id] = el.value.trim();
+
+  if (!formData.nombre) { showCover(); return; }
+
+  /* show saving */
+  document.getElementById('form-body').innerHTML = `
+    <div class="page-loading">
+      <div class="spin"></div>
+      <p>Escribiendo en el cuaderno...</p>
+    </div>`;
+
+  try {
+    await push(ref, {
+      ...formData,
+      num: nextNum,
+      ts:  Date.now()
+    });
+    document.getElementById('form-body').innerHTML = `
+      <div class="success-msg">
+        <strong>¡Listo, ${escHtml(formData.nombre)}!</strong>
+        Tu entrada #${nextNum} ya está en el chismógrafo.<br>
+        Todos la pueden leer.
+      </div>
+      <button class="new-entry-btn" style="margin-top:1rem" onclick="showEntries()">
+        Leer el cuaderno
+      </button>`;
+  } catch(err) {
+    document.getElementById('form-body').innerHTML = `
+      <div class="success-msg">
+        <strong style="color:var(--red)">Error al guardar</strong>
+        ${err.message}<br><br>
+        Verifica la configuración de Firebase.
+      </div>
+      <button class="new-entry-btn" onclick="startNewEntry()">Intentar de nuevo</button>`;
+  }
+}
+
+function escHtml(s='') {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s='') {
+  return String(s).replace(/"/g,'&quot;');
+}
+/* ── Expose functions to HTML onclick handlers ── */
+window.startNewEntry = startNewEntry;
+window.showCover     = showCover;
+window.showEntries   = showEntries;
+window.goEntry       = goEntry;
+window.formNext      = formNext;
+window.formBack      = formBack;
+window.submitEntry   = submitEntry;
+
+
+</script>
+</body>
+</html>
