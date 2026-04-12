@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Chismógrafo · La Chabalada</title>
+<link rel="icon" type="image/jpeg" href="favicon.jpg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23faf6ea'/><line x1='8' y1='8' x2='24' y2='8' stroke='%23c8bfa8' stroke-width='1'/><line x1='8' y1='12' x2='24' y2='12' stroke='%23c8bfa8' stroke-width='1'/><line x1='8' y1='16' x2='24' y2='16' stroke='%23c8bfa8' stroke-width='1'/><line x1='8' y1='20' x2='24' y2='20' stroke='%23c8bfa8' stroke-width='1'/><line x1='8' y1='24' x2='24' y2='24' stroke='%23c8bfa8' stroke-width='1'/><line x1='11' y1='4' x2='11' y2='28' stroke='%23e8a0a0' stroke-width='1.2'/><text x='16' y='19' font-family='serif' font-size='11' fill='%231a3a6b' text-anchor='middle' font-style='italic'>Ch</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Permanent+Marker&family=Bebas+Neue&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
@@ -421,47 +422,116 @@ nav {
       <!-- PAGE -->
       <div class="page" id="page">
 
-        <!-- SVG margin doodles -->
+        <!-- SVG margin doodles — Y2K bored student style -->
         <svg class="doodle-svg" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <filter id="pen">
-              <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="9"/>
-              <feDisplacementMap in="SourceGraphic" scale="1.0" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
+            <filter id="pen1"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="1.1" xChannelSelector="R" yChannelSelector="G"/></filter>
+            <filter id="pen2"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="13"/><feDisplacementMap in="SourceGraphic" scale="0.8" xChannelSelector="R" yChannelSelector="G"/></filter>
+            <filter id="pen3"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="3"/><feDisplacementMap in="SourceGraphic" scale="1.3" xChannelSelector="R" yChannelSelector="G"/></filter>
           </defs>
-          <!-- flower -->
-          <g transform="translate(26,85) rotate(-5)" filter="url(#pen)" opacity=".32">
-            <circle cx="0" cy="0" r="3.5" fill="none" stroke="#1a3a6b" stroke-width="1.3"/>
-            <ellipse cx="0" cy="-8" rx="3" ry="5" fill="none" stroke="#1a3a6b" stroke-width="1.1"/>
-            <ellipse cx="0" cy="-8" rx="3" ry="5" fill="none" stroke="#1a3a6b" stroke-width="1.1" transform="rotate(60)"/>
-            <ellipse cx="0" cy="-8" rx="3" ry="5" fill="none" stroke="#1a3a6b" stroke-width="1.1" transform="rotate(120)"/>
-            <ellipse cx="0" cy="-8" rx="3" ry="5" fill="none" stroke="#1a3a6b" stroke-width="1.1" transform="rotate(180)"/>
-            <ellipse cx="0" cy="-8" rx="3" ry="5" fill="none" stroke="#1a3a6b" stroke-width="1.1" transform="rotate(240)"/>
-            <ellipse cx="0" cy="-8" rx="3" ry="5" fill="none" stroke="#1a3a6b" stroke-width="1.1" transform="rotate(300)"/>
-            <line x1="0" y1="4" x2="0" y2="18" stroke="#1a3a6b" stroke-width="1.2" stroke-linecap="round"/>
+
+          <!-- BLUE PEN — flower top left -->
+          <g transform="translate(24,72) rotate(-8)" filter="url(#pen1)" opacity=".38">
+            <circle cx="0" cy="0" r="4" fill="none" stroke="#1a3a6b" stroke-width="1.5"/>
+            <ellipse cx="0" cy="-9" rx="3.5" ry="5.5" fill="none" stroke="#1a3a6b" stroke-width="1.2"/>
+            <ellipse cx="0" cy="-9" rx="3.5" ry="5.5" fill="none" stroke="#1a3a6b" stroke-width="1.2" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-9" rx="3.5" ry="5.5" fill="none" stroke="#1a3a6b" stroke-width="1.2" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-9" rx="3.5" ry="5.5" fill="none" stroke="#1a3a6b" stroke-width="1.2" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-9" rx="3.5" ry="5.5" fill="none" stroke="#1a3a6b" stroke-width="1.2" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-9" rx="3.5" ry="5.5" fill="none" stroke="#1a3a6b" stroke-width="1.2" transform="rotate(300)"/>
+            <line x1="0" y1="4" x2="0" y2="20" stroke="#1a3a6b" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M0,13 Q6,11 8,7" fill="none" stroke="#1a3a6b" stroke-width="1.1" stroke-linecap="round"/>
           </g>
-          <!-- heart -->
-          <g transform="translate(26,210) rotate(-3)" filter="url(#pen)" opacity=".3">
-            <path d="M0,7 C-2,3 -10,1 -10,-5 C-10,-10 -5,-13 0,-9 C5,-13 10,-10 10,-5 C10,1 2,3 0,7Z" fill="none" stroke="#8b1a1a" stroke-width="1.4"/>
+
+          <!-- RED PEN — heart with initials -->
+          <g transform="translate(26,185) rotate(-4)" filter="url(#pen2)" opacity=".42">
+            <path d="M0,10 C-3,5 -14,2 -14,-7 C-14,-14 -7,-18 0,-12 C7,-18 14,-14 14,-7 C14,2 3,5 0,10Z" fill="none" stroke="#b01a1a" stroke-width="1.6" stroke-linejoin="round"/>
+            <text font-family="Caveat,cursive" font-size="8" fill="#b01a1a" text-anchor="middle" dy="0">TM+NV</text>
           </g>
-          <!-- star -->
-          <g transform="translate(26,330) rotate(10)" filter="url(#pen)" opacity=".28">
-            <path d="M0,-12 L2.5,-4 L10,-4 L4,1 L6,9 L0,4 L-6,9 L-4,1 L-10,-4 L-2.5,-4 Z" fill="none" stroke="#1a3a6b" stroke-width="1.3" stroke-linejoin="round"/>
+
+          <!-- PURPLE PEN — star (Y2K sparkle) -->
+          <g transform="translate(26,295) rotate(14)" filter="url(#pen1)" opacity=".36">
+            <path d="M0,-16 L2,-5 L13,-5 L4,2 L7,13 L0,6 L-7,13 L-4,2 L-13,-5 L-2,-5 Z" fill="none" stroke="#6a1aaa" stroke-width="1.4" stroke-linejoin="round"/>
           </g>
-          <!-- peace -->
-          <g transform="translate(26,450) rotate(4)" filter="url(#pen)" opacity=".28">
-            <circle cx="0" cy="0" r="10" fill="none" stroke="#1a3a6b" stroke-width="1.3"/>
-            <line x1="0" y1="-10" x2="0" y2="10" stroke="#1a3a6b" stroke-width="1.3"/>
-            <line x1="0" y1="0" x2="-8.7" y2="5" stroke="#1a3a6b" stroke-width="1.3"/>
-            <line x1="0" y1="0" x2="8.7"  y2="5" stroke="#1a3a6b" stroke-width="1.3"/>
+
+          <!-- GREEN PEN — smiley face Y2K style -->
+          <g transform="translate(26,390) rotate(6)" filter="url(#pen3)" opacity=".35">
+            <circle cx="0" cy="0" r="13" fill="none" stroke="#1a7a3a" stroke-width="1.5"/>
+            <circle cx="-4" cy="-3" r="2" fill="none" stroke="#1a7a3a" stroke-width="1.3"/>
+            <circle cx="4"  cy="-3" r="2" fill="none" stroke="#1a7a3a" stroke-width="1.3"/>
+            <path d="M-6,4 Q0,10 6,4" fill="none" stroke="#1a7a3a" stroke-width="1.5" stroke-linecap="round"/>
           </g>
-          <!-- wavy underline -->
-          <g transform="translate(16,560)" filter="url(#pen)" opacity=".22">
-            <path d="M0,0 Q5,-4 10,0 Q15,4 20,0 Q25,-4 30,0 Q35,4 40,0" fill="none" stroke="#1a3a6b" stroke-width="1.2" stroke-linecap="round"/>
+
+          <!-- BLUE PEN — peace sign -->
+          <g transform="translate(26,480) rotate(-5)" filter="url(#pen2)" opacity=".33">
+            <circle cx="0" cy="0" r="12" fill="none" stroke="#1a3a6b" stroke-width="1.4"/>
+            <line x1="0" y1="-12" x2="0" y2="12"  stroke="#1a3a6b" stroke-width="1.4"/>
+            <line x1="0" y1="0" x2="-10.4" y2="6" stroke="#1a3a6b" stroke-width="1.4"/>
+            <line x1="0" y1="0" x2="10.4"  y2="6" stroke="#1a3a6b" stroke-width="1.4"/>
           </g>
-          <!-- bottom text -->
-          <g transform="translate(50,590) rotate(-1.5)" filter="url(#pen)" opacity=".2">
-            <text font-family="Caveat,cursive" font-size="11" fill="#8b1a1a" font-style="italic">La Chabalada '06</text>
+
+          <!-- RED PEN — lightning bolt Y2K -->
+          <g transform="translate(26,565) rotate(-12)" filter="url(#pen1)" opacity=".3">
+            <path d="M6,-18 L-4,-3 L6,-3 L-6,18 L4,3 L-6,3 Z" fill="none" stroke="#b01a1a" stroke-width="1.5" stroke-linejoin="round"/>
+          </g>
+
+          <!-- PURPLE PEN — vertical "La Chabalada" text in margin -->
+          <g transform="translate(20,540) rotate(-90)" filter="url(#pen3)" opacity=".25">
+            <text font-family="Caveat,cursive" font-size="11" fill="#6a1aaa" font-style="italic">la chabalada ♥</text>
+          </g>
+
+          <!-- BLUE ink blots scattered -->
+          <circle cx="30" cy="140" r="2"   fill="#1a3a6b" opacity=".18"/>
+          <circle cx="22" cy="340" r="1.4" fill="#1a3a6b" opacity=".14"/>
+          <circle cx="28" cy="440" r="1.8" fill="#b01a1a" opacity=".16"/>
+          <circle cx="18" cy="510" r="1.2" fill="#6a1aaa" opacity=".15"/>
+
+          <!-- Y2K: star sparkles scattered random -->
+          <g filter="url(#pen2)" opacity=".28">
+            <!-- 4-point star Y2K sparkle -->
+            <path d="M80,48 L82,54 L88,56 L82,58 L80,64 L78,58 L72,56 L78,54 Z" fill="none" stroke="#6a1aaa" stroke-width="1.2" stroke-linejoin="round"/>
+          </g>
+          <g filter="url(#pen1)" opacity=".25">
+            <path d="M110,310 L111.5,314 L116,315.5 L111.5,317 L110,321 L108.5,317 L104,315.5 L108.5,314 Z" fill="none" stroke="#1a7a3a" stroke-width="1.1" stroke-linejoin="round"/>
+          </g>
+          <g filter="url(#pen3)" opacity=".22">
+            <path d="M95,510 L96,513 L99,514 L96,515 L95,518 L94,515 L91,514 L94,513 Z" fill="none" stroke="#b01a1a" stroke-width="1" stroke-linejoin="round"/>
+          </g>
+
+          <!-- Y2K: infinity sign -->
+          <g transform="translate(75,420)" filter="url(#pen2)" opacity=".27">
+            <path d="M-15,0 C-15,-8 -7,-8 0,0 C7,8 15,8 15,0 C15,-8 7,-8 0,0 C-7,8 -15,8 -15,0Z" fill="none" stroke="#1a3a6b" stroke-width="1.3"/>
+          </g>
+
+          <!-- Y2K: "LOL" written in corner -->
+          <g transform="translate(78,88) rotate(15)" filter="url(#pen3)" opacity=".23">
+            <text font-family="Caveat,cursive" font-size="13" fill="#1a7a3a" font-style="italic">lol</text>
+          </g>
+
+          <!-- wavy underline scribble -->
+          <g transform="translate(38,248)" filter="url(#pen1)" opacity=".26">
+            <path d="M0,0 Q5,-5 10,0 Q15,5 20,0 Q25,-5 30,0 Q35,5 40,0 Q45,-5 50,0" fill="none" stroke="#b01a1a" stroke-width="1.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- Y2K: 3D cube doodle -->
+          <g transform="translate(85,195) rotate(8)" filter="url(#pen2)" opacity=".28">
+            <rect x="-10" y="-8" width="16" height="14" fill="none" stroke="#6a1aaa" stroke-width="1.3"/>
+            <rect x="-5"  y="-13" width="16" height="14" fill="none" stroke="#6a1aaa" stroke-width="1.3"/>
+            <line x1="-10" y1="-8"  x2="-5"  y2="-13" stroke="#6a1aaa" stroke-width="1.3"/>
+            <line x1="6"   y1="-8"  x2="11"  y2="-13" stroke="#6a1aaa" stroke-width="1.3"/>
+            <line x1="6"   y1="6"   x2="11"  y2="1"   stroke="#6a1aaa" stroke-width="1.3"/>
+          </g>
+
+          <!-- Green pen — birds in V -->
+          <g transform="translate(82,352)" filter="url(#pen3)" opacity=".26">
+            <path d="M-16,0 Q-11,-6 -7,0" fill="none" stroke="#1a7a3a" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M-3,2 Q1,-6 5,2"     fill="none" stroke="#1a7a3a" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M9,0  Q14,-6 18,0"   fill="none" stroke="#1a7a3a" stroke-width="1.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- bottom banner — red pen -->
+          <g transform="translate(50,598) rotate(-1)" filter="url(#pen1)" opacity=".24">
+            <text font-family="Caveat,cursive" font-size="12" fill="#b01a1a" font-style="italic">~ Navojoa 2006 ~</text>
           </g>
         </svg>
 
@@ -548,15 +618,12 @@ const db  = getDatabase(app);
 const ref = dbRef(db, 'chismografo');
 
 const QUESTIONS = [
-  { id:'nombre',   label:'¿Cómo te llamas?',                                     type:'text', placeholder:'Tu nombre completo'           },
-  { id:'apodo',    label:'¿Cuál era tu apodo en La Chabalada?',                  type:'text', placeholder:'El que todos te decían...'    },
-  { id:'cancion',  label:'¿Cuál era tu canción del 2006?',                       type:'text', placeholder:'La que te da pena admitir'    },
-  { id:'crush',    label:'¿Quién era tu crush? (o cómo era)',                    type:'area', placeholder:'El secreto mejor guardado...' },
-  { id:'recuerdo', label:'¿Cuál es el recuerdo que más tienes de la escuela?',  type:'area', placeholder:'Esa historia que no se olvida' },
-  { id:'secreto',  label:'Confiesa algo que nadie sabía de ti en la escuela',   type:'area', placeholder:'Ahora puedes decirlo...'       },
-  { id:'ahora',    label:'¿En qué terminaste trabajando?',                       type:'area', placeholder:'La vida adulta es rara...'    },
-  { id:'consejo',  label:'¿Qué le dirías a tu yo de 17 años?',                  type:'area', placeholder:'Una sola cosa...'             },
-  { id:'palabra',  label:'Una palabra para describir cómo estás hoy',            type:'text', placeholder:'Solo una'                    },
+  { id:'nombre',   label:'¿Cómo te llamas?',                                                type:'text', placeholder:'Tu nombre completo'                     },
+  { id:'recuerdo', label:'¿Cuál es el recuerdo que más tienes de la escuela?',              type:'area', placeholder:'Esa historia que no se olvida...'        },
+  { id:'secreto',  label:'Confiesa un secreto o chisme que crees que no todos sepan.',      type:'area', placeholder:'Ahora puedes decirlo, ya somos adultos...' },
+  { id:'ahora',    label:'¿En qué terminaste trabajando o qué haces de tu vida?',           type:'area', placeholder:'La vida adulta es rara...'               },
+  { id:'extranas', label:'¿Qué es lo que más extrañas de los tiempos de la prepa?',        type:'area', placeholder:'Lo que darías por volver un día...'       },
+  { id:'mensaje',  label:'Algo que quieras decirle a todos!!',                              type:'area', placeholder:'El micrófono es tuyo...'                 },
 ];
 
 let entries = [], nextNum = 1, qIdx = 0, formStep = 0, formData = {};
