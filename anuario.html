@@ -798,3 +798,13 @@ document.getElementById('lb').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lb').classList.contains('open')) return;
   if (e.key ===
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowRight') lbStep(1);
+  if (e.key === 'ArrowLeft')  lbStep(-1);
+});
+
+/* ── INIT ── */
+loadAlbums();
+</script>
+</body>
+</html>
