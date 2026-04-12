@@ -594,28 +594,67 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-/* ── MOSAIC — reads from fotos.json (same as anuario) ── */
-const FOTOS_JSON = 'https://raw.githubusercontent.com/normarsv/lachabalada/main/fotos.json';
+/* ── MOSAIC — picks random photos from subfolders via GitHub API ── */
+const GH_USER   = 'normarsv';
+const GH_REPO   = 'lachabalada';
+const GH_BRANCH = 'main';
+const GH_FOLDER = 'fotos';
+const GH_API    = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
+const GH_RAW    = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/${GH_BRANCH}`;
+const IMG_EXT   = /\.(jpe?g|png|gif|webp)$/i;
+const GH_HEADS  = { 'Accept': 'application/vnd.github.v3+json' };
 
 let allFiles = [], lbIdx = 0;
 
 function friendly(n) { return n.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim(); }
 
+async function ghFetch(path) {
+  const r = await fetch(`${GH_API}/${path}?ref=${GH_BRANCH}`, { headers: GH_HEADS });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
 async function loadMosaic() {
   try {
-    /* 1. Load fotos.json — fast, no rate limits */
-    const res = await fetch(FOTOS_JSON + '?t=' + Date.now());
-    if (!res.ok) throw new Error('fotos.json not found');
-    const imgs = await res.json();
-    if (!imgs.length) throw new Error('empty');
+    /* 1. List subfolders inside /fotos/ */
+    const root = await ghFetch(GH_FOLDER);
+    const dirs  = root.filter(e => e.type === 'dir');
 
-    allFiles = imgs;
+    if (!dirs.length) {
+      /* No subfolders — try root images directly */
+      const imgs = root
+        .filter(e => e.type === 'file' && IMG_EXT.test(e.name))
+        .map(e => ({ name: e.name, src: `${GH_RAW}/${GH_FOLDER}/${encodeURIComponent(e.name)}` }));
+      if (!imgs.length) throw new Error('no images');
+      allFiles = imgs;
+      renderMosaic([...imgs].sort(() => Math.random() - .5).slice(0, 5));
+      return;
+    }
 
-    /* 2. Pick 5 random photos for the mosaic */
-    const preview = [...imgs].sort(() => Math.random() - .5).slice(0, 5);
-    renderMosaic(preview);
+    /* 2. Pick up to 3 random subfolders and grab one random photo from each */
+    const shuffledDirs = [...dirs].sort(() => Math.random() - .5).slice(0, 3);
+    const picks = [];
+
+    await Promise.all(shuffledDirs.map(async dir => {
+      try {
+        const contents = await ghFetch(dir.path);
+        const imgs = contents.filter(e => e.type === 'file' && IMG_EXT.test(e.name));
+        if (!imgs.length) return;
+        /* pick random images from this folder */
+        const shuffled = [...imgs].sort(() => Math.random() - .5).slice(0, 2);
+        shuffled.forEach(e => picks.push({
+          name: e.name,
+          src:  `${GH_RAW}/${dir.path}/${encodeURIComponent(e.name)}`
+        }));
+      } catch(_) {}
+    }));
+
+    if (!picks.length) throw new Error('no picks');
+    allFiles = picks;
+    renderMosaic(picks.sort(() => Math.random() - .5).slice(0, 5));
+
   } catch(err) {
-    /* fotos.json missing or empty — hide mosaic gracefully */
+    /* Silently hide mosaic if GitHub API unavailable */
     document.getElementById('mosaic').style.display = 'none';
   }
 }
