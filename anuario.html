@@ -347,28 +347,6 @@ footer {
   .album-tab{padding:.75rem 1rem;font-size:11px;}
   .form-row{flex-direction:column;}
 }
-
-/* LIKE BUTTONS */
-.like-bar {
-  display:flex; align-items:center; gap:.5rem;
-  margin-top:.5rem; padding-top:.4rem;
-  border-top:1px solid rgba(200,191,168,.3);
-}
-.like-btn {
-  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:2px;
-  background:none; border:1px solid rgba(42,31,14,.2);
-  color:var(--ink-faded); padding:4px 10px; cursor:pointer;
-  border-radius:2px; transition:all .15s; display:flex; align-items:center; gap:4px;
-}
-.like-btn:hover { border-color:var(--red); color:var(--red); }
-.like-btn.liked { background:rgba(192,40,30,.12); border-color:var(--red); color:var(--red); }
-.like-btn.disliked { background:rgba(42,31,14,.08); border-color:rgba(42,31,14,.35); color:var(--ink-mid); }
-.like-count { font-size:13px; color:var(--ink-faded); margin-left:2px; }
-.like-spacer { flex:1; }
-.total-likes {
-  font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:3px;
-  color:rgba(240,236,228,.22); margin-left:auto;
-}
 </style>
 </head>
 <body>
@@ -510,56 +488,45 @@ async function fetchContents(path) {
 
 async function loadAlbums() {
   showSpinner('Revelando los álbumes...');
-
-  /* Strategy 1: load from fotos.json (fastest, no API limits) */
   try {
-    const res = await fetch('fotos.json?v=' + Date.now());
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.length > 0) {
-        buildAlbumsFromFiles(data);
-        return;
-      }
-    }
-  } catch(_) {}
-
-  /* Strategy 2: fallback to GitHub API */
-  try {
+    /* 1. List fotos/ root */
     const root = await fetchContents(PHOTOS_FOLDER);
     const subfolders = root.filter(e => e.type === 'dir');
     const rootImages = root.filter(e => e.type === 'file' && IMAGE_EXT.test(e.name))
                            .map(f => ({ name:f.name, album:'Todos', src: RAW_BASE + encodeURIComponent(f.name) }));
 
+    /* 2. Fetch each subfolder in parallel */
     const folderResults = await Promise.all(
       subfolders.map(async dir => {
-        try {
-          const contents = await fetchContents(dir.path);
-          return contents
-            .filter(f => f.type === 'file' && IMAGE_EXT.test(f.name))
-            .map(f => ({
-              name:  f.name,
-              album: dir.name,
-              src:   `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${dir.path}/${encodeURIComponent(f.name)}`
-            }));
-        } catch(_) { return []; }
+        const contents = await fetchContents(dir.path);
+        return contents
+          .filter(f => f.type === 'file' && IMAGE_EXT.test(f.name))
+          .map(f => ({
+            name:  f.name,
+            album: dir.name,
+            src:   `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${dir.path}/${encodeURIComponent(f.name)}`
+          }));
       })
     );
 
+    /* 3. Build albums map */
     const allFiles = [...rootImages, ...folderResults.flat()];
-    if (allFiles.length > 0) {
-      buildAlbumsFromFiles(allFiles);
-    } else {
+
+    if (allFiles.length === 0) {
+      /* fallback to samples */
       buildAlbumsFromFiles(SAMPLES);
+    } else {
+      buildAlbumsFromFiles(allFiles);
     }
 
   } catch(err) {
+    /* fallback to samples */
     buildAlbumsFromFiles(SAMPLES);
     document.getElementById('state-area').innerHTML = `
       <div class="state-box"><div class="error-box">
-        <strong>No se pudieron cargar las fotos</strong>
-        ${err.message}<br><br>
-        Asegúrate de que el archivo <code style="color:var(--red-bright)">fotos.json</code>
-        exista en la raíz del repo. Puedes generarlo con el script incluido en el README.
+        <strong>Modo demo</strong>
+        No se pudieron cargar las fotos reales (${err.message}).<br>
+        Verifica que el repo sea público y la carpeta <code style="color:var(--red-bright)">/fotos/</code> exista.
       </div></div>`;
   }
 }
@@ -589,7 +556,7 @@ function renderTabs() {
   });
 }
 
-async function switchAlbum(name) {
+function switchAlbum(name) {
   activeAlbum = name;
   /* update active tab */
   document.querySelectorAll('.album-tab').forEach(t => {
@@ -600,11 +567,11 @@ async function switchAlbum(name) {
   document.querySelector('.sort-btn').classList.add('active');
   sortMethod = 'original';
   displayed  = [...albums[name]];
-  await renderGrid(displayed);
+  renderGrid(displayed);
 }
 
 /* ── SORT ── */
-async function sortBy(method, btn) {
+function sortBy(method, btn) {
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   sortMethod = method;
@@ -612,58 +579,36 @@ async function sortBy(method, btn) {
   if (method === 'name')   sorted.sort((a,b) => a.name.localeCompare(b.name));
   if (method === 'random') sorted.sort(() => Math.random() - .5);
   displayed = sorted;
-  await renderGrid(displayed);
+  renderGrid(displayed);
 }
 
 /* ── GRID ── */
-const FB_LIKES = 'https://lachabalada-6c3c3-default-rtdb.firebaseio.com/foto_likes.json';
-function fileKey(n) { return n.replace(/[^a-zA-Z0-9]/g,'_'); }
-
-async function renderGrid(list) {
+function renderGrid(list) {
   document.getElementById('state-area').innerHTML = '';
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
   document.getElementById('meta-count').innerHTML =
     `<span>${list.length}</span> foto${list.length!==1?'s':''}`;
 
-  let likesData = {};
-  try {
-    const lr = await fetch(FB_LIKES);
-    if (lr.ok) likesData = (await lr.json()) || {};
-  } catch(_) {}
-
   list.forEach((f, i) => {
-    const cap      = f.label || friendly(f.name);
-    const count    = commentCount(f.name);
-    const key      = fileKey(f.name);
-    const likes    = (likesData[key] && likesData[key].likes)    || 0;
-    const dislikes = (likesData[key] && likesData[key].dislikes) || 0;
-    const myVote   = localStorage.getItem('vote_'+key) || '';
-
-    const card = document.createElement('div');
+    const cap   = f.label || friendly(f.name);
+    const count = commentCount(f.name);
+    const card  = document.createElement('div');
     card.className = 'polaroid' + (f.isSVG ? ' sample-card' : '');
     card.style.animationDelay = Math.min(i * 0.05, 2) + 's';
     card.innerHTML = `
       <div class="tape"></div>
-      <div class="photo-wrap" data-click="${i}">
+      <div class="photo-wrap">
         ${f.isSVG
           ? f.svg
           : `<img src="${f.src}" alt="${cap}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<div class=\'photo-err\'>${cap}</div>'">`
+               onerror="this.parentElement.innerHTML='<div class=\\'photo-err\\'>${cap}</div>'">`
         }
       </div>
       <div class="caption">${cap}</div>
       ${count > 0 ? `<div class="comment-badge">${count}</div>` : ''}
-      <div class="like-bar" onclick="event.stopPropagation()">
-        <button class="like-btn ${myVote==='up'?'liked':''}" id="btn-up-${key}"
-          onclick="vote('${key}','up')">&#128077; <span id="lc-up-${key}">${likes}</span>
-        </button>
-        <button class="like-btn ${myVote==='down'?'disliked':''}" id="btn-dn-${key}"
-          onclick="vote('${key}','down')">&#128078; <span id="lc-dn-${key}">${dislikes}</span>
-        </button>
-      </div>
     `;
-    card.querySelector('.photo-wrap').addEventListener('click', () => openLb(i));
+    card.addEventListener('click', () => openLb(i));
     grid.appendChild(card);
   });
 }
@@ -695,33 +640,6 @@ function formatTs(ts) {
   return d.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})
     + ' · ' + d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
-
-async function vote(key, dir) {
-  const myVote = localStorage.getItem('vote_'+key);
-  if (myVote === dir) return;
-
-  const url = `https://lachabalada-6c3c3-default-rtdb.firebaseio.com/foto_likes/${key}.json`;
-  try {
-    const cur = await fetch(url).then(r => r.json()) || {};
-    const updated = {
-      likes:    Math.max(0, (cur.likes    || 0) + (dir==='up'   ? 1 : myVote==='up'   ? -1 : 0)),
-      dislikes: Math.max(0, (cur.dislikes || 0) + (dir==='down' ? 1 : myVote==='down' ? -1 : 0))
-    };
-    await fetch(url, { method:'PUT', body: JSON.stringify(updated) });
-    localStorage.setItem('vote_'+key, dir);
-
-    const upEl = document.getElementById('lc-up-'+key);
-    const dnEl = document.getElementById('lc-dn-'+key);
-    if (upEl) upEl.textContent = updated.likes;
-    if (dnEl) dnEl.textContent = updated.dislikes;
-
-    const upBtn = document.getElementById('btn-up-'+key);
-    const dnBtn = document.getElementById('btn-dn-'+key);
-    if (upBtn) { upBtn.classList.toggle('liked',    dir==='up');   upBtn.classList.remove('disliked'); }
-    if (dnBtn) { dnBtn.classList.toggle('disliked', dir==='down'); dnBtn.classList.remove('liked');    }
-  } catch(e) { console.error('vote error', e); }
-}
-
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -750,7 +668,7 @@ function submitComment() {
   saveComment(displayed[lbIdx].name, name, text);
   document.getElementById('c-text').value = '';
   renderComments(displayed[lbIdx].name);
-  await renderGrid(displayed);
+  renderGrid(displayed);
 }
 
 /* ── LIGHTBOX ── */
