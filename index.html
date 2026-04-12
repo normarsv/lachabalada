@@ -540,23 +540,29 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-/* ── DRIVE PHOTOS preview mosaic ── */
-const FOLDER_ID = '1nT6CuzJwstpPuxKld8oqZPz5jVnL385Y';
+/* ── GITHUB PHOTOS preview mosaic ── */
+const GITHUB_USER   = 'normarsv';
+const GITHUB_REPO   = 'lachabalada';
+const GITHUB_BRANCH = 'main';
+const PHOTOS_FOLDER = 'fotos';
+const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${PHOTOS_FOLDER}/`;
+const API_URL  = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${PHOTOS_FOLDER}?ref=${GITHUB_BRANCH}`;
+const IMAGE_EXT = /\.(jpe?g|png|gif|webp|bmp|tiff?)$/i;
+
 let allFiles = [], lbIdx = 0;
 
-function thumb(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=w${sz||400}`; }
-function friendly(n)   { return n.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim(); }
+function friendly(n) { return n.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim(); }
 
 async function loadMosaic() {
   try {
-    const url = `https://www.googleapis.com/drive/v3/files`
-      + `?q=%271nT6CuzJwstpPuxKld8oqZPz5jVnL385Y%27+in+parents+and+trashed%3Dfalse`
-      + `&fields=files(id%2Cname%2CmimeType)&orderBy=name&pageSize=200`;
-    const res  = await fetch(url);
+    const res  = await fetch(API_URL, { headers:{'Accept':'application/vnd.github.v3+json'} });
     if (!res.ok) throw new Error('api');
     const data = await res.json();
-    allFiles   = (data.files||[]).filter(f => f.mimeType && f.mimeType.startsWith('image/'));
-    renderMosaic(allFiles.slice(0,5));
+    allFiles   = data.filter(f => f.type==='file' && IMAGE_EXT.test(f.name))
+                     .map(f => ({ name:f.name, src:RAW_BASE + encodeURIComponent(f.name) }));
+    /* pick 5 random ones for the mosaic preview */
+    const preview = [...allFiles].sort(() => Math.random()-.5).slice(0,5);
+    renderMosaic(preview);
   } catch(_) {
     /* silently leave placeholder cards */
   }
@@ -567,27 +573,27 @@ function renderMosaic(files) {
   const mosaic = document.getElementById('mosaic');
   mosaic.innerHTML = '';
   files.forEach((f,i) => {
-    const cap = friendly(f.name);
+    const cap  = friendly(f.name);
     const card = document.createElement('div');
     card.className = 'mosaico-card';
     card.innerHTML = `<div class="mc-img">
-      <img src="${thumb(f.id,400)}" alt="${cap}" loading="lazy"
+      <img src="${f.src}" alt="${cap}" loading="lazy"
         onerror="this.parentElement.innerHTML='<div class=\\'mc-placeholder\\'>${cap}</div>'">
     </div><div class="mc-label">${cap}</div>`;
-    card.addEventListener('click', () => openLb(i));
+    card.addEventListener('click', () => openLb(i, files));
     mosaic.appendChild(card);
   });
 }
 
-function openLb(idx) {
-  lbIdx = idx; updateLb();
+function openLb(idx, files) {
+  allFiles = files; lbIdx = idx; updateLb();
   document.getElementById('lb').classList.add('open');
 }
 function closeLb() { document.getElementById('lb').classList.remove('open'); }
 function lbStep(d) { lbIdx=(lbIdx+d+allFiles.length)%allFiles.length; updateLb(); }
 function updateLb() {
   const f = allFiles[lbIdx];
-  document.getElementById('lb-img').src = thumb(f.id,800);
+  document.getElementById('lb-img').src = f.src;
   document.getElementById('lb-cap').textContent = friendly(f.name);
 }
 document.getElementById('lb').addEventListener('click', e => {
