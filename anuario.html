@@ -268,17 +268,6 @@ nav {
   font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:1px;
   padding:2px 7px; border-radius:2px; opacity:.85;
 }
-.new-badge {
-  position:absolute; top:6px; left:6px;
-  background:#e8352a; color:#fff;
-  font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:3px;
-  padding:2px 8px; border-radius:2px; z-index:5;
-  animation: new-pulse 2s ease-in-out infinite;
-}
-@keyframes new-pulse {
-  0%,100% { opacity:1; }
-  50%      { opacity:.55; }
-}
 
 /* STATE */
 .state-box { max-width:500px; margin:5rem auto; text-align:center; }
@@ -499,20 +488,17 @@ const GITHUB_REPO   = 'lachabalada';
 const GITHUB_BRANCH = 'main';
 const PHOTOS_FOLDER = 'fotos';
 const RAW_BASE  = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${PHOTOS_FOLDER}/`;
-const API_BASE  = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${PHOTOS_FOLDER}`;
 const IMAGE_EXT = /\.(jpe?g|png|gif|webp|bmp|tiff?)$/i;
 const GH_HEADERS = { 'Accept':'application/vnd.github.v3+json' };
 
-/* ── SAMPLE PHOTOS (shown while loading or as fallback) ── */
+/* ── SAMPLE PHOTOS (fallback) ── */
 const SAMPLES = [
   {
     name:'muestra_las_bocas.jpg', album:'Las Bocas', isSVG:true, label:'Las Bocas',
     svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
       <rect width="400" height="300" fill="#1a2a3a"/>
-      <rect x="0" y="180" width="400" height="120" fill="#0d1e2d"/>
       <ellipse cx="200" cy="180" rx="220" ry="40" fill="#1a3a5a" opacity=".6"/>
       <circle cx="320" cy="60" r="35" fill="#e8c84a" opacity=".85"/>
-      <rect x="0" y="195" width="400" height="10" fill="#2a4a6a" opacity=".5"/>
       <text x="200" y="255" font-family="Georgia,serif" font-size="14" fill="#8ab4c8" text-anchor="middle" opacity=".6" font-style="italic">Las Bocas</text>
       <text x="200" y="278" font-family="Georgia,serif" font-size="10" fill="#4a7a9a" text-anchor="middle" opacity=".45">foto de muestra</text>
     </svg>`
@@ -522,10 +508,6 @@ const SAMPLES = [
     svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
       <rect width="400" height="300" fill="#2a1f0e"/>
       <rect x="60" y="60" width="280" height="180" fill="#3a2a14" rx="4"/>
-      <rect x="80" y="80" width="100" height="80" fill="#2a1a08" rx="2"/>
-      <rect x="200" y="80" width="120" height="80" fill="#2a1a08" rx="2"/>
-      <rect x="160" y="180" width="80" height="60" fill="#1e1408"/>
-      <rect x="170" y="120" width="60" height="4" fill="#8b6914" opacity=".5"/>
       <text x="200" y="255" font-family="Georgia,serif" font-size="14" fill="#a07840" text-anchor="middle" opacity=".6" font-style="italic">Días de Escuela</text>
       <text x="200" y="278" font-family="Georgia,serif" font-size="10" fill="#6b5030" text-anchor="middle" opacity=".45">foto de muestra</text>
     </svg>`
@@ -533,11 +515,6 @@ const SAMPLES = [
 ];
 
 /* ── STATE ── */
-/*
-  albums = { 'Todos': [...allFiles], 'Las Bocas': [...], 'Dias de Escuela': [...] }
-  activeAlbum = 'Todos'
-  displayed = current sorted list
-*/
 let albums      = {};
 let activeAlbum = 'Todos';
 let displayed   = [];
@@ -550,7 +527,10 @@ function friendly(name) {
 
 /* ── GITHUB API ── */
 async function fetchContents(path) {
-  const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`, { headers: GH_HEADERS });
+  const res = await fetch(
+    `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`,
+    { headers: GH_HEADERS }
+  );
   if (!res.ok) throw new Error('GitHub API ' + res.status);
   return res.json();
 }
@@ -558,38 +538,24 @@ async function fetchContents(path) {
 async function loadAlbums() {
   showSpinner('Revelando los álbumes...');
   try {
-    /* 1. List fotos/ root */
-    const root = await fetchContents(PHOTOS_FOLDER);
+    const root       = await fetchContents(PHOTOS_FOLDER);
     const subfolders = root.filter(e => e.type === 'dir');
-    const rootImages = root.filter(e => e.type === 'file' && IMAGE_EXT.test(e.name))
-                           .map(f => ({ name:f.name, album:'Todos', src: RAW_BASE + encodeURIComponent(f.name) }));
+    const rootImages = root
+      .filter(e => e.type === 'file' && IMAGE_EXT.test(e.name))
+      .map(f => ({ name:f.name, album:'Todos', src: f.download_url }));
 
-    /* 2. Fetch each subfolder in parallel */
     const folderResults = await Promise.all(
       subfolders.map(async dir => {
         const contents = await fetchContents(dir.path);
         return contents
           .filter(f => f.type === 'file' && IMAGE_EXT.test(f.name))
-          .map(f => ({
-            name:  f.name,
-            album: dir.name,
-            src:   `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${dir.path}/${encodeURIComponent(f.name)}`
-          }));
+          .map(f => ({ name:f.name, album:dir.name, src:f.download_url }));
       })
     );
 
-    /* 3. Build albums map */
     const allFiles = [...rootImages, ...folderResults.flat()];
-
-    if (allFiles.length === 0) {
-      /* fallback to samples */
-      buildAlbumsFromFiles(SAMPLES);
-    } else {
-      buildAlbumsFromFiles(allFiles);
-    }
-
+    buildAlbumsFromFiles(allFiles.length ? allFiles : SAMPLES);
   } catch(err) {
-    /* fallback to samples */
     buildAlbumsFromFiles(SAMPLES);
     document.getElementById('state-area').innerHTML = `
       <div class="state-box"><div class="error-box">
@@ -644,7 +610,6 @@ function switchAlbum(name) {
     t.classList.toggle('active', isActive);
     if (isActive) t.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
   });
-  /* reset sort */
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.sort-btn').classList.add('active');
   sortMethod = 'original';
@@ -675,21 +640,23 @@ function renderGrid(list) {
   list.forEach((f, i) => {
     const cap   = f.label || friendly(f.name);
     const count = commentCount(f.name);
-    const card  = document.createElement('div');
-    card.className = 'polaroid' + (f.isSVG ? ' sample-card' : '');
-    card.style.animationDelay = Math.min(i * 0.05, 2) + 's';
-    const seenKey = 'lachab_seen_' + f.name.replace(/\W/g,'_');
+    /* NEW badge — first time seen in this browser */
+    const seenKey  = 'lachab_seen_' + f.name.replace(/\W/g,'_');
     const firstSeen = localStorage.getItem(seenKey);
     if (!firstSeen) localStorage.setItem(seenKey, Date.now());
-    const isNew = !firstSeen; /* NEW on first load, gone after 48h via next check */
+    const isNew = !firstSeen && !f.isSVG;
+
+    const card = document.createElement('div');
+    card.className = 'polaroid' + (f.isSVG ? ' sample-card' : '');
+    card.style.animationDelay = Math.min(i * 0.05, 2) + 's';
     card.innerHTML = `
       <div class="tape"></div>
-      ${isNew ? `<div class="new-badge">NEW</div>` : ''}
+      ${isNew ? '<div class="new-badge">NEW</div>' : ''}
       <div class="photo-wrap">
         ${f.isSVG
           ? f.svg
           : `<img src="${f.src}" alt="${cap}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<div class=\\'photo-err\\'>${cap}</div>'">`
+               onerror="this.parentElement.innerHTML='<div class=\'photo-err\'>${cap}</div>'">`
         }
       </div>
       <div class="caption">${cap}</div>
@@ -733,6 +700,7 @@ function escHtml(s) {
 function renderComments(photoName) {
   const list = getComments(photoName);
   const el   = document.getElementById('comments-list');
+  if (!el) return;
   if (!list.length) {
     el.innerHTML = `<div class="no-comments">Sé el primero en comentar esta foto</div>`;
     return;
@@ -781,13 +749,14 @@ function updateLb() {
   if (f.isSVG) {
     media.innerHTML = f.svg;
   } else {
-    media.innerHTML = `<img src="${f.src}" alt="${cap}" style="display:block;width:100%;max-height:58vh;object-fit:contain;filter:sepia(10%) contrast(.97);">`;
+    media.innerHTML = `<img src="${f.src}" alt="${cap}"
+      style="display:block;width:100%;max-height:58vh;object-fit:contain;filter:sepia(10%) contrast(.97);">`;
   }
   document.getElementById('lb-cap').textContent     = cap;
   document.getElementById('lb-counter').textContent = (lbIdx+1) + ' / ' + displayed.length;
-  document.getElementById('lb-album-tag').textContent = f.album ? '&#9632; ' + f.album : '';
-  document.getElementById('c-name').value           = '';
-  document.getElementById('c-text').value           = '';
+  document.getElementById('lb-album-tag').textContent = f.album ? '■ ' + f.album : '';
+  document.getElementById('c-name').value = '';
+  document.getElementById('c-text').value = '';
   renderComments(f.name);
 }
 
@@ -796,7 +765,13 @@ document.getElementById('lb').addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lb').classList.contains('open')) return;
-  if (e.key ===
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowRight') lbStep(1);
+  if (e.key === 'ArrowLeft')  lbStep(-1);
+});
+
+/* ── INIT ── */
+loadAlbums();
 </script>
 </body>
 </html>
