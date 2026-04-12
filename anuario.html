@@ -578,7 +578,7 @@ function renderTabs() {
   });
 }
 
-function switchAlbum(name) {
+async function switchAlbum(name) {
   activeAlbum = name;
   /* update active tab */
   document.querySelectorAll('.album-tab').forEach(t => {
@@ -589,11 +589,11 @@ function switchAlbum(name) {
   document.querySelector('.sort-btn').classList.add('active');
   sortMethod = 'original';
   displayed  = [...albums[name]];
-  renderGrid(displayed);
+  await renderGrid(displayed);
 }
 
 /* ── SORT ── */
-function sortBy(method, btn) {
+async function sortBy(method, btn) {
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   sortMethod = method;
@@ -601,36 +601,58 @@ function sortBy(method, btn) {
   if (method === 'name')   sorted.sort((a,b) => a.name.localeCompare(b.name));
   if (method === 'random') sorted.sort(() => Math.random() - .5);
   displayed = sorted;
-  renderGrid(displayed);
+  await renderGrid(displayed);
 }
 
 /* ── GRID ── */
-function renderGrid(list) {
+const FB_LIKES = 'https://lachabalada-6c3c3-default-rtdb.firebaseio.com/foto_likes.json';
+function fileKey(n) { return n.replace(/[^a-zA-Z0-9]/g,'_'); }
+
+async function renderGrid(list) {
   document.getElementById('state-area').innerHTML = '';
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
   document.getElementById('meta-count').innerHTML =
     `<span>${list.length}</span> foto${list.length!==1?'s':''}`;
 
+  let likesData = {};
+  try {
+    const lr = await fetch(FB_LIKES);
+    if (lr.ok) likesData = (await lr.json()) || {};
+  } catch(_) {}
+
   list.forEach((f, i) => {
-    const cap   = f.label || friendly(f.name);
-    const count = commentCount(f.name);
-    const card  = document.createElement('div');
+    const cap      = f.label || friendly(f.name);
+    const count    = commentCount(f.name);
+    const key      = fileKey(f.name);
+    const likes    = (likesData[key] && likesData[key].likes)    || 0;
+    const dislikes = (likesData[key] && likesData[key].dislikes) || 0;
+    const myVote   = localStorage.getItem('vote_'+key) || '';
+
+    const card = document.createElement('div');
     card.className = 'polaroid' + (f.isSVG ? ' sample-card' : '');
     card.style.animationDelay = Math.min(i * 0.05, 2) + 's';
     card.innerHTML = `
       <div class="tape"></div>
-      <div class="photo-wrap">
+      <div class="photo-wrap" data-click="${i}">
         ${f.isSVG
           ? f.svg
           : `<img src="${f.src}" alt="${cap}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<div class=\\'photo-err\\'>${cap}</div>'">`
+               onerror="this.parentElement.innerHTML='<div class=\'photo-err\'>${cap}</div>'">`
         }
       </div>
       <div class="caption">${cap}</div>
       ${count > 0 ? `<div class="comment-badge">${count}</div>` : ''}
+      <div class="like-bar" onclick="event.stopPropagation()">
+        <button class="like-btn ${myVote==='up'?'liked':''}" id="btn-up-${key}"
+          onclick="vote('${key}','up')">&#128077; <span id="lc-up-${key}">${likes}</span>
+        </button>
+        <button class="like-btn ${myVote==='down'?'disliked':''}" id="btn-dn-${key}"
+          onclick="vote('${key}','down')">&#128078; <span id="lc-dn-${key}">${dislikes}</span>
+        </button>
+      </div>
     `;
-    card.addEventListener('click', () => openLb(i));
+    card.querySelector('.photo-wrap').addEventListener('click', () => openLb(i));
     grid.appendChild(card);
   });
 }
@@ -663,37 +685,30 @@ function formatTs(ts) {
     + ' · ' + d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
 
-async function vote(key, dir, btn) {
+async function vote(key, dir) {
   const myVote = localStorage.getItem('vote_'+key);
   if (myVote === dir) return;
 
-  const ref2 = dbRef(db, 'foto_likes/'+key);
-  await runTransaction(ref2, current => {
-    if (!current) current = { likes:0, dislikes:0 };
-    if (myVote === 'up')   current.likes    = Math.max(0, (current.likes||0)-1);
-    if (myVote === 'down') current.dislikes = Math.max(0, (current.dislikes||0)-1);
-    if (dir === 'up')   current.likes    = (current.likes||0)+1;
-    if (dir === 'down') current.dislikes = (current.dislikes||0)+1;
-    return current;
-  });
-  localStorage.setItem('vote_'+key, dir);
+  const url = `https://lachabalada-6c3c3-default-rtdb.firebaseio.com/foto_likes/${key}.json`;
+  try {
+    const cur = await fetch(url).then(r => r.json()) || {};
+    const updated = {
+      likes:    Math.max(0, (cur.likes    || 0) + (dir==='up'   ? 1 : myVote==='up'   ? -1 : 0)),
+      dislikes: Math.max(0, (cur.dislikes || 0) + (dir==='down' ? 1 : myVote==='down' ? -1 : 0))
+    };
+    await fetch(url, { method:'PUT', body: JSON.stringify(updated) });
+    localStorage.setItem('vote_'+key, dir);
 
-  const snap = await get(dbRef(db,'foto_likes/'+key));
-  const d = snap.val() || {};
-  const upEl = document.getElementById('lc-up-'+key);
-  const dnEl = document.getElementById('lc-dn-'+key);
-  if (upEl) upEl.textContent = d.likes    || 0;
-  if (dnEl) dnEl.textContent = d.dislikes || 0;
+    const upEl = document.getElementById('lc-up-'+key);
+    const dnEl = document.getElementById('lc-dn-'+key);
+    if (upEl) upEl.textContent = updated.likes;
+    if (dnEl) dnEl.textContent = updated.dislikes;
 
-  document.querySelectorAll('.like-btn').forEach(b => {
-    if (b.onclick && b.onclick.toString().includes("'"+key+"'")) {
-      b.classList.remove('liked','disliked');
-    }
-  });
-  btn.closest('.like-bar').querySelectorAll('.like-btn').forEach(b => {
-    b.classList.remove('liked','disliked');
-  });
-  btn.classList.add(dir==='up'?'liked':'disliked');
+    const upBtn = document.getElementById('btn-up-'+key);
+    const dnBtn = document.getElementById('btn-dn-'+key);
+    if (upBtn) { upBtn.classList.toggle('liked',    dir==='up');   upBtn.classList.remove('disliked'); }
+    if (dnBtn) { dnBtn.classList.toggle('disliked', dir==='down'); dnBtn.classList.remove('liked');    }
+  } catch(e) { console.error('vote error', e); }
 }
 
 function escHtml(s) {
@@ -724,7 +739,7 @@ function submitComment() {
   saveComment(displayed[lbIdx].name, name, text);
   document.getElementById('c-text').value = '';
   renderComments(displayed[lbIdx].name);
-  renderGrid(displayed);
+  await renderGrid(displayed);
 }
 
 /* ── LIGHTBOX ── */
