@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1200px; height: 630px; overflow: hidden;
+  background: #090909; font-family: 'Bebas Neue', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+}
+.bg-glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 55%, rgba(160,30,20,.22) 0%, transparent 60%),
+    radial-gradient(ellipse at 15% 80%, rgba(55,25,8,.4) 0%, transparent 45%);
+}
+.stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: repeating-linear-gradient(90deg, #c0281e 0, #c0281e 20px, transparent 20px, transparent 30px);
+}
+.stripe-b {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 8px;
+  background: repeating-linear-gradient(90deg, #c0281e 0, #c0281e 20px, transparent 20px, transparent 30px);
+}
+.drips { position: absolute; top: 0; left: 0; right: 0; height: 100px; overflow: hidden; }
+.drip { position: absolute; top: 0; border-radius: 0 0 3px 3px; background: linear-gradient(to bottom, #7a1510, transparent); opacity: .28; }
+.center { position: relative; z-index: 2; text-align: center; }
+.pre { font-family: 'Permanent Marker', cursive; font-size: 42px; color: #c0281e; letter-spacing: 8px; opacity: .85; margin-bottom: -10px; }
+.main { font-family: 'Permanent Marker', cursive; font-size: 155px; line-height: .9; color: #e8352a;
+  text-shadow: -3px -3px 0 #7a1510, 3px 3px 0 #7a1510, 0 0 60px rgba(232,53,42,.35); letter-spacing: -4px; }
+.rule { width: 500px; height: 1px; background: rgba(192,40,30,.38); margin: 18px auto; }
+.sub { font-size: 22px; letter-spacing: 10px; color: rgba(240,236,228,.38); }
+.pill { display: inline-block; margin-top: 22px; border: 1.5px solid rgba(192,40,30,.38);
+  padding: 8px 32px; font-size: 17px; letter-spacing: 7px; color: rgba(240,236,228,.48); }
+.corner { position: absolute; opacity: .16; }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="stripe"></div>
+<div class="stripe-b"></div>
+<div class="drips">
+  <div class="drip" style="left:8%;width:2px;height:80px"></div>
+  <div class="drip" style="left:22%;width:3px;height:55px"></div>
+  <div class="drip" style="left:40%;width:2px;height:95px"></div>
+  <div class="drip" style="left:58%;width:4px;height:65px"></div>
+  <div class="drip" style="left:75%;width:2px;height:75px"></div>
+  <div class="drip" style="left:88%;width:3px;height:50px"></div>
+</div>
+<svg class="corner" style="bottom:40px;right:60px" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60,10 L63,35 L88,35 L68,50 L76,75 L60,58 L44,75 L52,50 L32,35 L57,35 Z" fill="none" stroke="#e8352a" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>
+<svg class="corner" style="top:60px;left:60px" width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="45" cy="45" r="28" fill="none" stroke="#e8352a" stroke-width="2"/>
+  <line x1="45" y1="17" x2="45" y2="73" stroke="#e8352a" stroke-width="2"/>
+  <line x1="45" y1="45" x2="21" y2="59" stroke="#e8352a" stroke-width="2"/>
+  <line x1="45" y1="45" x2="69" y2="59" stroke="#e8352a" stroke-width="2"/>
+</svg>
+<div class="center">
+  <div class="pre">La</div>
+  <div class="main">Chabalada</div>
+  <div class="rule"></div>
+  <div class="sub">Generación 2006 &nbsp;·&nbsp; 20 años después</div>
+  <div class="pill">25 de Julio 2026 &nbsp;·&nbsp; Navojoa, Sonora</div>
+</div>
+</body>
+</html>
