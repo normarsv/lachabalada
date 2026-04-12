@@ -510,45 +510,56 @@ async function fetchContents(path) {
 
 async function loadAlbums() {
   showSpinner('Revelando los álbumes...');
+
+  /* Strategy 1: load from fotos.json (fastest, no API limits) */
   try {
-    /* 1. List fotos/ root */
+    const res = await fetch('fotos.json?v=' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        buildAlbumsFromFiles(data);
+        return;
+      }
+    }
+  } catch(_) {}
+
+  /* Strategy 2: fallback to GitHub API */
+  try {
     const root = await fetchContents(PHOTOS_FOLDER);
     const subfolders = root.filter(e => e.type === 'dir');
     const rootImages = root.filter(e => e.type === 'file' && IMAGE_EXT.test(e.name))
                            .map(f => ({ name:f.name, album:'Todos', src: RAW_BASE + encodeURIComponent(f.name) }));
 
-    /* 2. Fetch each subfolder in parallel */
     const folderResults = await Promise.all(
       subfolders.map(async dir => {
-        const contents = await fetchContents(dir.path);
-        return contents
-          .filter(f => f.type === 'file' && IMAGE_EXT.test(f.name))
-          .map(f => ({
-            name:  f.name,
-            album: dir.name,
-            src:   `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${dir.path}/${encodeURIComponent(f.name)}`
-          }));
+        try {
+          const contents = await fetchContents(dir.path);
+          return contents
+            .filter(f => f.type === 'file' && IMAGE_EXT.test(f.name))
+            .map(f => ({
+              name:  f.name,
+              album: dir.name,
+              src:   `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${dir.path}/${encodeURIComponent(f.name)}`
+            }));
+        } catch(_) { return []; }
       })
     );
 
-    /* 3. Build albums map */
     const allFiles = [...rootImages, ...folderResults.flat()];
-
-    if (allFiles.length === 0) {
-      /* fallback to samples */
-      buildAlbumsFromFiles(SAMPLES);
-    } else {
+    if (allFiles.length > 0) {
       buildAlbumsFromFiles(allFiles);
+    } else {
+      buildAlbumsFromFiles(SAMPLES);
     }
 
   } catch(err) {
-    /* fallback to samples */
     buildAlbumsFromFiles(SAMPLES);
     document.getElementById('state-area').innerHTML = `
       <div class="state-box"><div class="error-box">
-        <strong>Modo demo</strong>
-        No se pudieron cargar las fotos reales (${err.message}).<br>
-        Verifica que el repo sea público y la carpeta <code style="color:var(--red-bright)">/fotos/</code> exista.
+        <strong>No se pudieron cargar las fotos</strong>
+        ${err.message}<br><br>
+        Asegúrate de que el archivo <code style="color:var(--red-bright)">fotos.json</code>
+        exista en la raíz del repo. Puedes generarlo con el script incluido en el README.
       </div></div>`;
   }
 }
