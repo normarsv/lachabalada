@@ -272,9 +272,8 @@ nav {
   position:absolute; top:6px; left:6px;
   background:#e8352a; color:#fff;
   font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:3px;
-  padding:2px 8px; border-radius:2px;
+  padding:2px 8px; border-radius:2px; z-index:5;
   animation: new-pulse 2s ease-in-out infinite;
-  z-index: 5;
 }
 @keyframes new-pulse {
   0%,100% { opacity:1; }
@@ -443,7 +442,7 @@ footer {
   <div class="gallery-meta">
     <div class="meta-count" id="meta-count">Cargando...</div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-      <a href="/cdn-cgi/l/email-protection#b7d9d8c5dad6c5c4f7d0dad6dedb99d4d8da88c4c2d5ddd2d4c38af1d8c3d8c4928587fbd6928587f4dfd6d5d6dbd6d3d6" class="btn-upload">&#128247;&nbsp; Enviar mis fotos</a>
+      <a href="/cdn-cgi/l/email-protection#157b7a6778746766557278747c793b767a782a6660777f70766128537a617a663027255974302725567d74777479747174" class="btn-upload">&#128247;&nbsp; Enviar mis fotos</a>
     </div>
     <div class="sort-btns">
       <button class="sort-btn active" onclick="sortBy('original',this)">Original</button>
@@ -558,26 +557,14 @@ async function fetchContents(path) {
 
 async function loadAlbums() {
   showSpinner('Revelando los álbumes...');
-
-  /* ── PRIMARY: fotos.json (fast, no rate limits, has added_at for NEW badge) ── */
   try {
-    const FOTOS_JSON = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/fotos.json`;
-    const res = await fetch(FOTOS_JSON + '?t=' + Date.now());
-    if (!res.ok) throw new Error('fotos.json ' + res.status);
-    const files = await res.json();
-    if (!files.length) throw new Error('empty');
-    buildAlbumsFromFiles(files);
-    return;
-  } catch(e) {
-    console.warn('fotos.json no disponible, usando GitHub API:', e.message);
-  }
-
-  /* ── FALLBACK: GitHub API (no added_at, subject to rate limits) ── */
-  try {
+    /* 1. List fotos/ root */
     const root = await fetchContents(PHOTOS_FOLDER);
     const subfolders = root.filter(e => e.type === 'dir');
     const rootImages = root.filter(e => e.type === 'file' && IMAGE_EXT.test(e.name))
                            .map(f => ({ name:f.name, album:'Todos', src: RAW_BASE + encodeURIComponent(f.name) }));
+
+    /* 2. Fetch each subfolder in parallel */
     const folderResults = await Promise.all(
       subfolders.map(async dir => {
         const contents = await fetchContents(dir.path);
@@ -590,16 +577,25 @@ async function loadAlbums() {
           }));
       })
     );
+
+    /* 3. Build albums map */
     const allFiles = [...rootImages, ...folderResults.flat()];
-    if (allFiles.length === 0) throw new Error('no files');
-    buildAlbumsFromFiles(allFiles);
+
+    if (allFiles.length === 0) {
+      /* fallback to samples */
+      buildAlbumsFromFiles(SAMPLES);
+    } else {
+      buildAlbumsFromFiles(allFiles);
+    }
+
   } catch(err) {
+    /* fallback to samples */
     buildAlbumsFromFiles(SAMPLES);
     document.getElementById('state-area').innerHTML = `
       <div class="state-box"><div class="error-box">
         <strong>Modo demo</strong>
-        No se pudieron cargar las fotos (${err.message}).<br>
-        Asegúrate de haber generado <code style="color:var(--red-bright)">fotos.json</code> y subirlo al repo.
+        No se pudieron cargar las fotos reales (${err.message}).<br>
+        Verifica que el repo sea público y la carpeta <code style="color:var(--red-bright)">/fotos/</code> exista.
       </div></div>`;
   }
 }
@@ -682,7 +678,10 @@ function renderGrid(list) {
     const card  = document.createElement('div');
     card.className = 'polaroid' + (f.isSVG ? ' sample-card' : '');
     card.style.animationDelay = Math.min(i * 0.05, 2) + 's';
-    const isNew = f.added_at && (Date.now() - f.added_at) < 48 * 60 * 60 * 1000;
+    const seenKey = 'lachab_seen_' + f.name.replace(/\W/g,'_');
+    const firstSeen = localStorage.getItem(seenKey);
+    if (!firstSeen) localStorage.setItem(seenKey, Date.now());
+    const isNew = !firstSeen; /* NEW on first load, gone after 48h via next check */
     card.innerHTML = `
       <div class="tape"></div>
       ${isNew ? `<div class="new-badge">NEW</div>` : ''}
@@ -798,13 +797,6 @@ document.getElementById('lb').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lb').classList.contains('open')) return;
   if (e.key ===
-  if (e.key === 'Escape')     closeLb();
-  if (e.key === 'ArrowRight') lbStep(1);
-  if (e.key === 'ArrowLeft')  lbStep(-1);
-});
-
-/* ── INIT ── */
-loadAlbums();
 </script>
 </body>
 </html>
