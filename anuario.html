@@ -268,6 +268,24 @@ nav {
   font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:1px;
   padding:2px 7px; border-radius:2px; opacity:.85;
 }
+/* NEW dot — subtle, top-left corner */
+.new-dot {
+  position:absolute; top:8px; left:8px;
+  width:8px; height:8px; border-radius:50%;
+  background:#e8352a; z-index:5;
+  box-shadow: 0 0 0 2px rgba(232,53,42,.25);
+  animation: new-dot-pulse 2s ease-in-out infinite;
+}
+@keyframes new-dot-pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.5; transform:scale(.85); }
+}
+/* Newest tab gets a subtle dot in label */
+.tab-new-dot {
+  display:inline-block; width:6px; height:6px; border-radius:50%;
+  background:#e8352a; margin-left:6px; vertical-align:middle;
+  animation: new-dot-pulse 2s ease-in-out infinite;
+}
 
 /* STATE */
 .state-box { max-width:500px; margin:5rem auto; text-align:center; }
@@ -431,7 +449,7 @@ footer {
   <div class="gallery-meta">
     <div class="meta-count" id="meta-count">Cargando...</div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-      <a href="/cdn-cgi/l/email-protection#157b7a6778746766557278747c793b767a782a6660777f70766128537a617a663027255974302725567d74777479747174" class="btn-upload">&#128247;&nbsp; Enviar mis fotos</a>
+      <a href="/cdn-cgi/l/email-protection#83edecf1eee2f1f0c3e4eee2eaefade0eceebcf0f6e1e9e6e0f7bec5ecf7ecf0a6b1b3cfe2a6b1b3c0ebe2e1e2efe2e7e2" class="btn-upload">&#128247;&nbsp; Enviar mis fotos</a>
     </div>
     <div class="sort-btns">
       <button class="sort-btn active" onclick="sortBy('original',this)">Original</button>
@@ -487,11 +505,10 @@ const GITHUB_USER   = 'normarsv';
 const GITHUB_REPO   = 'lachabalada';
 const GITHUB_BRANCH = 'main';
 const PHOTOS_FOLDER = 'fotos';
-const RAW_BASE  = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${PHOTOS_FOLDER}/`;
-const IMAGE_EXT = /\.(jpe?g|png|gif|webp|bmp|tiff?)$/i;
-const GH_HEADERS = { 'Accept':'application/vnd.github.v3+json' };
+const IMAGE_EXT     = /\.(jpe?g|png|gif|webp|bmp|tiff?)$/i;
+const GH_HEADERS    = { 'Accept':'application/vnd.github.v3+json' };
 
-/* ── SAMPLE PHOTOS (fallback) ── */
+/* ── SAMPLES (fallback) ── */
 const SAMPLES = [
   {
     name:'muestra_las_bocas.jpg', album:'Las Bocas', isSVG:true, label:'Las Bocas',
@@ -522,7 +539,7 @@ let lbIdx       = 0;
 let sortMethod  = 'original';
 
 function friendly(name) {
-  return name.replace(/\.[^.]+$/,'').replace(/[_\-]+/g,' ').trim();
+  return name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim();
 }
 
 /* ── GITHUB API ── */
@@ -540,16 +557,19 @@ async function loadAlbums() {
   try {
     const root       = await fetchContents(PHOTOS_FOLDER);
     const subfolders = root.filter(e => e.type === 'dir');
+
+    /* Root images → "Nuevas" album */
     const rootImages = root
       .filter(e => e.type === 'file' && IMAGE_EXT.test(e.name))
-      .map(f => ({ name:f.name, album:'Todos', src: f.download_url }));
+      .map(f => ({ name: f.name, album: 'Nuevas', src: f.download_url, isNew: true }));
 
+    /* Subfolder images */
     const folderResults = await Promise.all(
       subfolders.map(async dir => {
         const contents = await fetchContents(dir.path);
         return contents
           .filter(f => f.type === 'file' && IMAGE_EXT.test(f.name))
-          .map(f => ({ name:f.name, album:dir.name, src:f.download_url }));
+          .map(f => ({ name: f.name, album: dir.name, src: f.download_url, isNew: false }));
       })
     );
 
@@ -567,17 +587,27 @@ async function loadAlbums() {
 }
 
 function buildAlbumsFromFiles(files) {
-  albums = { 'Todos': files };
+  albums = {};
+
+  /* 1. "Todos" always first */
+  albums['Todos'] = files;
+
+  /* 2. "Nuevas" second — only if root images exist */
+  const nuevas = files.filter(f => f.album === 'Nuevas');
+  if (nuevas.length) albums['Nuevas'] = nuevas;
+
+  /* 3. Subfolders */
   files.forEach(f => {
-    if (f.album && f.album !== 'Todos') {
+    if (f.album && f.album !== 'Todos' && f.album !== 'Nuevas') {
       if (!albums[f.album]) albums[f.album] = [];
       albums[f.album].push(f);
     }
   });
+
+  activeAlbum = 'Todos';
   renderTabs();
   switchAlbum('Todos');
 }
-
 /* ── TABS ── */
 function updateFadeHints() {
   const nav  = document.getElementById('album-nav');
@@ -595,7 +625,9 @@ function renderTabs() {
   Object.keys(albums).forEach(name => {
     const btn = document.createElement('button');
     btn.className = 'album-tab' + (name === activeAlbum ? ' active' : '');
-    btn.innerHTML = `${name} <span class="tab-count">${albums[name].length}</span>`;
+    /* Add animated dot to "Nuevas" tab */
+    const dot = name === 'Nuevas' ? '<span class="tab-new-dot"></span>' : '';
+    btn.innerHTML = `${name}${dot} <span class="tab-count">${albums[name].length}</span>`;
     btn.addEventListener('click', () => switchAlbum(name));
     nav.appendChild(btn);
   });
@@ -640,23 +672,17 @@ function renderGrid(list) {
   list.forEach((f, i) => {
     const cap   = f.label || friendly(f.name);
     const count = commentCount(f.name);
-    /* NEW badge — first time seen in this browser */
-    const seenKey  = 'lachab_seen_' + f.name.replace(/\W/g,'_');
-    const firstSeen = localStorage.getItem(seenKey);
-    if (!firstSeen) localStorage.setItem(seenKey, Date.now());
-    const isNew = !firstSeen && !f.isSVG;
-
-    const card = document.createElement('div');
+    const card  = document.createElement('div');
     card.className = 'polaroid' + (f.isSVG ? ' sample-card' : '');
     card.style.animationDelay = Math.min(i * 0.05, 2) + 's';
     card.innerHTML = `
       <div class="tape"></div>
-      ${isNew ? '<div class="new-badge">NEW</div>' : ''}
+      ${f.isNew && !f.isSVG ? '<div class="new-dot"></div>' : ''}
       <div class="photo-wrap">
         ${f.isSVG
           ? f.svg
           : `<img src="${f.src}" alt="${cap}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<div class=\'photo-err\'>${cap}</div>'">`
+               onerror="this.parentElement.innerHTML='<div class=\\'photo-err\\'>${cap}</div>'">`
         }
       </div>
       <div class="caption">${cap}</div>
@@ -705,11 +731,11 @@ function renderComments(photoName) {
     el.innerHTML = `<div class="no-comments">Sé el primero en comentar esta foto</div>`;
     return;
   }
-  el.innerHTML = list.map(c => `
+  el.innerHTML = list.map(com => `
     <div class="comment-item">
-      <div class="comment-author">${escHtml(c.author)}</div>
-      <div class="comment-text">${escHtml(c.text)}</div>
-      <div class="comment-time">${formatTs(c.ts)}</div>
+      <div class="comment-author">${escHtml(com.author)}</div>
+      <div class="comment-text">${escHtml(com.text)}</div>
+      <div class="comment-time">${formatTs(com.ts)}</div>
     </div>`).join('');
 }
 function submitComment() {
@@ -754,12 +780,11 @@ function updateLb() {
   }
   document.getElementById('lb-cap').textContent     = cap;
   document.getElementById('lb-counter').textContent = (lbIdx+1) + ' / ' + displayed.length;
-  document.getElementById('lb-album-tag').textContent = f.album ? '■ ' + f.album : '';
+  document.getElementById('lb-album-tag').textContent = f.album ? '\u25A0 ' + f.album : '';
   document.getElementById('c-name').value = '';
   document.getElementById('c-text').value = '';
   renderComments(f.name);
 }
-
 document.getElementById('lb').addEventListener('click', e => {
   if (e.target === document.getElementById('lb')) closeLb();
 });
