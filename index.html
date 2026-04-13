@@ -422,6 +422,7 @@ footer {
     <li><a href="#anuario">Anuario</a></li>
     <li><a href="#chismografo">Chismógrafo</a></li>
     <li><a href="#awards">Awards</a></li>
+    <li><a href="#playlist">Playlist</a></li>
   </ul>
 </nav>
 
@@ -521,7 +522,7 @@ footer {
 
   <a href="anuario.html" class="btn-anuario">Ver anuario completo</a>
   <span class="btn-sub-text">Todas las fotos de la Chabalada ↗</span>
-  <a href="mailto:normars&#64;gmail.com?subject=Fotos%20La%20Chabalada" class="btn-anuario" style="margin-top:.75rem;background:none;border:1.5px solid rgba(192,40,30,.35);color:rgba(240,236,228,.55);">&#128247;&nbsp; Enviar mis fotos</a>
+  <a href="/cdn-cgi/l/email-protection#6a040518070b18194c495c5e510d070b03064409050755191f08000f091e572c051e05194f585a260b4f585a29020b080b060b0e0b" class="btn-anuario" style="margin-top:.75rem;background:none;border:1.5px solid rgba(192,40,30,.35);color:rgba(240,236,228,.55);">&#128247;&nbsp; Enviar mis fotos</a>
   <span class="btn-sub-text">Mándanos tus fotos y las agregamos al anuario</span>
 </section>
 
@@ -540,6 +541,24 @@ footer {
   </div>
 </section>
 
+
+<!-- PLAYLIST -->
+<section class="anuario-section" id="playlist" style="border-top:1px solid rgba(192,40,30,.2);">
+  <div class="section-eyebrow">&#9632;&nbsp; La Chabalada &nbsp;&#9632;</div>
+  <h2 class="section-title">La Playlist</h2>
+  <div class="section-body">
+    Las canciones de la generación — agregada por todos.<br>
+    <small style="opacity:.45;font-size:13px;letter-spacing:1px;font-weight:300">Dale play y recuerda los tiempos.</small>
+  </div>
+  <div style="margin-top:1.5rem;border-radius:12px;overflow:hidden;max-width:700px;margin-left:auto;margin-right:auto;">
+    <iframe
+      src="https://open.spotify.com/embed/playlist/6Perj86AFfaxBiLX0xgN3Z?utm_source=generator&theme=0"
+      width="100%" height="380" frameborder="0"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy" style="display:block;">
+    </iframe>
+  </div>
+</section>
 
 <!-- CHISMÓGRAFO -->
 <section class="anuario-section" id="chismografo" style="border-top:1px solid rgba(192,40,30,.2);">
@@ -579,7 +598,10 @@ footer {
 const EVENT = new Date('2026-07-26T03:00:00Z');
 function tick() {
   const diff = EVENT - new Date();
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = String(val).padStart(2,'0'); };
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(val).padStart(2,'0');
+  };
   if (diff <= 0) { ['cd-d','cd-h','cd-m','cd-s'].forEach(id => set(id, 0)); return; }
   set('cd-d', Math.floor(diff / 86400000));
   set('cd-h', Math.floor(diff % 86400000 / 3600000));
@@ -589,13 +611,13 @@ function tick() {
 tick();
 setInterval(tick, 1000);
 
-/* ── MOSAIC — random photos from GitHub subfolders ── */
+/* ── MOSAIC ── */
 const GH_API   = 'https://api.github.com/repos/normarsv/lachabalada/contents';
 const GH_HEADS = { 'Accept': 'application/vnd.github.v3+json' };
 const IMG_EXT  = /\.(jpe?g|png|gif|webp)$/i;
 let allFiles = [], lbIdx = 0;
 
-function friendly(n) { return n.replace(/\.[^.]+$/, '').replace(/[_\-]+/g, ' ').trim(); }
+function friendly(n) { return n.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim(); }
 
 async function ghFetch(path) {
   const r = await fetch(GH_API + '/' + path + '?ref=main', { headers: GH_HEADS });
@@ -606,9 +628,8 @@ async function ghFetch(path) {
 async function loadMosaic() {
   try {
     const root = await ghFetch('fotos');
-    const dirs = root.filter(e => e.type === 'dir');
+    const dirs  = root.filter(e => e.type === 'dir');
     const picks = [];
-
     if (dirs.length) {
       const shuffled = [...dirs].sort(() => Math.random() - .5).slice(0, 3);
       await Promise.all(shuffled.map(async dir => {
@@ -616,16 +637,14 @@ async function loadMosaic() {
           const files = await ghFetch(dir.path);
           const imgs  = files.filter(e => e.type === 'file' && IMG_EXT.test(e.name));
           if (!imgs.length) return;
-          [...imgs].sort(() => Math.random() - .5).slice(0, 2).forEach(e => {
-            picks.push({ name: e.name, src: e.download_url });
-          });
+          [...imgs].sort(() => Math.random() - .5).slice(0, 2)
+            .forEach(e => picks.push({ name: e.name, src: e.download_url }));
         } catch(_) {}
       }));
     } else {
       root.filter(e => e.type === 'file' && IMG_EXT.test(e.name))
           .forEach(e => picks.push({ name: e.name, src: e.download_url }));
     }
-
     if (!picks.length) throw new Error('empty');
     allFiles = picks;
     renderMosaic([...picks].sort(() => Math.random() - .5).slice(0, 5));
@@ -646,7 +665,7 @@ function renderMosaic(files) {
     card.innerHTML = `
       <div class="mc-img">
         <img src="${f.src}" alt="${cap}" loading="lazy"
-          onerror="this.parentElement.innerHTML='<div class=\'mc-placeholder\'>${cap}</div>'">
+          onerror="this.parentElement.innerHTML='<div class=\\'mc-placeholder\\'>${cap}</div>'">
       </div>
       <div class="mc-label">${cap}</div>`;
     card.addEventListener('click', () => openLb(i, files));
@@ -673,7 +692,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  lbStep(-1);
 });
 
-/* ── INIT ── */
 loadMosaic();
 </script>
 </body>
