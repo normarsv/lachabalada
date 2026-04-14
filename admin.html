@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin · La Chabalada</title>
 <link rel="icon" type="image/jpeg" href="favicon.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Oswald:wght@300;400;600&family=Caveat:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Oswald:wght@300;400;600&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -121,25 +121,6 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 
 /* EXPENSE ROW */
 .expense-row td:first-child { color:var(--orange-light); }
-.shirt-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1rem; margin-bottom:1.5rem; }
-.shirt-stat { background:var(--gray-mid); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1.1rem 1rem; text-align:center; }
-.shirt-stat-lbl { font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:4px; color:rgba(240,236,228,.3); display:block; margin-bottom:.35rem; }
-.shirt-stat-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; color:#fff; }
-.shirt-row { display:flex; align-items:center; gap:.75rem; padding:.75rem 1rem; background:var(--gray); border:1px solid rgba(240,236,228,.05); border-radius:3px; margin-bottom:.5rem; }
-.shirt-name { flex:1; font-size:15px; color:var(--white); }
-.shirt-plus1-tag { font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:3px; color:rgba(240,236,228,.3); display:block; }
-.size-select { background:rgba(192,40,30,.12); border:1px solid rgba(192,40,30,.25); color:var(--red-bright); font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:2px; padding:4px 10px; border-radius:2px; cursor:pointer; outline:none; }
-.size-select:focus { border-color:var(--red-bright); }
-.size-tally { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1.25rem; align-items:center; }
-.size-pill { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:2px; padding:4px 12px; border-radius:2px; background:rgba(192,40,30,.12); color:var(--red-bright); border:1px solid rgba(192,40,30,.2); }
-.size-pill span { color:#fff; margin-left:5px; }
-.abono-bar-wrap { background:rgba(255,255,255,.07); border-radius:2px; height:5px; margin-top:5px; min-width:80px; }
-.abono-bar      { height:5px; border-radius:2px; background:var(--green-light); transition:width .4s; }
-.abono-txt      { font-size:11px; color:rgba(240,236,228,.3); margin-top:3px; font-family:'Bebas Neue',sans-serif; letter-spacing:1px; }
-.btn-abono      { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:2px; background:none;
-                  border:1px solid rgba(42,181,90,.3); color:var(--green-light); padding:3px 10px;
-                  cursor:pointer; border-radius:2px; transition:all .15s; }
-.btn-abono:hover { background:rgba(42,181,90,.1); }
 
 /* MODAL */
 .modal-bg { display:none; position:fixed; inset:0; background:rgba(4,2,0,.96); z-index:1000; overflow-y:auto; padding:2rem 1rem; }
@@ -188,11 +169,8 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 .btn-close-modal:hover { border-color:var(--red); color:var(--red-bright); }
 
 @media(max-width:520px){
-  .t-info-row { grid-template-columns:1fr 1fr; }
-  .ticket-band { padding:1rem 1.25rem .85rem; }
-  .ticket-body { padding:1rem 1.25rem 1.25rem; }
-
-  .t-big-num { font-size:40px; }
+  
+  
   .stats-row { grid-template-columns:1fr 1fr; }
 }
 @media print {
@@ -202,6 +180,21 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
   .modal-inner { margin:0; padding:0; max-width:100%; }
   body::before { display:none; }
 }
+.abono-bar-wrap{background:rgba(255,255,255,.07);border-radius:2px;height:5px;margin-top:5px;min-width:80px;}
+.abono-bar{height:5px;border-radius:2px;background:var(--green-light);transition:width .4s;}
+.abono-txt{font-size:11px;color:rgba(240,236,228,.3);margin-top:3px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+.btn-abono{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;background:none;border:1px solid rgba(42,181,90,.3);color:var(--green-light);padding:3px 10px;cursor:pointer;border-radius:2px;}
+.shirt-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.shirt-stat{background:var(--gray-mid);border:1px solid rgba(240,236,228,.06);border-radius:4px;padding:1.1rem 1rem;text-align:center;}
+.shirt-stat-lbl{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:4px;color:rgba(240,236,228,.3);display:block;margin-bottom:.35rem;}
+.shirt-stat-num{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:#fff;}
+.shirt-row{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--gray);border:1px solid rgba(240,236,228,.05);border-radius:3px;margin-bottom:.5rem;}
+.shirt-name{flex:1;font-size:15px;color:var(--white);}
+.shirt-plus1-tag{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(240,236,228,.3);display:block;}
+.size-select{background:rgba(192,40,30,.12);border:1px solid rgba(192,40,30,.25);color:var(--red-bright);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:4px 10px;border-radius:2px;cursor:pointer;outline:none;}
+.size-tally{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.25rem;align-items:center;}
+.size-pill{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:4px 12px;border-radius:2px;background:rgba(192,40,30,.12);color:var(--red-bright);border:1px solid rgba(192,40,30,.2);}
+.size-pill span{color:#fff;margin-left:5px;}
 </style>
 </head>
 <body>
@@ -262,7 +255,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="window.switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
       <button class="admin-tab"        onclick="window.switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
-      <button class="admin-tab"        onclick="window.switchTab('playeras',this)">&#128248;&nbsp; Playeras</button>
+      <button class="admin-tab" onclick="window.switchTab('playeras',this)">&#128248;&nbsp; Playeras</button>
     </div>
 
     <!-- TAB: BOLETOS -->
@@ -298,26 +291,10 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             <input type="text" id="f-plus1" placeholder="Nombre del acompañante" disabled>
           </div>
           <div class="field-group">
-            <label>Estado de pago</label>
-            <select id="f-status">
-              <option value="pagado">Pagado</option>
-              <option value="pendiente">Pendiente</option>
-            </select>
+            <label>Anticipo / primer pago ($)</label>
+            <input type="number" id="g-abono0" placeholder="0" min="0" value="0">
           </div>
-          <div class="field-group">
-            <label>Método de pago</label>
-            <select id="f-metodo">
-              <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Tarjeta">Tarjeta</option>
-              <option value="—">—</option>
-            </select>
           </div>
-          <div class="field-group">
-            <label>Notas (opcional)</label>
-            <input type="text" id="f-notas" placeholder="Ej: mesa familiar, intolerancia...">
-          </div>
-        </div>
         <button class="btn-generate" id="btn-gen" onclick="window.generateTicket()">
           Generar boleto &#9654;
         </button>
@@ -354,11 +331,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
           </div>
           <div class="field-group">
             <label>Monto total ($)</label>
-            <input type="number" id="g-monto" placeholder="15000" min="0">
-          </div>
-          <div class="field-group">
-            <label>Anticipo / primer pago ($)</label>
-            <input type="number" id="g-abono0" placeholder="0" min="0" value="0">
+            <input type="number" id="g-monto" placeholder="0" min="0">
           </div>
           <div class="field-group">
             <label>Categoría</label>
@@ -401,16 +374,11 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       </div>
     </div>
 
-    <!-- TAB: PLAYERAS -->
     <div class="tab-panel" id="tab-playeras">
-      <div class="section-head">
-        <div class="section-title">&#9632;&nbsp; Conteo de playeras</div>
-      </div>
+      <div class="section-head"><div class="section-title">&#9632;&nbsp; Conteo de playeras</div></div>
       <div class="shirt-summary" id="shirt-summary"></div>
       <div class="size-tally" id="shirt-tally"></div>
-      <div class="section-head" style="margin-top:1.5rem">
-        <div class="section-title">&#9632;&nbsp; Lista — asigna tallas</div>
-      </div>
+      <div class="section-head" style="margin-top:1.5rem"><div class="section-title">&#9632;&nbsp; Lista — asigna tallas</div></div>
       <div id="shirt-list"></div>
       <div class="empty-state" id="empty-shirts">Genera boletos para ver las playeras aquí</div>
     </div>
@@ -426,62 +394,26 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
     </div>
 
     <div class="ticket" id="ticket-render">
-      <!-- corner ornaments -->
-      <div class="ticket-border"></div>
-      <div class="ticket-corner tc-tl"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><path d="M2,26 L2,2 L26,2" fill="none" stroke="rgba(139,105,20,.5)" stroke-width="1.5"/><path d="M2,2 L8,2 L8,8 L2,8 Z" fill="none" stroke="rgba(139,105,20,.35)" stroke-width="1"/></svg></div>
-      <div class="ticket-corner tc-tr"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><path d="M2,26 L2,2 L26,2" fill="none" stroke="rgba(139,105,20,.5)" stroke-width="1.5"/><path d="M2,2 L8,2 L8,8 L2,8 Z" fill="none" stroke="rgba(139,105,20,.35)" stroke-width="1"/></svg></div>
-      <div class="ticket-corner tc-bl"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><path d="M2,26 L2,2 L26,2" fill="none" stroke="rgba(139,105,20,.5)" stroke-width="1.5"/><path d="M2,2 L8,2 L8,8 L2,8 Z" fill="none" stroke="rgba(139,105,20,.35)" stroke-width="1"/></svg></div>
-      <div class="ticket-corner tc-br"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><path d="M2,26 L2,2 L26,2" fill="none" stroke="rgba(139,105,20,.5)" stroke-width="1.5"/><path d="M2,2 L8,2 L8,8 L2,8 Z" fill="none" stroke="rgba(139,105,20,.35)" stroke-width="1"/></svg></div>
-
-      <div class="ticket-band">
-        <div class="t-pretitle">&#9632;&nbsp; Reunión Oficial &nbsp;&#9632;</div>
-        <div class="t-title">La Chabalada</div>
-        <div class="t-subtitle">Generación 2006 &nbsp;·&nbsp; 20 Años Después</div>
-      </div>
-
-      <div class="ticket-perf">
-        <div class="perf-hole"></div>
-        <div class="perf-dots" id="perf-dots"></div>
-        <div class="perf-hole"></div>
-      </div>
-
-      <div class="ticket-body">
-        <div class="t-name-block">
-          <span class="t-name-label">Admite a</span>
-          <div class="t-name" id="t-nombre">—</div>
-          <div class="t-guest" id="t-guest"></div>
-        </div>
-
-        <div class="t-info-row">
-          <div class="t-field">
-            <span class="t-field-label">Fecha</span>
-            <div class="t-field-val">Sáb. 25 Julio 2026</div>
+      <div class="t-main">
+        <div class="t-pretag">&#9632;&nbsp; Reunión Oficial · Generación 2006</div>
+        <div class="t-title">La <span>Chabalada</span></div>
+        <div class="t-years">20 AÑOS DESPUÉS &nbsp;·&nbsp; NAVOJOA, SON.</div>
+        <div class="t-line"></div>
+        <span class="t-who">Admite a</span>
+        <div class="t-name" id="t-nombre">—</div>
+        <div class="t-guest" id="t-guest"></div>
+        <div class="t-bottom-row">
+          <div class="t-details">
+            <div><span class="t-dlbl">Fecha</span><div class="t-dval">Sáb. 25 Jul 2026</div></div>
+            <div><span class="t-dlbl">Lugar</span><div class="t-dval">Casino Social</div></div>
           </div>
-          <div class="t-field">
-            <span class="t-field-label">Lugar</span>
-            <div class="t-field-val">Casino Social, Navojoa</div>
-          </div>
-          <div class="t-field">
-            <span class="t-field-label">Notas</span>
-            <div class="t-field-val" id="t-notas" style="font-size:12px">—</div>
-          </div>
-        </div>
-
-        <div class="t-num-row">
-          <div>
-            <span class="t-field-label">Boleto N°</span>
-            <div class="t-big-num" id="t-num">—</div>
-          </div>
-          <div id="t-status-badge" class="t-status-badge paid">PAGADO</div>
+          <div class="t-quote">"like it's 2006<br>all over again"</div>
         </div>
       </div>
-
-      <div class="ticket-stub">
-        <div class="stub-left">
-          <div class="stub-event">La Chabalada · Navojoa, Son. · 25 Jul 2026</div>
-          <div class="stub-keep">Conserva este boleto como recuerdo</div>
-        </div>
-        <div class="stub-num" id="t-stub-num">#000</div>
+      <div class="t-side">
+        <div class="t-side-url">lachabalada.com</div>
+        <div class="t-num" id="t-num">007</div>
+        <div class="t-side-lbl">Boleto N°</div>
       </div>
     </div>
 
@@ -521,8 +453,7 @@ let nextTicket  = 1;
 let allShirts   = {};
 
 /* build perf dots */
-const pd = document.getElementById('perf-dots');
-for (let i = 0; i < 30; i++) { const d = document.createElement('div'); d.className='perf-dot'; pd.appendChild(d); }
+
 
 /* ── LOGIN ── */
 window.checkLogin = () => {
@@ -577,32 +508,23 @@ onValue(expenseRef, snap => {
   updateStats(); renderExpenses(allExpenses);
 });
 
-onValue(shirtRef, snap => {
-  allShirts = snap.val() || {};
-  renderShirts();
-});
+onValue(shirtRef, snap => { allShirts = snap.val() || {}; renderShirts(); });
 
 /* ── STATS ── */
 function updateStats() {
-  const total      = allTickets.length;
-  const guests     = allTickets.reduce((s,t) => s + (t.plus1 ? 2 : 1), 0);
-  const money      = allTickets.filter(t => t.status==='pagado').reduce((s,t) => s+(t.precio||0), 0);
-  const expPaid    = allExpenses.reduce((s,e) => s + (e.abonos||[]).reduce((a,b)=>a+(b.monto||0),0), 0);
-  const expPending = allExpenses.reduce((s,e) => {
-    const abonado = (e.abonos||[]).reduce((a,b)=>a+(b.monto||0),0);
-    return s + Math.max(0,(e.monto||0)-abonado);
-  }, 0);
-  const balance    = money - expPaid;
-
-  document.getElementById('st-total').textContent    = total;
-  document.getElementById('st-guests').textContent   = guests;
-  document.getElementById('st-money').textContent    = '$' + money.toLocaleString('es-MX');
-  document.getElementById('st-expenses').textContent = '$' + expPaid.toLocaleString('es-MX');
-  const pendEl = document.getElementById('st-pending');
-  if (pendEl) pendEl.textContent = '$' + expPending.toLocaleString('es-MX');
-  const balEl = document.getElementById('st-balance');
-  balEl.textContent = (balance >= 0 ? '+' : '') + '$' + balance.toLocaleString('es-MX');
-  balEl.style.color = balance >= 0 ? 'var(--green-light)' : 'var(--red-bright)';
+  const total=allTickets.length, guests=allTickets.reduce((s,t)=>s+(t.plus1?2:1),0);
+  const money=allTickets.filter(t=>t.status==='pagado').reduce((s,t)=>s+(t.precio||0),0);
+  const expPaid=allExpenses.reduce((s,e)=>s+(e.abonos||[]).reduce((a,b)=>a+(b.monto||0),0),0);
+  const expPending=allExpenses.reduce((s,e)=>{const p=(e.abonos||[]).reduce((a,b)=>a+(b.monto||0),0);return s+Math.max(0,(e.monto||0)-p);},0);
+  const balance=money-expPaid;
+  document.getElementById('st-total').textContent=total;
+  document.getElementById('st-guests').textContent=guests;
+  document.getElementById('st-money').textContent='$'+money.toLocaleString('es-MX');
+  document.getElementById('st-expenses').textContent='$'+expPaid.toLocaleString('es-MX');
+  const pe=document.getElementById('st-pending'); if(pe) pe.textContent='$'+expPending.toLocaleString('es-MX');
+  const bal=document.getElementById('st-balance');
+  bal.textContent=(balance>=0?'+':'')+'$'+balance.toLocaleString('es-MX');
+  bal.style.color=balance>=0?'var(--green-light)':'var(--red-bright)';
 }
 
 /* ── TICKET TABLE ── */
@@ -665,14 +587,9 @@ window.generateTicket = async () => {
   };
 
   try {
-    const ticketSnap = await push(ticketRef, ticket);
-    const ticketKey  = ticketSnap.key;
-    /* auto-create shirt entry for main person */
-    await push(shirtRef, { nombre: ticket.nombre, talla: '—', ticketKey, ts: Date.now() });
-    /* auto-create shirt entry for +1 if exists */
-    if (ticket.plus1) {
-      await push(shirtRef, { nombre: ticket.plus1, talla: '—', ticketKey, isPlus1: true, ts: Date.now() });
-    }
+    await push(ticketRef, ticket);
+    await push(shirtRef,{nombre:ticket.nombre,talla:'—',ts:Date.now()});
+    if(ticket.plus1)await push(shirtRef,{nombre:ticket.plus1,talla:'—',isPlus1:true,ts:Date.now()});
     populateTicket(ticket);
     document.getElementById('ticket-modal').classList.add('open');
     ['f-nombre','f-apodo','f-plus1','f-notas'].forEach(id => document.getElementById(id).value='');
@@ -694,89 +611,53 @@ window.showTicket = key => {
 window.deleteTicket = async (key, num) => {
   if (!confirm(`¿Borrar boleto #${num}?`)) return;
   await remove(ref(db,'boletos/'+key));
-  /* also remove associated shirt entries */
-  Object.entries(allShirts).forEach(async ([sk, sv]) => {
-    if (sv.ticketKey === key) await remove(ref(db,'playeras/'+sk));
-  });
 };
 
 function populateTicket(t) {
-  const numStr = '#' + String(t.num).padStart(3,'0');
-  document.getElementById('t-nombre').textContent    = t.nombre;
-  document.getElementById('t-guest').textContent     = t.plus1 ? '+ ' + t.plus1 : (t.apodo ? '"'+t.apodo+'"' : '');
-  document.getElementById('t-notas').textContent     = t.notas || '—';
-  document.getElementById('t-num').textContent       = numStr;
-  document.getElementById('t-stub-num').textContent  = numStr;
-  const badge = document.getElementById('t-status-badge');
-  badge.textContent  = t.status === 'pagado' ? '✓  Pagado' : '⏳  Pendiente';
-  badge.className    = 't-status-badge ' + (t.status==='pagado' ? 'paid' : 'pend');
+  document.getElementById('t-nombre').textContent = t.nombre;
+  document.getElementById('t-guest').textContent  = t.plus1 ? '+ '+t.plus1 : (t.apodo ? '"'+t.apodo+'"' : '');
+  document.getElementById('t-num').textContent    = String(t.num).padStart(3,'0');
 }
 
 /* ── EXPENSES ── */
 window.addExpense = async () => {
-  const desc  = document.getElementById('g-desc').value.trim();
-  const monto = parseFloat(document.getElementById('g-monto').value) || 0;
-  if (!desc || !monto) {
-    if (!desc)  document.getElementById('g-desc').focus();
-    if (!monto) document.getElementById('g-monto').focus();
-    return;
-  }
-  const abono0 = parseFloat(document.getElementById('g-abono0').value) || 0;
-  const abonos = abono0 > 0 ? [{ monto: abono0, nota: 'Anticipo inicial', ts: Date.now() }] : [];
-  await push(expenseRef, {
-    desc, monto, abonos,
-    cat:   document.getElementById('g-cat').value,
-    notas: document.getElementById('g-notas').value.trim(),
-    ts:    Date.now()
-  });
-  ['g-desc','g-monto','g-abono0','g-notas'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('g-abono0').value = '0';
+  const desc=document.getElementById('g-desc').value.trim();
+  const monto=parseFloat(document.getElementById('g-monto').value)||0;
+  if(!desc||!monto){if(!desc)document.getElementById('g-desc').focus();else document.getElementById('g-monto').focus();return;}
+  const a0=parseFloat(document.getElementById('g-abono0').value)||0;
+  const abonos=a0>0?[{monto:a0,nota:'Anticipo inicial',ts:Date.now()}]:[];
+  await push(expenseRef,{desc,monto,abonos,cat:document.getElementById('g-cat').value,notas:document.getElementById('g-notas').value.trim(),ts:Date.now()});
+  ['g-desc','g-monto','g-abono0','g-notas'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('g-abono0').value='0';
 };
 
 window.addAbono = async key => {
-  const montoStr = prompt('¿Cuánto vas a abonar? ($)');
-  if (!montoStr) return;
-  const monto = parseFloat(montoStr);
-  if (!monto || monto <= 0) { alert('Monto inválido'); return; }
-  const nota = prompt('Concepto del pago (opcional):') || '';
-  const expense = allExpenses.find(e => e._key === key);
-  if (!expense) return;
-  const abonos = [...(expense.abonos || []), { monto, nota, ts: Date.now() }];
-  await update(ref(db, 'gastos/' + key), { abonos });
+  const ms=prompt('¿Cuánto vas a abonar? ($)'); if(!ms) return;
+  const monto=parseFloat(ms); if(!monto||monto<=0) return;
+  const nota=prompt('Concepto del pago (opcional):')||'';
+  const e=allExpenses.find(e=>e._key===key); if(!e) return;
+  await update(ref(db,'gastos/'+key),{abonos:[...(e.abonos||[]),{monto,nota,ts:Date.now()}]});
 };
 
 function renderExpenses(list) {
-  const tbody = document.getElementById('expenses-tbody');
-  const empty = document.getElementById('empty-gastos');
-  tbody.innerHTML = '';
-  empty.style.display = list.length ? 'none' : 'block';
-  list.forEach(e => {
-    const total    = e.monto || 0;
-    const abonado  = (e.abonos||[]).reduce((s,a) => s+(a.monto||0), 0);
-    const pendiente = Math.max(0, total - abonado);
-    const pct      = total > 0 ? Math.min(100, Math.round(abonado/total*100)) : 0;
-    const isDone   = pendiente === 0 && total > 0;
-    const abonoLog = (e.abonos||[]).map(a =>
-      '$'+Number(a.monto).toLocaleString('es-MX')+(a.nota?' — '+escHtml(a.nota):'')).join(' · ');
-    const tr = document.createElement('tr');
-    tr.className = 'expense-row';
-    tr.innerHTML = `
-      <td>
-        <div style="font-weight:400">${escHtml(e.desc)}</div>
-        ${e.notas ? `<span style="font-size:11px;color:rgba(240,236,228,.35)">${escHtml(e.notas)}</span>` : ''}
-        ${abonoLog ? `<div style="font-size:10px;color:rgba(240,236,228,.22);margin-top:3px">${abonoLog}</div>` : ''}
-      </td>
+  const tbody=document.getElementById('expenses-tbody'), empty=document.getElementById('empty-gastos');
+  tbody.innerHTML=''; empty.style.display=list.length?'none':'block';
+  list.forEach(e=>{
+    const total=e.monto||0, abonado=(e.abonos||[]).reduce((s,a)=>s+(a.monto||0),0);
+    const pendiente=Math.max(0,total-abonado), pct=total>0?Math.min(100,Math.round(abonado/total*100)):0;
+    const isDone=pendiente===0&&total>0;
+    const log=(e.abonos||[]).map(a=>'$'+Number(a.monto).toLocaleString('es-MX')+(a.nota?' — '+escHtml(a.nota):'')).join(' · ');
+    const tr=document.createElement('tr'); tr.className='expense-row';
+    tr.innerHTML=`
+      <td><div>${escHtml(e.desc)}</div>${e.notas?`<span style="font-size:11px;color:rgba(240,236,228,.35)">${escHtml(e.notas)}</span>`:''}${log?`<div style="font-size:10px;color:rgba(240,236,228,.22);margin-top:3px">${log}</div>`:''}</td>
       <td style="font-size:12px;color:rgba(240,236,228,.4)">${escHtml(e.cat||'—')}</td>
       <td style="color:var(--orange-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${total.toLocaleString('es-MX')}</td>
       <td style="color:var(--green-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${abonado.toLocaleString('es-MX')}</td>
       <td style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${isDone?'var(--green-light)':'var(--red-bright)'}">
-        ${isDone ? '✓ Liquidado' : '$'+pendiente.toLocaleString('es-MX')}
-      </td>
-      <td>
-        <div class="abono-bar-wrap"><div class="abono-bar" style="width:${pct}%"></div></div>
+        ${isDone?'✓ Liquidado':'$'+pendiente.toLocaleString('es-MX')}</td>
+      <td><div class="abono-bar-wrap"><div class="abono-bar" style="width:${pct}%"></div></div>
         <div class="abono-txt">${pct}% pagado</div>
-        ${!isDone ? `<button class="btn-abono" onclick="window.addAbono('${e._key}')">+ Pago</button>` : ''}
-      </td>
+        ${!isDone?`<button class="btn-abono" onclick="window.addAbono('${e._key}')">+ Pago</button>`:''}</td>
       <td><button class="btn-del" onclick="window.deleteExpense('${e._key}')">✕</button></td>`;
     tbody.appendChild(tr);
   });
@@ -787,70 +668,44 @@ window.deleteExpense = async key => {
   await remove(ref(db,'gastos/'+key));
 };
 
-/* ── PLAYERAS ── */
-window.updateShirtTalla = async (key, talla) => {
-  await update(ref(db, 'playeras/' + key), { talla });
-};
-
-function renderShirts() {
-  const list  = document.getElementById('shirt-list');
-  const empty = document.getElementById('empty-shirts');
-  if (!list) return;
-
-  const entries = Object.entries(allShirts).map(([k,v]) => ({...v, _key:k}))
-                        .sort((a,b) => a.ts - b.ts);
-
-  const SIZES = ['XS','S','M','L','XL','XXL'];
-  const withSize = entries.filter(s => s.talla && s.talla !== '—');
-  const counts   = {};
-  SIZES.forEach(s => counts[s] = 0);
-  withSize.forEach(s => { if (counts[s.talla] !== undefined) counts[s.talla]++; });
-
-  /* summary */
-  const summary = document.getElementById('shirt-summary');
-  if (summary) {
-    summary.innerHTML = `
-      <div class="shirt-stat"><span class="shirt-stat-lbl">Total personas</span><div class="shirt-stat-num">${entries.length}</div></div>
-      <div class="shirt-stat"><span class="shirt-stat-lbl">Con talla</span><div class="shirt-stat-num" style="color:var(--green-light)">${withSize.length}</div></div>
-      <div class="shirt-stat"><span class="shirt-stat-lbl">Sin talla</span><div class="shirt-stat-num" style="color:var(--red-bright)">${entries.length - withSize.length}</div></div>`;
-  }
-
-  /* tally by size */
-  const tally = document.getElementById('shirt-tally');
-  if (tally) {
-    const pills = SIZES.filter(s => counts[s] > 0)
-      .map(s => `<div class="size-pill">${s}<span>${counts[s]}</span></div>`).join('');
-    tally.innerHTML = pills
-      ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(240,236,228,.28);margin-right:.5rem">TALLAS:</span>${pills}`
-      : '';
-  }
-
-  /* list */
-  empty.style.display = entries.length ? 'none' : 'block';
-  list.innerHTML = '';
-  entries.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'shirt-row';
-    div.innerHTML = `
-      <div class="shirt-name">
-        ${escHtml(s.nombre)}
-        ${s.isPlus1 ? '<span class="shirt-plus1-tag">+1 acompañante</span>' : ''}
-      </div>
-      <select class="size-select" onchange="window.updateShirtTalla('${s._key}', this.value)">
-        ${['—','XS','S','M','L','XL','XXL'].map(t =>
-          `<option value="${t}" ${s.talla===t?'selected':''}>${t}</option>`
-        ).join('')}
-      </select>`;
-    list.appendChild(div);
-  });
-}
-
 window.closeModal = () => {
   document.getElementById('ticket-modal').classList.remove('open');
 };
 document.getElementById('ticket-modal').addEventListener('click', e => {
   if (e.target===document.getElementById('ticket-modal')) window.closeModal();
 });
+
+/* ── PLAYERAS ── */
+window.updateShirtTalla = async (key,talla) => { await update(ref(db,'playeras/'+key),{talla}); };
+function renderShirts() {
+  const list=document.getElementById('shirt-list'), empty=document.getElementById('empty-shirts');
+  if(!list) return;
+  const entries=Object.entries(allShirts).map(([k,v])=>({...v,_key:k})).sort((a,b)=>a.ts-b.ts);
+  const SIZES=['XS','S','M','L','XL','XXL'], withSize=entries.filter(s=>s.talla&&s.talla!=='—');
+  const counts={}; SIZES.forEach(s=>counts[s]=0);
+  withSize.forEach(s=>{if(counts[s.talla]!==undefined)counts[s.talla]++;});
+  const sum=document.getElementById('shirt-summary');
+  if(sum) sum.innerHTML=`
+    <div class="shirt-stat"><span class="shirt-stat-lbl">Total personas</span><div class="shirt-stat-num">${entries.length}</div></div>
+    <div class="shirt-stat"><span class="shirt-stat-lbl">Con talla</span><div class="shirt-stat-num" style="color:var(--green-light)">${withSize.length}</div></div>
+    <div class="shirt-stat"><span class="shirt-stat-lbl">Sin talla</span><div class="shirt-stat-num" style="color:var(--red-bright)">${entries.length-withSize.length}</div></div>`;
+  const tally=document.getElementById('shirt-tally');
+  if(tally){
+    const pills=SIZES.filter(s=>counts[s]>0).map(s=>`<div class="size-pill">${s}<span>${counts[s]}</span></div>`).join('');
+    tally.innerHTML=pills?`<span style="font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(240,236,228,.28);margin-right:.5rem">TALLAS:</span>${pills}`:'';
+  }
+  empty.style.display=entries.length?'none':'block';
+  list.innerHTML='';
+  entries.forEach(s=>{
+    const div=document.createElement('div'); div.className='shirt-row';
+    div.innerHTML=`
+      <div class="shirt-name">${escHtml(s.nombre)}${s.isPlus1?'<span class="shirt-plus1-tag">+1 acompañante</span>':''}</div>
+      <select class="size-select" onchange="window.updateShirtTalla('${s._key}',this.value)">
+        ${['—','XS','S','M','L','XL','XXL'].map(t=>`<option value="${t}" ${s.talla===t?'selected':''}>${t}</option>`).join('')}
+      </select>`;
+    list.appendChild(div);
+  });
+}
 
 /* ── HELPERS ── */
 function formatDate(ts) {
