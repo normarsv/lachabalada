@@ -121,6 +121,25 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 
 /* EXPENSE ROW */
 .expense-row td:first-child { color:var(--orange-light); }
+.shirt-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+.shirt-stat { background:var(--gray-mid); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1.1rem 1rem; text-align:center; }
+.shirt-stat-lbl { font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:4px; color:rgba(240,236,228,.3); display:block; margin-bottom:.35rem; }
+.shirt-stat-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; color:#fff; }
+.shirt-row { display:flex; align-items:center; gap:.75rem; padding:.75rem 1rem; background:var(--gray); border:1px solid rgba(240,236,228,.05); border-radius:3px; margin-bottom:.5rem; }
+.shirt-name { flex:1; font-size:15px; color:var(--white); }
+.shirt-plus1-tag { font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:3px; color:rgba(240,236,228,.3); display:block; }
+.size-select { background:rgba(192,40,30,.12); border:1px solid rgba(192,40,30,.25); color:var(--red-bright); font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:2px; padding:4px 10px; border-radius:2px; cursor:pointer; outline:none; }
+.size-select:focus { border-color:var(--red-bright); }
+.size-tally { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1.25rem; align-items:center; }
+.size-pill { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:2px; padding:4px 12px; border-radius:2px; background:rgba(192,40,30,.12); color:var(--red-bright); border:1px solid rgba(192,40,30,.2); }
+.size-pill span { color:#fff; margin-left:5px; }
+.abono-bar-wrap { background:rgba(255,255,255,.07); border-radius:2px; height:5px; margin-top:5px; min-width:80px; }
+.abono-bar      { height:5px; border-radius:2px; background:var(--green-light); transition:width .4s; }
+.abono-txt      { font-size:11px; color:rgba(240,236,228,.3); margin-top:3px; font-family:'Bebas Neue',sans-serif; letter-spacing:1px; }
+.btn-abono      { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:2px; background:none;
+                  border:1px solid rgba(42,181,90,.3); color:var(--green-light); padding:3px 10px;
+                  cursor:pointer; border-radius:2px; transition:all .15s; }
+.btn-abono:hover { background:rgba(42,181,90,.1); }
 
 /* MODAL */
 .modal-bg { display:none; position:fixed; inset:0; background:rgba(4,2,0,.96); z-index:1000; overflow-y:auto; padding:2rem 1rem; }
@@ -193,418 +212,8 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
     <div class="login-logo">La Chabalada</div>
     <div class="login-sub">&#9632;&nbsp; Panel de administración &nbsp;&#9632;</div>
     <input class="login-input" type="password" id="pwd-input"
-      placeholder="Contraseña" onkeydown="if(event.key==='Enter')checkLogin()">
-    <button class="login-btn" onclick="checkLogin()">Entrar</button>
-    <div class="login-error" id="login-error">Contraseña incorrecta</div>
-  </div>
-</div>
-
-<!-- ADMIN -->
-<div class="admin-wrap" id="admin-wrap">
-  <nav>
-    <div>
-      <div class="nav-logo">La Chabalada</div>
-      <div class="nav-tag">&#9632;&nbsp; Admin &nbsp;&#9632;</div>
-    </div>
-    <button class="nav-logout" onclick="logout()">Cerrar sesión</button>
-  </nav>
-
-  <div class="admin-body">
-
-    <!-- STATS -->
-    <div class="stats-row">
-      <div class="stat-card red">
-        <span class="stat-label">Boletos generados</span>
-        <div class="stat-value" id="st-total">0</div>
-      </div>
-      <div class="stat-card green">
-        <span class="stat-label">Asistentes confirmados</span>
-        <div class="stat-value" id="st-guests">0</div>
-      </div>
-      <div class="stat-card gold">
-        <span class="stat-label">Dinero recaudado</span>
-        <div class="stat-value" id="st-money">$0</div>
-      </div>
-      <div class="stat-card orange">
-        <span class="stat-label">Gastos pagados</span>
-        <div class="stat-value" id="st-expenses">$0</div>
-      </div>
-      <div class="stat-card red">
-        <span class="stat-label">Gastos pendientes</span>
-        <div class="stat-value" id="st-pending">$0</div>
-      </div>
-      <div class="stat-card blue">
-        <span class="stat-label">Balance neto</span>
-        <div class="stat-value" id="st-balance">$0</div>
-      </div>
-    </div>
-
-    <!-- TABS -->
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
-      <button class="admin-tab"        onclick="switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
-      <button class="admin-tab"        onclick="switchTab('todo',this)">&#9989;&nbsp; To Do</button>
-    </div>
-
-    <!-- TAB: BOLETOS -->
-    <div class="tab-panel active" id="tab-boletos">
-      <div class="section-head">
-        <div class="section-title">&#9632;&nbsp; Generar nuevo boleto</div>
-      </div>
-      <div class="panel-card">
-        <div class="form-grid">
-          <div class="field-group">
-            <label>Nombre del asistente</label>
-            <input type="text" id="f-nombre" placeholder="Nombre completo">
-          </div>
-          <div class="field-group">
-            <label>Apodo (opcional)</label>
-            <input type="text" id="f-apodo" placeholder="Como lo conocen">
-          </div>
-          <div class="field-group">
-            <label>¿Lleva acompañante?</label>
-            <div class="radio-group" style="margin-top:6px">
-              <label class="radio-opt">
-                <input type="radio" name="guests" value="solo" id="r-solo" checked onchange="updatePrice()">
-                <span>Solo (1 persona) — $700</span>
-              </label>
-              <label class="radio-opt">
-                <input type="radio" name="guests" value="plus1" id="r-plus1" onchange="updatePrice()">
-                <span>Con +1 (2 personas) — $1,400</span>
-              </label>
-            </div>
-          </div>
-          <div class="field-group">
-            <label>Nombre del +1 (si aplica)</label>
-            <input type="text" id="f-plus1" placeholder="Nombre del acompañante" disabled>
-          </div>
-          <div class="field-group">
-            <label>Estado de pago</label>
-            <select id="f-status">
-              <option value="pagado">Pagado</option>
-              <option value="pendiente">Pendiente</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Método de pago</label>
-            <select id="f-metodo">
-              <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Tarjeta">Tarjeta</option>
-              <option value="—">—</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Notas (opcional)</label>
-            <input type="text" id="f-notas" placeholder="Ej: mesa familiar, intolerancia...">
-          </div>
-        </div>
-        <button class="btn-generate" id="btn-gen" onclick="generateTicket()">
-          Generar boleto &#9654;
-        </button>
-      </div>
-
-      <div class="section-head" style="margin-top:1rem">
-        <div class="section-title">&#9632;&nbsp; Boletos registrados</div>
-        <input type="text" id="search-input" placeholder="Buscar nombre..."
-          style="background:rgba(255,255,255,.05);border:1px solid rgba(240,236,228,.1);border-radius:3px;color:var(--white);font-family:'Oswald',sans-serif;font-size:13px;padding:6px 12px;outline:none;width:200px;"
-          oninput="filterTickets()">
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>#</th><th>Nombre</th><th>Apodo</th><th>+1</th>
-            <th>Total</th><th>Estado</th><th>Método</th><th>Fecha</th><th>Acciones</th>
-          </tr></thead>
-          <tbody id="tickets-tbody"></tbody>
-        </table>
-        <div class="empty-state" id="empty-state">Aún no hay boletos generados</div>
-      </div>
-    </div>
-
-    <!-- TAB: GASTOS -->
-    <div class="tab-panel" id="tab-gastos">
-      <div class="section-head">
-        <div class="section-title">&#9632;&nbsp; Registrar gasto</div>
-      </div>
-      <div class="panel-card">
-        <div class="form-grid">
-          <div class="field-group">
-            <label>Descripción del gasto</label>
-            <input type="text" id="g-desc" placeholder="Ej: Decoración, comida, DJ...">
-          </div>
-          <div class="field-group">
-            <label>Monto total ($)</label>
-            <input type="number" id="g-monto" placeholder="15000" min="0">
-          </div>
-          <div class="field-group">
-            <label>Categoría</label>
-            <select id="g-cat">
-              <option value="Venue">Venue / Lugar</option>
-              <option value="Comida">Comida y bebida</option>
-              <option value="Decoración">Decoración</option>
-              <option value="Música">Música / DJ</option>
-              <option value="Impresos">Impresos / Boletos</option>
-              <option value="Transporte">Transporte</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Anticipo / primer abono ($)</label>
-            <input type="number" id="g-abono" placeholder="0 si no hay anticipo" min="0" value="0">
-          </div>
-          <div class="field-group">
-            <label>Notas (opcional)</label>
-            <input type="text" id="g-notas" placeholder="Referencia o detalle">
-          </div>
-        </div>
-        <button class="btn-expense" onclick="addExpense()">Registrar gasto &#9654;</button>
-      </div>
-
-      <div class="section-head" style="margin-top:1rem">
-        <div class="section-title">&#9632;&nbsp; Gastos registrados</div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Descripción</th><th>Categoría</th><th>Total</th><th>Abonado</th><th>Pendiente</th><th>Progreso</th><th>Fecha</th><th></th>
-          </tr></thead>
-          <tbody id="expenses-tbody"></tbody>
-        </table>
-        <div class="empty-state" id="empty-gastos">Aún no hay gastos registrados</div>
-      </div>
-    </div>
-
-    <!-- TAB: TODO -->
-    <div class="tab-panel" id="tab-todo">
-      <div class="section-head">
-        <div class="section-title">&#9632;&nbsp; Nueva tarea</div>
-        <span class="todo-progress" id="todo-progress"></span>
-      </div>
-      <div class="panel-card">
-        <div class="form-grid">
-          <div class="field-group" style="grid-column:1/-1">
-            <label>Tarea</label>
-            <input type="text" id="td-text" placeholder="Ej: Confirmar menú con el venue...">
-          </div>
-          <div class="field-group">
-            <label>Prioridad</label>
-            <select id="td-prio">
-              <option value="alta">Alta</option>
-              <option value="media" selected>Media</option>
-              <option value="baja">Baja</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Fecha límite (opcional)</label>
-            <input type="date" id="td-date">
-          </div>
-        </div>
-        <button class="btn-todo" onclick="addTodo()">Agregar tarea &#9654;</button>
-      </div>
-      <div class="section-head" style="margin-top:1rem">
-        <div class="section-title">&#9632;&nbsp; Lista de tareas</div>
-      </div>
-      <div id="todo-list"></div>
-      <div class="empty-state" id="empty-todo">Sin tareas por ahora 🎉</div>
-    </div>
-
-  </div>
-</div>
-
-<!-- TICKET MODAL -->
-<div class="modal-bg" id="ticket-modal">
-  <div class="modal-inner">
-    <div class="modal-top">
-      <button class="modal-close" onclick="closeModal()">&#215;</button>
-    </div>
-
-        <div class="ticket" id="ticket-render">
-      <div class="t-main">
-        <div class="t-pretag">&#9632;&nbsp; Reunión Oficial · Generación 2006</div>
-        <div class="t-title">La <span>Chabalada</span></div>
-        <div class="t-years">20 AÑOS DESPUÉS &nbsp;·&nbsp; NAVOJOA, SON.</div>
-        <div class="t-line"></div>
-        <span class="t-who">Admite a</span>
-        <div class="t-name" id="t-nombre">—</div>
-        <div class="t-guest" id="t-guest"></div>
-        <div class="t-bottom-row">
-          <div class="t-details">
-            <div><span class="t-dlbl">Fecha</span><div class="t-dval">Sáb. 25 Jul 2026</div></div>
-            <div><span class="t-dlbl">Lugar</span><div class="t-dval">Casino Social</div></div>
-          </div>
-          <div class="t-quote">"like it's 2006<br>all over again"</div>
-        </div>
-      </div>
-      <div class="t-side">
-        <div class="t-side-url">lachabalada.com</div>
-        <div class="t-num" id="t-num">007</div>
-        <div class="t-side-lbl">Boleto N°</div>
-      </div>
-    </div><!-- /ticket -->
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin · La Chabalada</title>
-<link rel="icon" type="image/jpeg" href="favicon.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Oswald:wght@300;400;600&family=Caveat:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --black:      #090909;
-  --gray:       #141414;
-  --gray-mid:   #1e1e1e;
-  --red:        #c0281e;
-  --red-bright: #e8352a;
-  --red-dark:   #7a1510;
-  --white:      #f0ece4;
-  --gold:       #c9a84c;
-  --gold-light: #f0d080;
-  --green:      #1a7a3a;
-  --green-light:#2ab55a;
-  --blue-stat:  #3a7adb;
-  --orange:     #d4660a;
-  --orange-light:#f5a050;
-}
-html, body { min-height: 100vh; }
-body { background:var(--black); color:var(--white); font-family:'Oswald',sans-serif; overflow-x:hidden; }
-body::before {
-  content:''; position:fixed; inset:0; z-index:999; pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-  opacity:.5; mix-blend-mode:overlay;
-}
-
-/* LOGIN */
-.login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
-.login-card { background:var(--gray); border:1px solid rgba(192,40,30,.2); border-radius:4px; padding:3rem 2.5rem; width:100%; max-width:380px; text-align:center; }
-.login-logo { font-family:'Permanent Marker',cursive; font-size:36px; color:var(--red); text-shadow:0 0 20px rgba(192,40,30,.4); margin-bottom:.25rem; }
-.login-sub { font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:5px; color:rgba(240,236,228,.3); margin-bottom:2rem; }
-.login-input { width:100%; background:rgba(255,255,255,.05); border:1px solid rgba(192,40,30,.25); border-radius:3px; color:var(--white); font-family:'Oswald',sans-serif; font-size:18px; letter-spacing:4px; padding:12px 16px; text-align:center; outline:none; transition:border-color .2s; margin-bottom:1rem; }
-.login-input:focus { border-color:var(--red); }
-.login-input::placeholder { color:rgba(240,236,228,.2); letter-spacing:2px; font-size:14px; }
-.login-btn { width:100%; font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:6px; background:var(--red-bright); color:#fff; border:none; padding:13px; cursor:pointer; clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%); transition:background .15s; }
-.login-btn:hover { background:#ff3d31; }
-.login-error { font-family:'Caveat',cursive; font-size:16px; color:var(--red-bright); margin-top:.75rem; display:none; }
-
-/* ADMIN LAYOUT */
-.admin-wrap { display:none; flex-direction:column; min-height:100vh; }
-.admin-wrap.visible { display:flex; }
-nav { display:flex; align-items:center; justify-content:space-between; padding:.9rem 2rem; background:rgba(9,9,9,.92); backdrop-filter:blur(8px); border-bottom:1px solid rgba(192,40,30,.15); flex-shrink:0; }
-.nav-logo { font-family:'Permanent Marker',cursive; font-size:20px; color:var(--red); text-shadow:0 0 10px rgba(192,40,30,.35); }
-.nav-tag { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:5px; color:var(--gold); opacity:.7; }
-.nav-logout { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:3px; color:rgba(240,236,228,.3); background:none; border:1px solid rgba(240,236,228,.1); padding:5px 14px; cursor:pointer; border-radius:2px; transition:all .15s; }
-.nav-logout:hover { border-color:var(--red); color:var(--red); }
-.admin-body { flex:1; max-width:1100px; margin:0 auto; padding:2.5rem 1.5rem 5rem; width:100%; }
-
-/* STATS */
-.stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2.5rem; }
-.stat-card { background:var(--gray); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1.5rem 1.25rem; position:relative; overflow:hidden; }
-.stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
-.stat-card.red::before   { background:var(--red-bright); }
-.stat-card.gold::before  { background:var(--gold); }
-.stat-card.green::before { background:var(--green-light); }
-.stat-card.blue::before  { background:var(--blue-stat); }
-.stat-card.orange::before{ background:var(--orange-light); }
-.stat-label { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:4px; color:rgba(240,236,228,.35); margin-bottom:.5rem; display:block; }
-.stat-value { font-family:'Bebas Neue',sans-serif; font-size:clamp(24px,4vw,38px); line-height:1; color:var(--white); }
-.stat-card.gold .stat-value  { color:var(--gold-light); }
-.stat-card.green .stat-value { color:var(--green-light); }
-.stat-card.orange .stat-value{ color:var(--orange-light); }
-
-/* SECTION */
-.section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; padding-bottom:.75rem; border-bottom:1px solid rgba(192,40,30,.18); flex-wrap:wrap; gap:.5rem; }
-.section-title { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:5px; color:rgba(240,236,228,.5); }
-
-/* TABS */
-.admin-tabs { display:flex; gap:.5rem; margin-bottom:2rem; flex-wrap:wrap; }
-.admin-tab { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:4px; background:none; border:1px solid rgba(240,236,228,.1); color:rgba(240,236,228,.35); padding:8px 20px; cursor:pointer; border-radius:2px; transition:all .15s; }
-.admin-tab:hover { border-color:rgba(240,236,228,.25); color:rgba(240,236,228,.6); }
-.admin-tab.active { background:rgba(192,40,30,.15); border-color:var(--red); color:var(--red-bright); }
-.tab-panel { display:none; }
-.tab-panel.active { display:block; }
-
-/* FORMS */
-.panel-card { background:var(--gray); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1.75rem; margin-bottom:2.5rem; }
-.form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:1.25rem; }
-.field-group label { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:3px; color:rgba(240,236,228,.35); display:block; margin-bottom:6px; }
-.field-group input, .field-group select { width:100%; background:rgba(255,255,255,.05); border:1px solid rgba(240,236,228,.1); border-radius:3px; color:var(--white); font-family:'Oswald',sans-serif; font-size:15px; padding:10px 12px; outline:none; transition:border-color .2s; }
-.field-group input:focus, .field-group select:focus { border-color:rgba(192,40,30,.5); }
-.field-group input::placeholder { color:rgba(240,236,228,.2); }
-.field-group select option { background:#1e1e1e; }
-.radio-group { display:flex; gap:.75rem; flex-wrap:wrap; }
-.radio-opt { display:flex; align-items:center; gap:.5rem; cursor:pointer; }
-.radio-opt input[type=radio] { accent-color:var(--red-bright); width:16px; height:16px; cursor:pointer; }
-.radio-opt span { font-family:'Oswald',sans-serif; font-size:14px; color:rgba(240,236,228,.7); }
-
-.btn-generate { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:5px; background:var(--gold); color:#1a1000; border:none; padding:12px 28px; cursor:pointer; clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%); transition:background .15s,transform .1s; }
-.btn-generate:hover { background:var(--gold-light); transform:scale(1.02); }
-.btn-generate:disabled { background:rgba(201,168,76,.3); cursor:not-allowed; transform:none; }
-.btn-expense { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:5px; background:var(--orange); color:#fff; border:none; padding:12px 28px; cursor:pointer; clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%); transition:background .15s; }
-.btn-expense:hover { background:var(--orange-light); color:#1a0a00; }
-
-/* TABLE */
-.table-wrap { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; font-size:14px; }
-thead tr { border-bottom:1px solid rgba(192,40,30,.25); }
-thead th { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:3px; color:rgba(240,236,228,.35); text-align:left; padding:.6rem .75rem; font-weight:400; }
-tbody tr { border-bottom:1px solid rgba(240,236,228,.04); transition:background .1s; }
-tbody tr:hover { background:rgba(255,255,255,.03); }
-tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
-.td-num { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--gold); letter-spacing:2px; }
-.td-name { font-weight:400; color:var(--white); }
-.badge { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:2px; padding:3px 10px; border-radius:2px; }
-.badge-paid { background:rgba(26,122,58,.25); color:var(--green-light); border:1px solid rgba(42,181,90,.2); }
-.badge-pend { background:rgba(192,40,30,.15); color:var(--red-bright);  border:1px solid rgba(232,53,42,.2); }
-.btn-ticket { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:2px; background:none; border:1px solid rgba(201,168,76,.3); color:var(--gold); padding:4px 12px; cursor:pointer; border-radius:2px; transition:all .15s; }
-.btn-ticket:hover { background:rgba(201,168,76,.1); border-color:var(--gold); }
-.btn-del { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:2px; background:none; border:1px solid rgba(192,40,30,.2); color:rgba(232,53,42,.6); padding:4px 10px; cursor:pointer; border-radius:2px; transition:all .15s; margin-left:4px; }
-.btn-del:hover { background:rgba(192,40,30,.12); color:var(--red-bright); }
-.empty-state { text-align:center; padding:3rem 1rem; font-family:'Caveat',cursive; font-size:20px; color:rgba(240,236,228,.25); }
-
-/* EXPENSE ROW */
-.expense-row td:first-child { color:var(--orange-light); }
-
-/* MODAL */
-.modal-bg { display:none; position:fixed; inset:0; background:rgba(4,2,0,.96); z-index:1000; overflow-y:auto; padding:2rem 1rem; }
-.modal-bg.open { display:flex; align-items:flex-start; justify-content:center; }
-.modal-inner { width:100%; max-width:580px; margin:auto; padding:1rem 0 3rem; }
-.modal-top { display:flex; justify-content:flex-end; margin-bottom:1rem; }
-.modal-close { background:none; border:none; font-size:26px; color:rgba(240,236,228,.3); cursor:pointer; line-height:1; }
-.modal-close:hover { color:rgba(240,236,228,.8); }
-
-.modal-actions { display:flex; gap:.75rem; margin-top:1.25rem; flex-wrap:wrap; }
-.btn-print { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:4px; background:var(--gold); color:#1a1000; border:none; padding:11px 24px; cursor:pointer; clip-path:polygon(3px 0%,100% 0%,calc(100% - 3px) 100%,0% 100%); transition:background .15s; }
-.btn-print:hover { background:var(--gold-light); }
-.btn-close-modal { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:3px; background:none; border:1px solid rgba(240,236,228,.15); color:rgba(240,236,228,.4); padding:11px 20px; cursor:pointer; border-radius:2px; transition:all .15s; }
-.btn-close-modal:hover { border-color:var(--red); color:var(--red-bright); }
-
-@media(max-width:520px){
-  .t-info-row { grid-template-columns:1fr 1fr; }
-  .ticket-band { padding:1rem 1.25rem .85rem; }
-  .ticket-body { padding:1rem 1.25rem 1.25rem; }
-
-  .t-big-num { font-size:40px; }
-  .stats-row { grid-template-columns:1fr 1fr; }
-}
-@media print {
-  body > *:not(.modal-bg) { display:none !important; }
-  .modal-bg { display:block !important; background:white; position:static; padding:0; }
-  .modal-top, .modal-actions { display:none !important; }
-  .modal-inner { margin:0; padding:0; max-width:100%; }
-  body::before { display:none; }
-}
-</style>
-</head>
-<body>
-
-<!-- LOGIN
-<div class="login-screen" id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">La Chabalada</div>
-    <div class="login-sub">&#9632;&nbsp; Panel de administración &nbsp;&#9632;</div>
-    <input class="login-input" type="password" id="pwd-input"
-      placeholder="Contraseña" onkeydown="if(event.key==='Enter')checkLogin()">
-    <button class="login-btn" onclick="checkLogin()">Entrar</button>
+      placeholder="Contraseña" onkeydown="if(event.key==='Enter')window.checkLogin()">
+    <button class="login-btn" onclick="window.checkLogin()">Entrar</button>
     <div class="login-error" id="login-error">Contraseña incorrecta</div>
   </div>
 </div> -->
@@ -616,7 +225,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       <div class="nav-logo">La Chabalada</div>
       <div class="nav-tag">&#9632;&nbsp; Admin &nbsp;&#9632;</div>
     </div>
-    <button class="nav-logout" onclick="logout()">Cerrar sesión</button>
+    <button class="nav-logout" onclick="window.logout()">Cerrar sesión</button>
   </nav>
 
   <div class="admin-body">
@@ -640,7 +249,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
         <div class="stat-value" id="st-expenses">$0</div>
       </div>
       <div class="stat-card red">
-        <span class="stat-label">Gastos pendientes</span>
+        <span class="stat-label">Por pagar</span>
         <div class="stat-value" id="st-pending">$0</div>
       </div>
       <div class="stat-card blue">
@@ -651,9 +260,9 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 
     <!-- TABS -->
     <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
-      <button class="admin-tab"        onclick="switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
-      <button class="admin-tab"        onclick="switchTab('todo',this)">&#9989;&nbsp; To Do</button>
+      <button class="admin-tab active" onclick="window.switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
+      <button class="admin-tab"        onclick="window.switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
+      <button class="admin-tab"        onclick="window.switchTab('playeras',this)">&#128248;&nbsp; Playeras</button>
     </div>
 
     <!-- TAB: BOLETOS -->
@@ -709,7 +318,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             <input type="text" id="f-notas" placeholder="Ej: mesa familiar, intolerancia...">
           </div>
         </div>
-        <button class="btn-generate" id="btn-gen" onclick="generateTicket()">
+        <button class="btn-generate" id="btn-gen" onclick="window.generateTicket()">
           Generar boleto &#9654;
         </button>
       </div>
@@ -718,7 +327,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
         <div class="section-title">&#9632;&nbsp; Boletos registrados</div>
         <input type="text" id="search-input" placeholder="Buscar nombre..."
           style="background:rgba(255,255,255,.05);border:1px solid rgba(240,236,228,.1);border-radius:3px;color:var(--white);font-family:'Oswald',sans-serif;font-size:13px;padding:6px 12px;outline:none;width:200px;"
-          oninput="filterTickets()">
+          oninput="window.filterTickets()">
       </div>
       <div class="table-wrap">
         <table>
@@ -748,6 +357,10 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             <input type="number" id="g-monto" placeholder="15000" min="0">
           </div>
           <div class="field-group">
+            <label>Anticipo / primer pago ($)</label>
+            <input type="number" id="g-abono0" placeholder="0" min="0" value="0">
+          </div>
+          <div class="field-group">
             <label>Categoría</label>
             <select id="g-cat">
               <option value="Venue">Venue / Lugar</option>
@@ -760,15 +373,18 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
             </select>
           </div>
           <div class="field-group">
-            <label>Anticipo / primer abono ($)</label>
-            <input type="number" id="g-abono" placeholder="0 si no hay anticipo" min="0" value="0">
+            <label>Estado de pago</label>
+            <select id="g-status">
+              <option value="pagado">Pagado</option>
+              <option value="pendiente">Pendiente de pagar</option>
+            </select>
           </div>
           <div class="field-group">
             <label>Notas (opcional)</label>
             <input type="text" id="g-notas" placeholder="Referencia o detalle">
           </div>
         </div>
-        <button class="btn-expense" onclick="addExpense()">Registrar gasto &#9654;</button>
+        <button class="btn-expense" onclick="window.addExpense()">Registrar gasto &#9654;</button>
       </div>
 
       <div class="section-head" style="margin-top:1rem">
@@ -777,7 +393,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Descripción</th><th>Categoría</th><th>Total</th><th>Abonado</th><th>Pendiente</th><th>Progreso</th><th>Fecha</th><th></th>
+            <th>Descripción</th><th>Categoría</th><th>Total</th><th>Pagado</th><th>Pendiente</th><th>Progreso</th><th></th>
           </tr></thead>
           <tbody id="expenses-tbody"></tbody>
         </table>
@@ -785,38 +401,18 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       </div>
     </div>
 
-    <!-- TAB: TODO -->
-    <div class="tab-panel" id="tab-todo">
+    <!-- TAB: PLAYERAS -->
+    <div class="tab-panel" id="tab-playeras">
       <div class="section-head">
-        <div class="section-title">&#9632;&nbsp; Nueva tarea</div>
-        <span class="todo-progress" id="todo-progress"></span>
+        <div class="section-title">&#9632;&nbsp; Conteo de playeras</div>
       </div>
-      <div class="panel-card">
-        <div class="form-grid">
-          <div class="field-group" style="grid-column:1/-1">
-            <label>Tarea</label>
-            <input type="text" id="td-text" placeholder="Ej: Confirmar menú con el venue...">
-          </div>
-          <div class="field-group">
-            <label>Prioridad</label>
-            <select id="td-prio">
-              <option value="alta">Alta</option>
-              <option value="media" selected>Media</option>
-              <option value="baja">Baja</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Fecha límite (opcional)</label>
-            <input type="date" id="td-date">
-          </div>
-        </div>
-        <button class="btn-todo" onclick="addTodo()">Agregar tarea &#9654;</button>
+      <div class="shirt-summary" id="shirt-summary"></div>
+      <div class="size-tally" id="shirt-tally"></div>
+      <div class="section-head" style="margin-top:1.5rem">
+        <div class="section-title">&#9632;&nbsp; Lista — asigna tallas</div>
       </div>
-      <div class="section-head" style="margin-top:1rem">
-        <div class="section-title">&#9632;&nbsp; Lista de tareas</div>
-      </div>
-      <div id="todo-list"></div>
-      <div class="empty-state" id="empty-todo">Sin tareas por ahora 🎉</div>
+      <div id="shirt-list"></div>
+      <div class="empty-state" id="empty-shirts">Genera boletos para ver las playeras aquí</div>
     </div>
 
   </div>
@@ -826,7 +422,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 <div class="modal-bg" id="ticket-modal">
   <div class="modal-inner">
     <div class="modal-top">
-      <button class="modal-close" onclick="closeModal()">&#215;</button>
+      <button class="modal-close" onclick="window.closeModal()">&#215;</button>
     </div>
 
     <div class="ticket" id="ticket-render">
@@ -891,14 +487,14 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 
     <div class="modal-actions">
       <button class="btn-print" onclick="window.print()">Imprimir / PDF</button>
-      <button class="btn-close-modal" onclick="closeModal()">Cerrar</button>
+      <button class="btn-close-modal" onclick="window.closeModal()">Cerrar</button>
     </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp }                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, update }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, update }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
@@ -914,15 +510,15 @@ const app        = initializeApp(firebaseConfig);
 const db         = getDatabase(app);
 const ticketRef  = ref(db, 'boletos');
 const expenseRef = ref(db, 'gastos');
-const todoRef    = ref(db, 'todos');
+const shirtRef   = ref(db, 'playeras');
 
 const PRICE_PP       = 700;
 const ADMIN_PASSWORD = 'chabalada2026';
 
 let allTickets  = [];
 let allExpenses = [];
-let allTodos    = [];
 let nextTicket  = 1;
+let allShirts   = {};
 
 /* build perf dots */
 const pd = document.getElementById('perf-dots');
@@ -957,8 +553,7 @@ window.switchTab = (name, btn) => {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  const panel = document.getElementById('tab-'+name);
-  if (panel) panel.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 };
 
 /* ── +1 TOGGLE ── */
@@ -982,14 +577,9 @@ onValue(expenseRef, snap => {
   updateStats(); renderExpenses(allExpenses);
 });
 
-onValue(todoRef, snap => {
-  const data = snap.val() || {};
-  allTodos = Object.entries(data).map(([k,v]) => ({...v, _key:k})).sort((a,b) => {
-    if (a.done !== b.done) return a.done ? 1 : -1;
-    const pmap = {alta:0, media:1, baja:2};
-    return (pmap[a.prio]||1) - (pmap[b.prio]||1);
-  });
-  renderTodos();
+onValue(shirtRef, snap => {
+  allShirts = snap.val() || {};
+  renderShirts();
 });
 
 /* ── STATS ── */
@@ -997,14 +587,10 @@ function updateStats() {
   const total      = allTickets.length;
   const guests     = allTickets.reduce((s,t) => s + (t.plus1 ? 2 : 1), 0);
   const money      = allTickets.filter(t => t.status==='pagado').reduce((s,t) => s+(t.precio||0), 0);
-  /* gastos: sum of abonos for paid expenses, monto for fully paid ones */
-  const expPaid    = allExpenses.reduce((s,e) => {
-    const abonado = (e.abonos||[]).reduce((a,b) => a + (b.monto||0), 0);
-    return s + abonado;
-  }, 0);
+  const expPaid    = allExpenses.reduce((s,e) => s + (e.abonos||[]).reduce((a,b)=>a+(b.monto||0),0), 0);
   const expPending = allExpenses.reduce((s,e) => {
-    const abonado = (e.abonos||[]).reduce((a,b) => a + (b.monto||0), 0);
-    return s + Math.max(0, (e.monto||0) - abonado);
+    const abonado = (e.abonos||[]).reduce((a,b)=>a+(b.monto||0),0);
+    return s + Math.max(0,(e.monto||0)-abonado);
   }, 0);
   const balance    = money - expPaid;
 
@@ -1079,7 +665,14 @@ window.generateTicket = async () => {
   };
 
   try {
-    await push(ticketRef, ticket);
+    const ticketSnap = await push(ticketRef, ticket);
+    const ticketKey  = ticketSnap.key;
+    /* auto-create shirt entry for main person */
+    await push(shirtRef, { nombre: ticket.nombre, talla: '—', ticketKey, ts: Date.now() });
+    /* auto-create shirt entry for +1 if exists */
+    if (ticket.plus1) {
+      await push(shirtRef, { nombre: ticket.plus1, talla: '—', ticketKey, isPlus1: true, ts: Date.now() });
+    }
     populateTicket(ticket);
     document.getElementById('ticket-modal').classList.add('open');
     ['f-nombre','f-apodo','f-plus1','f-notas'].forEach(id => document.getElementById(id).value='');
@@ -1101,6 +694,10 @@ window.showTicket = key => {
 window.deleteTicket = async (key, num) => {
   if (!confirm(`¿Borrar boleto #${num}?`)) return;
   await remove(ref(db,'boletos/'+key));
+  /* also remove associated shirt entries */
+  Object.entries(allShirts).forEach(async ([sk, sv]) => {
+    if (sv.ticketKey === key) await remove(ref(db,'playeras/'+sk));
+  });
 };
 
 function populateTicket(t) {
@@ -1124,27 +721,27 @@ window.addExpense = async () => {
     if (!monto) document.getElementById('g-monto').focus();
     return;
   }
-  const abono = parseFloat(document.getElementById('g-abono').value) || 0;
-  const abonos = abono > 0 ? [{ monto: abono, ts: Date.now(), nota: 'Anticipo inicial' }] : [];
+  const abono0 = parseFloat(document.getElementById('g-abono0').value) || 0;
+  const abonos = abono0 > 0 ? [{ monto: abono0, nota: 'Anticipo inicial', ts: Date.now() }] : [];
   await push(expenseRef, {
     desc, monto, abonos,
     cat:   document.getElementById('g-cat').value,
     notas: document.getElementById('g-notas').value.trim(),
     ts:    Date.now()
   });
-  ['g-desc','g-monto','g-abono','g-notas'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('g-abono').value = '0';
+  ['g-desc','g-monto','g-abono0','g-notas'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('g-abono0').value = '0';
 };
 
-window.addAbono = async (key) => {
+window.addAbono = async key => {
   const montoStr = prompt('¿Cuánto vas a abonar? ($)');
   if (!montoStr) return;
   const monto = parseFloat(montoStr);
-  if (!monto || monto <= 0) return;
-  const nota = prompt('Nota del abono (opcional):') || '';
+  if (!monto || monto <= 0) { alert('Monto inválido'); return; }
+  const nota = prompt('Concepto del pago (opcional):') || '';
   const expense = allExpenses.find(e => e._key === key);
   if (!expense) return;
-  const abonos = [...(expense.abonos || []), { monto, ts: Date.now(), nota }];
+  const abonos = [...(expense.abonos || []), { monto, nota, ts: Date.now() }];
   await update(ref(db, 'gastos/' + key), { abonos });
 };
 
@@ -1158,30 +755,29 @@ function renderExpenses(list) {
     const abonado  = (e.abonos||[]).reduce((s,a) => s+(a.monto||0), 0);
     const pendiente = Math.max(0, total - abonado);
     const pct      = total > 0 ? Math.min(100, Math.round(abonado/total*100)) : 0;
-    const isDone   = pendiente === 0;
+    const isDone   = pendiente === 0 && total > 0;
+    const abonoLog = (e.abonos||[]).map(a =>
+      '$'+Number(a.monto).toLocaleString('es-MX')+(a.nota?' — '+escHtml(a.nota):'')).join(' · ');
     const tr = document.createElement('tr');
     tr.className = 'expense-row';
     tr.innerHTML = `
       <td>
-        <div>${escHtml(e.desc)}</div>
+        <div style="font-weight:400">${escHtml(e.desc)}</div>
         ${e.notas ? `<span style="font-size:11px;color:rgba(240,236,228,.35)">${escHtml(e.notas)}</span>` : ''}
-        ${(e.abonos||[]).length > 0 ? `<div style="font-size:10px;color:rgba(240,236,228,.25);margin-top:3px">${(e.abonos||[]).map(a=>'$'+a.monto.toLocaleString('es-MX')+(a.nota?' — '+escHtml(a.nota):'')).join(' · ')}</div>` : ''}
+        ${abonoLog ? `<div style="font-size:10px;color:rgba(240,236,228,.22);margin-top:3px">${abonoLog}</div>` : ''}
       </td>
-      <td style="font-size:12px;color:rgba(240,236,228,.45)">${escHtml(e.cat||'—')}</td>
+      <td style="font-size:12px;color:rgba(240,236,228,.4)">${escHtml(e.cat||'—')}</td>
       <td style="color:var(--orange-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${total.toLocaleString('es-MX')}</td>
       <td style="color:var(--green-light);font-family:'Bebas Neue',sans-serif;font-size:15px">$${abonado.toLocaleString('es-MX')}</td>
-      <td style="color:${isDone?'var(--green-light)':'var(--red-bright)'};font-family:'Bebas Neue',sans-serif;font-size:15px">
+      <td style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${isDone?'var(--green-light)':'var(--red-bright)'}">
         ${isDone ? '✓ Liquidado' : '$'+pendiente.toLocaleString('es-MX')}
       </td>
       <td>
         <div class="abono-bar-wrap"><div class="abono-bar" style="width:${pct}%"></div></div>
-        <div class="abono-txt">${pct}%</div>
+        <div class="abono-txt">${pct}% pagado</div>
+        ${!isDone ? `<button class="btn-abono" onclick="window.addAbono('${e._key}')">+ Pago</button>` : ''}
       </td>
-      <td style="font-size:11px;color:rgba(240,236,228,.3)">${formatDate(e.ts)}</td>
-      <td>
-        ${!isDone ? `<button class="btn-abono" onclick="window.addAbono('${e._key}')">+ Abono</button>` : ''}
-        <button class="btn-del" onclick="window.deleteExpense('${e._key}')">✕</button>
-      </td>`;
+      <td><button class="btn-del" onclick="window.deleteExpense('${e._key}')">✕</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1191,63 +787,60 @@ window.deleteExpense = async key => {
   await remove(ref(db,'gastos/'+key));
 };
 
-/* ── TO DO ── */
-window.addTodo = async () => {
-  const text = document.getElementById('td-text').value.trim();
-  if (!text) { document.getElementById('td-text').focus(); return; }
-  await push(todoRef, {
-    text,
-    prio:  document.getElementById('td-prio').value,
-    date:  document.getElementById('td-date').value || '',
-    done:  false,
-    ts:    Date.now()
-  });
-  document.getElementById('td-text').value = '';
-  document.getElementById('td-date').value = '';
-  document.getElementById('td-prio').value = 'media';
+/* ── PLAYERAS ── */
+window.updateShirtTalla = async (key, talla) => {
+  await update(ref(db, 'playeras/' + key), { talla });
 };
 
-window.toggleTodo = async (key, current) => {
-  await update(ref(db, 'todos/' + key), { done: !current });
-};
-
-window.deleteTodo = async key => {
-  if (!confirm('¿Borrar esta tarea?')) return;
-  await remove(ref(db, 'todos/' + key));
-};
-
-function renderTodos() {
-  const list  = document.getElementById('todo-list');
-  const empty = document.getElementById('empty-todo');
+function renderShirts() {
+  const list  = document.getElementById('shirt-list');
+  const empty = document.getElementById('empty-shirts');
   if (!list) return;
+
+  const entries = Object.entries(allShirts).map(([k,v]) => ({...v, _key:k}))
+                        .sort((a,b) => a.ts - b.ts);
+
+  const SIZES = ['XS','S','M','L','XL','XXL'];
+  const withSize = entries.filter(s => s.talla && s.talla !== '—');
+  const counts   = {};
+  SIZES.forEach(s => counts[s] = 0);
+  withSize.forEach(s => { if (counts[s.talla] !== undefined) counts[s.talla]++; });
+
+  /* summary */
+  const summary = document.getElementById('shirt-summary');
+  if (summary) {
+    summary.innerHTML = `
+      <div class="shirt-stat"><span class="shirt-stat-lbl">Total personas</span><div class="shirt-stat-num">${entries.length}</div></div>
+      <div class="shirt-stat"><span class="shirt-stat-lbl">Con talla</span><div class="shirt-stat-num" style="color:var(--green-light)">${withSize.length}</div></div>
+      <div class="shirt-stat"><span class="shirt-stat-lbl">Sin talla</span><div class="shirt-stat-num" style="color:var(--red-bright)">${entries.length - withSize.length}</div></div>`;
+  }
+
+  /* tally by size */
+  const tally = document.getElementById('shirt-tally');
+  if (tally) {
+    const pills = SIZES.filter(s => counts[s] > 0)
+      .map(s => `<div class="size-pill">${s}<span>${counts[s]}</span></div>`).join('');
+    tally.innerHTML = pills
+      ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(240,236,228,.28);margin-right:.5rem">TALLAS:</span>${pills}`
+      : '';
+  }
+
+  /* list */
+  empty.style.display = entries.length ? 'none' : 'block';
   list.innerHTML = '';
-  const pending = allTodos.filter(t => !t.done);
-  const done    = allTodos.filter(t =>  t.done);
-  const sorted  = [...pending, ...done];
-  const prog    = document.getElementById('todo-progress');
-  if (prog) prog.textContent = allTodos.length
-    ? `${done.length} / ${allTodos.length} completadas`
-    : '';
-  empty.style.display = sorted.length ? 'none' : 'block';
-
-  const prioLabel = { alta: 'ALTA', media: 'MEDIA', baja: 'BAJA' };
-  const prioClass = { alta: 'prio-alta', media: 'prio-media', baja: 'prio-baja' };
-
-  sorted.forEach(t => {
+  entries.forEach(s => {
     const div = document.createElement('div');
-    div.className = 'todo-item' + (t.done ? ' done' : '');
+    div.className = 'shirt-row';
     div.innerHTML = `
-      <div class="todo-check ${t.done?'checked':''}" onclick="window.toggleTodo('${t._key}', ${t.done})">
-        ${t.done ? '✓' : ''}
+      <div class="shirt-name">
+        ${escHtml(s.nombre)}
+        ${s.isPlus1 ? '<span class="shirt-plus1-tag">+1 acompañante</span>' : ''}
       </div>
-      <div class="todo-body">
-        <div class="todo-text">${escHtml(t.text)}</div>
-        <div class="todo-meta">
-          <span class="todo-prio ${prioClass[t.prio]||'prio-media'}">${prioLabel[t.prio]||'MEDIA'}</span>
-          ${t.date ? `<span class="todo-date">📅 ${t.date}</span>` : ''}
-        </div>
-      </div>
-      <button class="todo-del" onclick="window.deleteTodo('${t._key}')">✕</button>`;
+      <select class="size-select" onchange="window.updateShirtTalla('${s._key}', this.value)">
+        ${['—','XS','S','M','L','XL','XXL'].map(t =>
+          `<option value="${t}" ${s.talla===t?'selected':''}>${t}</option>`
+        ).join('')}
+      </select>`;
     list.appendChild(div);
   });
 }
