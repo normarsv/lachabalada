@@ -97,6 +97,10 @@ nav { display:flex; align-items:center; justify-content:space-between; padding:.
 .btn-generate { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:5px; background:var(--gold); color:#1a1000; border:none; padding:12px 28px; cursor:pointer; clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%); transition:background .15s,transform .1s; }
 .btn-generate:hover { background:var(--gold-light); transform:scale(1.02); }
 .btn-generate:disabled { background:rgba(201,168,76,.3); cursor:not-allowed; transform:none; }
+.games-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.25rem; }
+.game-card { background:var(--gray); border:1px solid rgba(240,236,228,.06); border-top:2px solid var(--red); border-radius:4px; padding:2rem 1.75rem; position:relative; overflow:hidden; }
+.game-number { font-family:'Bebas Neue',sans-serif; font-size:64px; line-height:1; color:rgba(192,40,30,.15); position:absolute; top:.5rem; right:1rem; }
+.game-name { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:3px; color:var(--white); position:relative; }
 .btn-expense { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:5px; background:var(--orange); color:#fff; border:none; padding:12px 28px; cursor:pointer; clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%); transition:background .15s; }
 .btn-expense:hover { background:var(--orange-light); color:#1a0a00; }
 
@@ -184,17 +188,6 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
 .abono-bar{height:5px;border-radius:2px;background:var(--green-light);transition:width .4s;}
 .abono-txt{font-size:11px;color:rgba(240,236,228,.3);margin-top:3px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
 .btn-abono{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;background:none;border:1px solid rgba(42,181,90,.3);color:var(--green-light);padding:3px 10px;cursor:pointer;border-radius:2px;}
-.shirt-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.shirt-stat{background:var(--gray-mid);border:1px solid rgba(240,236,228,.06);border-radius:4px;padding:1.1rem 1rem;text-align:center;}
-.shirt-stat-lbl{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:4px;color:rgba(240,236,228,.3);display:block;margin-bottom:.35rem;}
-.shirt-stat-num{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:#fff;}
-.shirt-row{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--gray);border:1px solid rgba(240,236,228,.05);border-radius:3px;margin-bottom:.5rem;}
-.shirt-name{flex:1;font-size:15px;color:var(--white);}
-.shirt-plus1-tag{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(240,236,228,.3);display:block;}
-.size-select{background:rgba(192,40,30,.12);border:1px solid rgba(192,40,30,.25);color:var(--red-bright);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:4px 10px;border-radius:2px;cursor:pointer;outline:none;}
-.size-tally{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.25rem;align-items:center;}
-.size-pill{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:4px 12px;border-radius:2px;background:rgba(192,40,30,.12);color:var(--red-bright);border:1px solid rgba(192,40,30,.2);}
-.size-pill span{color:#fff;margin-left:5px;}
 </style>
 </head>
 <body>
@@ -255,7 +248,7 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="window.switchTab('boletos',this)">&#127881;&nbsp; Boletos</button>
       <button class="admin-tab"        onclick="window.switchTab('gastos',this)">&#128176;&nbsp; Gastos</button>
-      <button class="admin-tab" onclick="window.switchTab('playeras',this)">&#128248;&nbsp; Playeras</button>
+      <button class="admin-tab"        onclick="window.switchTab('games',this)">&#127867;&nbsp; Drinking Games</button>
     </div>
 
     <!-- TAB: BOLETOS -->
@@ -367,10 +360,6 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
               <option value="pendiente">Pendiente de pagar</option>
             </select>
           </div>
-          <div class="field-group">
-            <label>Notas (opcional)</label>
-            <input type="text" id="g-notas" placeholder="Referencia o detalle">
-          </div>
         </div>
         <button class="btn-expense" onclick="window.addExpense()">Registrar gasto &#9654;</button>
       </div>
@@ -389,13 +378,27 @@ tbody td { padding:.7rem .75rem; color:rgba(240,236,228,.8); }
       </div>
     </div>
 
-    <div class="tab-panel" id="tab-playeras">
-      <div class="section-head"><div class="section-title">&#9632;&nbsp; Conteo de playeras</div></div>
-      <div class="shirt-summary" id="shirt-summary"></div>
-      <div class="size-tally" id="shirt-tally"></div>
-      <div class="section-head" style="margin-top:1.5rem"><div class="section-title">&#9632;&nbsp; Lista — asigna tallas</div></div>
-      <div id="shirt-list"></div>
-      <div class="empty-state" id="empty-shirts">Genera boletos para ver las playeras aquí</div>
+    <!-- TAB: DRINKING GAMES -->
+    <div class="tab-panel" id="tab-games">
+      <div class="section-head"><div class="section-title">&#9632;&nbsp; Drinking Games</div></div>
+      <div class="games-grid">
+
+        <div class="game-card">
+          <div class="game-number">01</div>
+          <div class="game-name">Ponte Pedo</div>
+        </div>
+
+        <div class="game-card">
+          <div class="game-number">02</div>
+          <div class="game-name">Yo Nunca, Nunca</div>
+        </div>
+
+        <div class="game-card">
+          <div class="game-number">03</div>
+          <div class="game-name">Millenial Trivia</div>
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -457,7 +460,6 @@ const app        = initializeApp(firebaseConfig);
 const db         = getDatabase(app);
 const ticketRef  = ref(db, 'boletos');
 const expenseRef = ref(db, 'gastos');
-const shirtRef   = ref(db, 'playeras');
 
 const PRICE_PP       = 700;
 const ADMIN_PASSWORD = 'chabalada2026';
@@ -465,7 +467,6 @@ const ADMIN_PASSWORD = 'chabalada2026';
 let allTickets  = [];
 let allExpenses = [];
 let nextTicket  = 1;
-let allShirts   = {};
 
 /* build perf dots */
 
@@ -523,7 +524,6 @@ onValue(expenseRef, snap => {
   updateStats(); renderExpenses(allExpenses);
 });
 
-onValue(shirtRef, snap => { allShirts = snap.val() || {}; renderShirts(); });
 
 /* ── STATS ── */
 function updateStats() {
@@ -603,8 +603,6 @@ window.generateTicket = async () => {
 
   try {
     await push(ticketRef, ticket);
-    await push(shirtRef,{nombre:ticket.nombre,talla:'—',ts:Date.now()});
-    if(ticket.plus1)await push(shirtRef,{nombre:ticket.plus1,talla:'—',isPlus1:true,ts:Date.now()});
     populateTicket(ticket);
     document.getElementById('ticket-modal').classList.add('open');
     ['f-nombre','f-apodo','f-plus1','f-notas'].forEach(id => document.getElementById(id).value='');
@@ -639,11 +637,8 @@ window.addExpense = async () => {
   const desc=document.getElementById('g-desc').value.trim();
   const monto=parseFloat(document.getElementById('g-monto').value)||0;
   if(!desc||!monto){if(!desc)document.getElementById('g-desc').focus();else document.getElementById('g-monto').focus();return;}
-  const a0=parseFloat(document.getElementById('g-abono0').value)||0;
-  const abonos=a0>0?[{monto:a0,nota:'Anticipo inicial',ts:Date.now()}]:[];
-  await push(expenseRef,{desc,monto,abonos,cat:document.getElementById('g-cat').value,notas:document.getElementById('g-notas').value.trim(),ts:Date.now()});
-  ['g-desc','g-monto','g-abono0','g-notas'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('g-abono0').value='0';
+  await push(expenseRef,{desc,monto,abonos:[],cat:document.getElementById('g-cat').value,ts:Date.now()});
+  ['g-desc','g-monto'].forEach(id=>document.getElementById(id).value='');
 };
 
 window.addAbono = async key => {
@@ -689,38 +684,6 @@ window.closeModal = () => {
 document.getElementById('ticket-modal').addEventListener('click', e => {
   if (e.target===document.getElementById('ticket-modal')) window.closeModal();
 });
-
-/* ── PLAYERAS ── */
-window.updateShirtTalla = async (key,talla) => { await update(ref(db,'playeras/'+key),{talla}); };
-function renderShirts() {
-  const list=document.getElementById('shirt-list'), empty=document.getElementById('empty-shirts');
-  if(!list) return;
-  const entries=Object.entries(allShirts).map(([k,v])=>({...v,_key:k})).sort((a,b)=>a.ts-b.ts);
-  const SIZES=['XS','S','M','L','XL','XXL'], withSize=entries.filter(s=>s.talla&&s.talla!=='—');
-  const counts={}; SIZES.forEach(s=>counts[s]=0);
-  withSize.forEach(s=>{if(counts[s.talla]!==undefined)counts[s.talla]++;});
-  const sum=document.getElementById('shirt-summary');
-  if(sum) sum.innerHTML=`
-    <div class="shirt-stat"><span class="shirt-stat-lbl">Total personas</span><div class="shirt-stat-num">${entries.length}</div></div>
-    <div class="shirt-stat"><span class="shirt-stat-lbl">Con talla</span><div class="shirt-stat-num" style="color:var(--green-light)">${withSize.length}</div></div>
-    <div class="shirt-stat"><span class="shirt-stat-lbl">Sin talla</span><div class="shirt-stat-num" style="color:var(--red-bright)">${entries.length-withSize.length}</div></div>`;
-  const tally=document.getElementById('shirt-tally');
-  if(tally){
-    const pills=SIZES.filter(s=>counts[s]>0).map(s=>`<div class="size-pill">${s}<span>${counts[s]}</span></div>`).join('');
-    tally.innerHTML=pills?`<span style="font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(240,236,228,.28);margin-right:.5rem">TALLAS:</span>${pills}`:'';
-  }
-  empty.style.display=entries.length?'none':'block';
-  list.innerHTML='';
-  entries.forEach(s=>{
-    const div=document.createElement('div'); div.className='shirt-row';
-    div.innerHTML=`
-      <div class="shirt-name">${escHtml(s.nombre)}${s.isPlus1?'<span class="shirt-plus1-tag">+1 acompañante</span>':''}</div>
-      <select class="size-select" onchange="window.updateShirtTalla('${s._key}',this.value)">
-        ${['—','XS','S','M','L','XL','XXL'].map(t=>`<option value="${t}" ${s.talla===t?'selected':''}>${t}</option>`).join('')}
-      </select>`;
-    list.appendChild(div);
-  });
-}
 
 /* ── HELPERS ── */
 function formatDate(ts) {

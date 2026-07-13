@@ -346,6 +346,192 @@ nav {
   color:rgba(240,236,228,.25); font-weight:300;
 }
 
+/* ── GAME CARDS (clickable) ── */
+.game-card { cursor:pointer; }
+.game-card-cta {
+  font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:4px;
+  color:var(--red); opacity:.45; margin-top:1rem; position:relative;
+  transition:opacity .2s;
+}
+.game-card:hover .game-card-cta { opacity:1; }
+
+/* ── PONTE PEDO MODAL ── */
+.pp-modal-bg {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(4,2,0,.97); overflow-y:auto;
+  padding:2rem 1.5rem 5rem;
+}
+.pp-modal-bg.open { display:block; }
+.pp-modal { max-width:960px; margin:0 auto; }
+.pp-topbar { display:flex; justify-content:flex-end; padding-bottom:1.5rem; }
+.pp-close {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:4px;
+  background:none; border:1px solid rgba(240,236,228,.15);
+  color:rgba(240,236,228,.4); padding:7px 18px; cursor:pointer;
+  border-radius:2px; transition:all .15s;
+}
+.pp-close:hover { border-color:var(--red); color:var(--red-bright); }
+.pp-header { text-align:center; padding:1rem 0 2.5rem; }
+.pp-eyebrow {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:6px;
+  color:var(--red); opacity:.55; display:block; margin-bottom:1.5rem;
+}
+.pp-big-title {
+  font-family:'Bebas Neue',sans-serif; font-size:clamp(54px,12vw,100px);
+  letter-spacing:2px; line-height:1; color:var(--white); margin-bottom:.5rem;
+}
+.pp-subtitle {
+  font-family:'Oswald',sans-serif; font-weight:300;
+  font-size:13px; letter-spacing:3px; color:rgba(240,236,228,.3);
+}
+.pp-steps {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:.75rem; margin:2.5rem 0 3rem;
+}
+.pp-step {
+  background:var(--gray); border:1px solid rgba(192,40,30,.15);
+  border-radius:3px; padding:1rem 1.25rem;
+  display:flex; align-items:flex-start; gap:.75rem;
+}
+.pp-step-num {
+  font-family:'Bebas Neue',sans-serif; font-size:30px;
+  color:rgba(192,40,30,.35); line-height:1; flex-shrink:0;
+}
+.pp-step-txt {
+  font-family:'Oswald',sans-serif; font-weight:300; font-size:13px;
+  letter-spacing:.5px; color:rgba(240,236,228,.45); line-height:1.5; padding-top:4px;
+}
+.pp-section-label {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:5px;
+  color:rgba(240,236,228,.25); margin-bottom:1.25rem; display:block;
+}
+.pp-cards-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
+  gap:.875rem;
+}
+.pp-card {
+  background:var(--gray); border:1px solid rgba(240,236,228,.07);
+  border-radius:4px; padding:1.25rem 1rem 1rem;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:background .2s, border-color .2s; user-select:none;
+}
+.pp-card:hover { background:var(--gray-mid); border-color:rgba(192,40,30,.35); }
+.pp-card.open { background:var(--gray-mid); border-color:var(--red); border-top:3px solid var(--red); }
+.pp-card-suit { font-size:12px; position:absolute; top:.75rem; right:.875rem; opacity:.3; }
+.pp-card-suit.red { color:var(--red-bright); opacity:.5; }
+.pp-card-val {
+  font-family:'Bebas Neue',sans-serif; font-size:52px; line-height:1;
+  color:rgba(192,40,30,.13); pointer-events:none;
+}
+.pp-card-name {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:1px;
+  color:var(--white); line-height:1.2; margin-top:2px;
+}
+.pp-card-hint {
+  font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:3px;
+  color:rgba(192,40,30,.4); margin-top:.5rem;
+}
+.pp-card.open .pp-card-hint { display:none; }
+.pp-card-desc {
+  display:none; font-family:'Oswald',sans-serif; font-weight:300;
+  font-size:13px; line-height:1.7; letter-spacing:.3px;
+  color:rgba(240,236,228,.58); margin-top:.875rem;
+  padding-top:.875rem; border-top:1px solid rgba(192,40,30,.2);
+}
+.pp-card.open .pp-card-desc { display:block; }
+
+/* ── PONTE PEDO GAME ── */
+.pp-game-bar { text-align:center; margin-top:3rem; padding-top:2rem; border-top:1px solid rgba(192,40,30,.18); }
+.pp-start-btn {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:6px;
+  background:var(--red-bright); color:#fff; border:none;
+  padding:16px 40px; cursor:pointer;
+  clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
+  transition:background .15s, transform .1s;
+}
+.pp-start-btn:hover { background:#ff3d31; transform:scale(1.03); }
+.pp-game-view { display:none; margin-top:2.5rem; }
+.pp-game-view.active { display:block; }
+.pp-game-counter-wrap { text-align:center; margin-bottom:2rem; }
+.pp-game-counter-label {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:5px;
+  color:rgba(240,236,228,.3); margin-bottom:.5rem;
+}
+.pp-game-counter-num {
+  font-family:'Bebas Neue',sans-serif; font-size:clamp(52px,12vw,88px);
+  line-height:1; color:var(--white);
+}
+.pp-counter-of { font-size:.4em; color:rgba(240,236,228,.2); }
+.pp-game-progress-track {
+  width:100%; max-width:400px; height:4px; background:rgba(255,255,255,.06);
+  border-radius:2px; margin:.75rem auto 0; overflow:hidden;
+}
+.pp-game-progress-bar {
+  height:100%; background:var(--red); border-radius:2px;
+  width:0%; transition:width .4s ease;
+}
+.pp-dealer-area { text-align:center; margin:2rem 0; }
+.pp-deal-btn {
+  background:var(--gray); border:2px dashed rgba(192,40,30,.3);
+  border-radius:8px; width:160px; height:220px; cursor:pointer;
+  display:inline-flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:.75rem; transition:all .2s;
+}
+.pp-deal-btn:hover { border-color:var(--red); background:var(--gray-mid); transform:translateY(-4px); }
+.pp-deal-back { font-size:52px; }
+.pp-deal-label {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:4px;
+  color:rgba(240,236,228,.3);
+}
+.pp-drawn-display { text-align:center; animation:ppFadeIn .3s ease; }
+@keyframes ppFadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.pp-drawn-card {
+  display:inline-block; background:#fdfaf4; border-radius:8px;
+  width:160px; height:220px; position:relative;
+  box-shadow:0 8px 32px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.4);
+  margin-bottom:1.75rem;
+}
+.pp-drawn-corner {
+  position:absolute; display:flex; flex-direction:column;
+  align-items:center; line-height:1; font-family:'Bebas Neue',sans-serif;
+}
+.pp-drawn-corner span:first-child { font-size:22px; }
+.pp-drawn-corner span:last-child  { font-size:16px; }
+.pp-drawn-tl { top:10px; left:12px; }
+.pp-drawn-br { bottom:10px; right:12px; transform:rotate(180deg); }
+.pp-drawn-center-suit {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:56px; line-height:1;
+}
+.pp-drawn-card.red-card .pp-drawn-corner,
+.pp-drawn-card.red-card .pp-drawn-center-suit { color:var(--red); }
+.pp-drawn-card.black-card .pp-drawn-corner,
+.pp-drawn-card.black-card .pp-drawn-center-suit { color:#111; }
+.pp-drawn-rule { margin-bottom:1.75rem; }
+.pp-drawn-rule-name {
+  font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:2px;
+  color:var(--white); margin-bottom:.5rem;
+}
+.pp-drawn-rule-desc {
+  font-family:'Oswald',sans-serif; font-weight:300; font-size:14px;
+  line-height:1.7; color:rgba(240,236,228,.5);
+  max-width:500px; margin:0 auto; letter-spacing:.3px;
+}
+.pp-next-btn {
+  font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:5px;
+  background:none; border:1px solid rgba(192,40,30,.4); color:var(--red-bright);
+  padding:12px 32px; cursor:pointer; border-radius:2px;
+  transition:all .15s; margin-bottom:1rem;
+}
+.pp-next-btn:hover { background:rgba(192,40,30,.1); border-color:var(--red-bright); }
+.pp-shuffle-btn {
+  display:block; margin:.75rem auto 0;
+  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:4px;
+  background:none; border:none; color:rgba(240,236,228,.25);
+  cursor:pointer; transition:color .15s;
+}
+.pp-shuffle-btn:hover { color:var(--white); }
+
 /* ── FOOTER ── */
 footer {
   background:var(--gray);
@@ -401,6 +587,25 @@ footer {
 }
 .lb-nav button:hover { border-color:rgba(240,236,228,.45); color:rgba(240,236,228,.85); }
 
+/* ── DRINKING GAMES ── */
+.games-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.25rem; max-width:800px; margin:3rem auto 0; }
+.game-card {
+  background:var(--gray); border:1px solid rgba(240,236,228,.06);
+  border-top:3px solid var(--red); border-radius:4px;
+  padding:2rem 1.75rem 1.75rem; position:relative; overflow:hidden;
+  transition:background .2s;
+}
+.game-card:hover { background:var(--gray-mid); }
+.game-num {
+  font-family:'Bebas Neue',sans-serif; font-size:72px; line-height:1;
+  color:rgba(192,40,30,.12); position:absolute; top:.25rem; right:1rem;
+  pointer-events:none;
+}
+.game-title {
+  font-family:'Bebas Neue',sans-serif; font-size:24px;
+  letter-spacing:2px; color:var(--white); position:relative;
+}
+
 @media(max-width:520px){
   .nav-links { display:none; }
   .cd-unit { padding:.5rem .7rem; }
@@ -423,6 +628,7 @@ footer {
     <li><a href="#chismografo">Chismógrafo</a></li>
     <li><a href="#awards">Awards</a></li>
     <li><a href="#playlist">Playlist</a></li>
+    <li><a href="#juegos">Drinking Games</a></li>
   </ul>
 </nav>
 
@@ -572,6 +778,181 @@ footer {
   <span class="btn-sub-text">Agrega tu entrada · Lee las de todos ↗</span>
 </section>
 
+<!-- DRINKING GAMES -->
+<section class="anuario-section" id="juegos" style="border-top:1px solid rgba(192,40,30,.2);">
+  <span class="section-eye">&#9632;&nbsp; Para calentar el ambiente &nbsp;&#9632;</span>
+  <h2 class="section-heading">Drinking <em>Games</em></h2>
+  <p class="section-body">Los juegos de siempre, para la noche que nunca van a olvidar.</p>
+  <div class="games-grid">
+    <div class="game-card" onclick="openPontePedo()">
+      <div class="game-num">01</div>
+      <div class="game-title">Ponte Pedo</div>
+      <div class="game-card-cta">Ver reglas &#9654;</div>
+    </div>
+    <div class="game-card">
+      <div class="game-num">02</div>
+      <div class="game-title">Yo Nunca, Nunca</div>
+      <div class="game-card-cta">Próximamente</div>
+    </div>
+    <div class="game-card">
+      <div class="game-num">03</div>
+      <div class="game-title">Millenial Trivia</div>
+      <div class="game-card-cta">Próximamente</div>
+    </div>
+  </div>
+</section>
+
+<!-- PONTE PEDO MODAL -->
+<div class="pp-modal-bg" id="pp-modal">
+  <div class="pp-modal">
+    <div class="pp-topbar">
+      <button class="pp-close" onclick="closePontePedo()">&#215;&nbsp; Cerrar</button>
+    </div>
+
+    <div class="pp-header">
+      <span class="pp-eyebrow">&#9632;&nbsp; El clásico &nbsp;&#9632;</span>
+      <div class="pp-big-title">Ponte Pedo</div>
+      <div class="pp-subtitle">Baraja francesa · 52 cartas · Sin límite de jugadores</div>
+    </div>
+
+    <div class="pp-steps">
+      <div class="pp-step"><div class="pp-step-num">1</div><div class="pp-step-txt">Revolver las cartas</div></div>
+      <div class="pp-step"><div class="pp-step-num">2</div><div class="pp-step-txt">En orden, cada jugador toma una carta y hace la acción</div></div>
+      <div class="pp-step"><div class="pp-step-num">3</div><div class="pp-step-txt">El que pierda el mini-juego o sea indicado toma de su bebida</div></div>
+      <div class="pp-step"><div class="pp-step-num">4</div><div class="pp-step-txt">Repetir hasta que la mayoría esté peda. ¡Eso es ganar!</div></div>
+    </div>
+
+    <span class="pp-section-label">&#9632;&nbsp; Toca cada carta para ver las reglas</span>
+    <div class="pp-cards-grid">
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit red">♥ ♦</span>
+        <div class="pp-card-val">A</div>
+        <div class="pp-card-name">Caricachupas</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">Digan en ritmo (2 golpes en piernas + 2 aplausos): <em>"Caricachupas"</em> → <em>"presenta"</em> → <em>"nombres de"</em> → alguien elige el tema. Cada jugador debe dar un ejemplo sin romper el ritmo. El que tarde o falle, toma.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit">♠ ♣</span>
+        <div class="pp-card-val">2</div>
+        <div class="pp-card-name">El Cuento</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">El que saca empieza: <em>"Había una vez…"</em> + una palabra. El siguiente repite todo y agrega una palabra más. Así hasta que alguien se equivoque u olvide algo. Ese toma.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit">♠ ♣</span>
+        <div class="pp-card-val">3</div>
+        <div class="pp-card-name">Palabra Prohibida</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">El que saca elige una palabra prohibida. Cualquier jugador que la diga después de ese momento toma. La regla dura hasta que alguien saque otro 3 y la cambie.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit red">♥ ♦</span>
+        <div class="pp-card-val">4</div>
+        <div class="pp-card-name">Pepe Pinga</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">Alguien piensa el abecedario en silencio hasta que otro diga "¡Basta!". Con esa letra, todos esconden sus dientes con los labios y en orden dicen un adjetivo: hombres <em>"Mi pinga es…"</em>, mujeres <em>"Mi pepa es…"</em>. El que muestre los dientes, repita o no sepa, toma.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit">♠ ♣</span>
+        <div class="pp-card-val">7</div>
+        <div class="pp-card-name">Múltiplos</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">El que saca elige un número. Cuentan en orden, pero en vez de decir ese número o sus múltiplos, dan un aplauso y <strong>reversan</strong> la dirección. El que se equivoque toma.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit red">♥ ♦</span>
+        <div class="pp-card-val">8</div>
+        <div class="pp-card-name">El Gato</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">El que saca el 8 es el mesero de todos los demás. Debe atender cualquier petición de bebida. Su turno termina cuando alguien saque otro 8.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit">♠ ♣</span>
+        <div class="pp-card-val">9</div>
+        <div class="pp-card-name">Preguntas</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">Solo se pueden hacer preguntas, nunca contestarlas. El que saca le pregunta a alguien con la mirada; ese le pregunta a otro, y así. Nadie puede contestar, regresar la pregunta al mismo ni usar preguntas de una sola palabra. El que falle toma.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit red">♥ ♦</span>
+        <div class="pp-card-val">10</div>
+        <div class="pp-card-name">Ninjas</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">Todos juntan las palmas como rezando. El que saca pasa el poder con un golpe karateka gritando <em>"¡Ayá!"</em>. Opciones: continuar (<em>Ayá</em>), regresar (<em>Akuyá</em>), o tirar un hadoken a alguien no adyacente gritando <em>"TU TU TU TU TU"</em> — quien lo recibe responde <em>"FUM FUM FUM FUM FUM"</em>. El que falle o no cache, toma.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit">♠ ♣</span>
+        <div class="pp-card-val">J</div>
+        <div class="pp-card-name">Todos Toman</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">Sin explicaciones. Todos toman.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit red">♥ ♦</span>
+        <div class="pp-card-val">Q</div>
+        <div class="pp-card-name">La Reina</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">El que saca pone una regla absurda que todos deben seguir — nadie puede pararse sin pedir permiso, terminar cada frase con <em>"entre mis piernas"</em>, etc. El que la rompa toma. La regla dura hasta que salga otra Q.</div>
+      </div>
+
+      <div class="pp-card" onclick="togglePPCard(this)">
+        <span class="pp-card-suit">♠ ♣</span>
+        <div class="pp-card-val">K</div>
+        <div class="pp-card-name">Cuarto Rey</div>
+        <div class="pp-card-hint">toca para ver</div>
+        <div class="pp-card-desc">Los 4 reyes se acumulan: <strong>1°</strong> elige el vaso del castigo · <strong>2°</strong> sirve lo que quiera mezclado a placer · <strong>3°</strong> dice en cuántos tragos se termina · <strong>4°</strong> se lo chupa entero.</div>
+      </div>
+
+
+    </div>
+
+    <!-- GAME MODE -->
+    <div class="pp-game-bar">
+      <button class="pp-start-btn" onclick="startPPGame()">&#127183;&nbsp; Empezar a jugar</button>
+    </div>
+
+    <div class="pp-game-view" id="pp-game-view">
+      <div class="pp-game-counter-wrap">
+        <div class="pp-game-counter-label" id="pp-counter-label">Baraja lista</div>
+        <div class="pp-game-counter-num"><span id="pp-remaining">52</span><span class="pp-counter-of">/52</span></div>
+        <div class="pp-game-progress-track"><div class="pp-game-progress-bar" id="pp-progress-bar"></div></div>
+      </div>
+
+      <div class="pp-dealer-area" id="pp-dealer-area">
+        <button class="pp-deal-btn" id="pp-deal-btn" onclick="dealPPCard()">
+          <span class="pp-deal-back">&#127183;</span>
+          <span class="pp-deal-label">Sacar carta</span>
+        </button>
+      </div>
+
+      <div class="pp-drawn-display" id="pp-drawn-display" style="display:none">
+        <div class="pp-drawn-card" id="pp-drawn-card">
+          <div class="pp-drawn-corner pp-drawn-tl"><span id="pp-val-tl"></span><span id="pp-suit-tl"></span></div>
+          <div class="pp-drawn-center-suit" id="pp-center-suit"></div>
+          <div class="pp-drawn-corner pp-drawn-br"><span id="pp-val-br"></span><span id="pp-suit-br"></span></div>
+        </div>
+        <div class="pp-drawn-rule">
+          <div class="pp-drawn-rule-name" id="pp-rule-name"></div>
+          <div class="pp-drawn-rule-desc" id="pp-rule-desc"></div>
+        </div>
+        <button class="pp-next-btn" id="pp-next-btn" onclick="dealPPCard()">Siguiente carta &#9654;</button>
+        <button class="pp-shuffle-btn" id="pp-shuffle-btn" style="display:none" onclick="startPPGame()">&#9851;&nbsp; Revolver las cartas</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- FOOTER -->
 
 
@@ -693,6 +1074,116 @@ document.addEventListener('keydown', e => {
 });
 
 loadMosaic();
+
+/* ── PONTE PEDO ── */
+const PP_RULES = {
+  'A':  { name:'Caricachupas',     desc:'Digan en ritmo (2 golpes en piernas + 2 aplausos): "Caricachupas" → "presenta" → "nombres de" → alguien elige el tema. Cada jugador debe dar un ejemplo sin romper el ritmo. El que tarde o falle, toma.' },
+  '2':  { name:'El Cuento',        desc:'El que saca empieza: "Había una vez…" + una palabra. El siguiente repite todo y agrega una palabra más. Así hasta que alguien se equivoque u olvide algo. Ese toma.' },
+  '3':  { name:'Palabra Prohibida',desc:'El que saca elige una palabra prohibida. Cualquier jugador que la diga después toma. Dura hasta que salga otro 3.' },
+  '4':  { name:'Pepe Pinga',       desc:'Alguien piensa el abecedario en silencio hasta que otro diga "¡Basta!". Con esa letra, todos (dientes escondidos) dicen en orden: hombres "Mi pinga es…", mujeres "Mi pepa es…" + adjetivo. El que muestre dientes, repita o no sepa, toma.' },
+  '5':  { name:'Elige Quién Toma', desc:'El que saca señala a quien quiera. Ese toma. Sin explicaciones, sin excusas.' },
+  '6':  { name:'Parejas Toman',    desc:'Cada quien elige a su pareja de juego. Los dos toman juntos. Si alguien no tiene pareja, toma doble.' },
+  '7':  { name:'Múltiplos',        desc:'El que saca elige un número. Cuentan en orden, pero en vez de decir ese número o sus múltiplos, dan un aplauso y reversan la dirección. El que se equivoque toma.' },
+  '8':  { name:'El Gato',          desc:'El que saca el 8 es el mesero de todos los demás. Debe atender cualquier petición de bebida. Su turno termina cuando alguien saque otro 8.' },
+  '9':  { name:'Preguntas',        desc:'Solo se pueden hacer preguntas, nunca contestarlas. Nadie puede contestar, regresar la pregunta al mismo ni usar preguntas de una sola palabra. El que falle toma.' },
+  '10': { name:'Ninjas',           desc:'Palmas juntas como rezando. El poder se pasa con un golpe karateka: "¡Ayá!" (continuar), "¡Akuyá!" (regresar), o un hadoken gritando "TU TU TU TU TU" — quien lo recibe responde "FUM FUM FUM FUM FUM". El que falle toma.' },
+  'J':  { name:'Todos Toman',      desc:'Sin explicaciones. Todos toman.' },
+  'Q':  { name:'La Reina',         desc:'El que saca pone una regla absurda que todos deben seguir. El que la rompa toma. Dura hasta que salga otra Q.' },
+  'K':  { name:'Cuarto Rey',       desc:'Los 4 reyes se acumulan — 1° elige el vaso · 2° sirve la mezcla · 3° dice en cuántos tragos · 4° se lo chupa entero.' },
+};
+const PP_SUITS   = ['♠','♥','♦','♣'];
+const PP_RED     = ['♥','♦'];
+const PP_VALUES  = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const PP_LABELS  = {
+  0:'Baraja lista 🎴', 52:'¡Se acabaron! Revuelve 🍺',
+};
+function ppCountLabel(left) {
+  if (left === 52) return 'Baraja lista 🎴';
+  if (left === 0)  return '¡Se acabaron! 🍺';
+  if (left <= 5)   return '¡Últimas cartas! 🔥';
+  if (left <= 15)  return '¡Ya casi se ponen pedos!';
+  if (left <= 30)  return 'Ya van calentando 🔥';
+  return 'Empezando...';
+}
+
+let ppDeck = [], ppIdx = 0;
+
+function buildPPDeck() {
+  const deck = [];
+  PP_SUITS.forEach(suit => PP_VALUES.forEach(val => deck.push({val, suit})));
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
+
+function startPPGame() {
+  ppDeck = buildPPDeck();
+  ppIdx  = 0;
+  document.getElementById('pp-game-view').classList.add('active');
+  document.getElementById('pp-dealer-area').style.display  = 'block';
+  document.getElementById('pp-drawn-display').style.display = 'none';
+  document.getElementById('pp-shuffle-btn').style.display   = 'none';
+  document.getElementById('pp-next-btn').style.display      = 'inline-block';
+  updatePPCounter();
+  document.getElementById('pp-game-view').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function dealPPCard() {
+  if (ppIdx >= ppDeck.length) return;
+  const card = ppDeck[ppIdx++];
+  const rule = PP_RULES[card.val] || { name: card.val, desc: '' };
+  const isRed = PP_RED.includes(card.suit);
+
+  const dc = document.getElementById('pp-drawn-card');
+  dc.className = 'pp-drawn-card ' + (isRed ? 'red-card' : 'black-card');
+
+  document.getElementById('pp-val-tl').textContent    = card.val;
+  document.getElementById('pp-suit-tl').textContent   = card.suit;
+  document.getElementById('pp-val-br').textContent    = card.val;
+  document.getElementById('pp-suit-br').textContent   = card.suit;
+  document.getElementById('pp-center-suit').textContent = card.suit;
+  document.getElementById('pp-rule-name').textContent  = rule.name;
+  document.getElementById('pp-rule-desc').textContent  = rule.desc;
+
+  document.getElementById('pp-dealer-area').style.display   = 'none';
+  const dd = document.getElementById('pp-drawn-display');
+  dd.style.display = 'block';
+  dd.style.animation = 'none';
+  void dd.offsetWidth;
+  dd.style.animation = '';
+
+  const done = ppIdx >= ppDeck.length;
+  document.getElementById('pp-next-btn').style.display    = done ? 'none'   : 'inline-block';
+  document.getElementById('pp-shuffle-btn').style.display = done ? 'block'  : 'none';
+
+  updatePPCounter();
+}
+
+function updatePPCounter() {
+  const left = ppDeck.length - ppIdx;
+  document.getElementById('pp-remaining').textContent    = left;
+  document.getElementById('pp-counter-label').textContent = ppCountLabel(left);
+  const pct = ((ppDeck.length - left) / ppDeck.length) * 100;
+  document.getElementById('pp-progress-bar').style.width = pct + '%';
+}
+
+function openPontePedo() {
+  document.getElementById('pp-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePontePedo() {
+  document.getElementById('pp-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function togglePPCard(el) { el.classList.toggle('open'); }
+document.getElementById('pp-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('pp-modal')) closePontePedo();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('pp-modal').classList.contains('open')) closePontePedo();
+});
 </script>
 </body>
 </html>
