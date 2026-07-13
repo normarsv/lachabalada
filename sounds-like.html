@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Chabalada · Sounds Like</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#e8352a;--white:#f0ece4;--gold:#c9a84c;--green:#2ab55a}
+body{background:#0d0d0d;color:var(--white);font-family:'Space Grotesk',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;overflow:hidden;}
+.screen{width:100%;display:flex;flex-direction:column;align-items:center;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+
+/* ── LOBBY ── */
+#screen-lobby{text-align:center;max-width:620px;}
+.logo-eyebrow{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:8px;color:rgba(232,53,42,.55);margin-bottom:.5rem;}
+.logo-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(40px,8vw,82px);line-height:.9;color:#fff;margin-bottom:.5rem;}
+.logo-title span{color:var(--red);}
+.lobby-sub{font-weight:300;font-size:14px;color:rgba(240,236,228,.35);letter-spacing:3px;margin-bottom:2.5rem;}
+.join-url{font-family:'Bebas Neue',sans-serif;font-size:clamp(14px,2.5vw,22px);letter-spacing:4px;color:var(--red);background:rgba(232,53,42,.07);border:1px solid rgba(232,53,42,.25);padding:.75rem 2rem;border-radius:2px;margin-bottom:.4rem;display:inline-block;}
+.join-hint{font-size:11px;color:rgba(240,236,228,.2);letter-spacing:3px;margin-bottom:2.5rem;}
+.players-label{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:5px;color:rgba(240,236,228,.28);margin-bottom:.875rem;}
+#player-list{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;min-height:36px;margin-bottom:2rem;}
+.player-chip{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:5px 14px;border-radius:2px;animation:fadeIn .3s ease;}
+.btn-start{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:6px;background:var(--red);color:#fff;border:none;padding:16px 48px;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:background .15s;}
+.btn-start:hover{background:#ff4535;}
+.btn-start:disabled{background:rgba(232,53,42,.25);cursor:not-allowed;}
+
+/* ── QUESTION ── */
+#screen-question{max-width:960px;text-align:center;}
+.q-topbar{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:2.5rem;}
+.q-counter{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;color:rgba(240,236,228,.28);}
+.timer-wrap{position:relative;width:64px;height:64px;flex-shrink:0;}
+.timer-svg{transform:rotate(-90deg);}
+.timer-circle{transition:stroke-dashoffset .95s linear;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;}
+.q-eyebrow{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:7px;color:rgba(232,53,42,.45);margin-bottom:1.5rem;}
+.q-clue{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,118px);letter-spacing:8px;line-height:1;color:#fff;margin-bottom:1.25rem;text-shadow:0 0 80px rgba(232,53,42,.18);}
+.q-hint{font-size:14px;font-weight:300;color:rgba(240,236,228,.28);letter-spacing:2px;margin-bottom:3rem;}
+.answer-count{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;color:rgba(240,236,228,.22);margin-bottom:1.5rem;}
+.btn-reveal{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:5px;background:none;border:1px solid rgba(232,53,42,.35);color:rgba(232,53,42,.8);padding:12px 32px;cursor:pointer;border-radius:2px;transition:all .15s;}
+.btn-reveal:hover{background:rgba(232,53,42,.1);border-color:var(--red);color:#fff;}
+
+/* ── REVEAL ── */
+#screen-reveal{max-width:900px;text-align:center;}
+.reveal-label{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:7px;color:rgba(240,236,228,.28);margin-bottom:.75rem;}
+.reveal-answer{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,108px);letter-spacing:6px;line-height:1;color:var(--red);margin-bottom:3rem;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+.reveal-cols{display:grid;grid-template-columns:1fr 1fr;gap:2rem;width:100%;margin-bottom:2.5rem;text-align:left;}
+.rc-label{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;margin-bottom:.75rem;}
+.rc-correct .rc-label{color:var(--green);}
+.rc-wrong   .rc-label{color:var(--red);}
+.rc-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.rc-chip{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;padding:5px 14px;border-radius:2px;}
+.rc-correct .rc-chip{background:rgba(42,181,90,.1);border:1px solid rgba(42,181,90,.3);color:var(--green);}
+.rc-wrong   .rc-chip{background:rgba(232,53,42,.08);border:1px solid rgba(232,53,42,.2);color:rgba(232,53,42,.85);}
+.rc-empty{font-size:13px;font-weight:300;color:rgba(240,236,228,.2);}
+
+/* ── LEADERBOARD ── */
+#screen-results{max-width:680px;text-align:center;}
+.results-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,52px);letter-spacing:4px;color:#fff;margin-bottom:.5rem;}
+.results-title span{color:var(--red);}
+.leaderboard{margin:1.5rem 0;text-align:left;width:100%;}
+.lb-row{display:flex;align-items:center;gap:12px;padding:.75rem 1rem;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:3px;animation:fadeIn .3s ease both;}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(240,236,228,.22);min-width:32px;}
+.lb-rank.gold{color:var(--gold);}
+.lb-rank.silver{color:#a8a8a8;}
+.lb-rank.bronze{color:#cd7f32;}
+.lb-name{flex:1;font-size:15px;font-weight:600;}
+.lb-score{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);letter-spacing:2px;}
+
+/* ── FINAL ── */
+#screen-final{max-width:680px;text-align:center;}
+.winner-tag{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(201,168,76,.65);margin-bottom:.5rem;}
+.winner-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,7vw,72px);color:var(--gold);line-height:1;margin-bottom:.25rem;}
+.winner-score{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:4px;color:rgba(240,236,228,.35);margin-bottom:2rem;}
+
+/* shared btn */
+.btn-action{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:6px;background:var(--red);color:#fff;border:none;padding:14px 40px;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:background .15s;margin-top:.5rem;}
+.btn-action:hover{background:#ff4535;}
+</style>
+</head>
+<body>
+
+<!-- LOBBY -->
+<div id="screen-lobby" class="screen">
+  <div class="logo-eyebrow">&#9632;&nbsp; La Chabalada · 2006 &nbsp;&#9632;</div>
+  <div class="logo-title">Sounds <span>Like</span></div>
+  <div class="lobby-sub">Adivina la palabra por su sonido</div>
+  <div class="join-url">lachabalada.com/sounds-like-play.html</div>
+  <div class="join-hint">Entra desde tu cel para jugar</div>
+  <div class="players-label">Jugadores conectados</div>
+  <div id="player-list"></div>
+  <button class="btn-start" id="btn-start" disabled>Iniciar juego &#9654;</button>
+</div>
+
+<!-- QUESTION -->
+<div id="screen-question" class="screen" style="display:none">
+  <div class="q-topbar">
+    <div class="q-counter" id="q-counter">Palabra 1 / 12</div>
+    <div class="timer-wrap">
+      <svg class="timer-svg" width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+        <circle id="timer-arc" class="timer-circle" cx="32" cy="32" r="28" fill="none"
+          stroke="#e8352a" stroke-width="4" stroke-dasharray="175.9" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-num" id="timer-num">25</div>
+    </div>
+  </div>
+  <div class="q-eyebrow">&#9632;&nbsp; ¿Qué palabra suena como? &nbsp;&#9632;</div>
+  <div class="q-clue" id="q-clue">—</div>
+  <div class="q-hint" id="q-hint"></div>
+  <div class="answer-count" id="answer-count"></div>
+  <button class="btn-reveal" onclick="revealNow()">Revelar respuesta &#9654;</button>
+</div>
+
+<!-- REVEAL -->
+<div id="screen-reveal" class="screen" style="display:none">
+  <div class="reveal-label">&#9632;&nbsp; La respuesta era &nbsp;&#9632;</div>
+  <div class="reveal-answer" id="reveal-answer">—</div>
+  <div class="reveal-cols">
+    <div class="rc-correct">
+      <div class="rc-label">&#10003;&nbsp; Lo adivinaron</div>
+      <div class="rc-chips" id="correct-chips"></div>
+    </div>
+    <div class="rc-wrong">
+      <div class="rc-label">&#127866;&nbsp; Toman</div>
+      <div class="rc-chips" id="wrong-chips"></div>
+    </div>
+  </div>
+  <button class="btn-action" onclick="afterReveal()">Siguiente &#9654;</button>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="screen-results" class="screen" style="display:none">
+  <div class="results-title">Tabla de <span>posiciones</span></div>
+  <div class="leaderboard" id="leaderboard"></div>
+  <button class="btn-action" onclick="nextQuestion()">Siguiente palabra &#9654;</button>
+</div>
+
+<!-- FINAL -->
+<div id="screen-final" class="screen" style="display:none">
+  <div class="logo-eyebrow">&#9632;&nbsp; Juego terminado &nbsp;&#9632;</div>
+  <div class="winner-tag">&#127942; Ganador de Sounds Like</div>
+  <div class="winner-name" id="winner-name">—</div>
+  <div class="winner-score" id="winner-score"></div>
+  <div class="leaderboard" id="final-leaderboard" style="margin-top:1.5rem;max-width:500px;"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey:      "AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
+  databaseURL: "https://lachabalada-6c3c3-default-rtdb.firebaseio.com",
+  projectId:   "lachabalada-6c3c3",
+  appId:       "1:412828348018:web:2bf7de6ebdd6ba5e8e1ceb"
+});
+const db = getDatabase(app);
+
+const QUESTIONS = [
+  { clue:"TELE · FONO",    answer:"Teléfono",   hint:"Lo usabas para llamar en 2006" },
+  { clue:"AGUA · CATE",    answer:"Aguacate",   hint:"Ingrediente número 1 del guacamole" },
+  { clue:"VACA · SIONES",  answer:"Vacaciones", hint:"Lo que todos querían en la prepa" },
+  { clue:"POLO · CIA",     answer:"Policía",    hint:"La que te para si manejas borracho" },
+  { clue:"CARRO · TERA",   answer:"Carretera",  hint:"Lo que conecta Navojoa con el mundo" },
+  { clue:"CASA · MIENTO",  answer:"Casamiento", hint:"A lo que quizás ya llegaste" },
+  { clue:"BURRO · CRACIA", answer:"Burocracia", hint:"El trámite que nunca termina" },
+  { clue:"MANO · TAZO",    answer:"Manotazo",   hint:"Lo que le das a la mesa cuando pierdes" },
+  { clue:"PEDO · METRO",   answer:"Pedómetro",  hint:"Cuenta tus pasos, no tus pedos" },
+  { clue:"SOL · DADO",     answer:"Soldado",    hint:"El que sirve a su país" },
+  { clue:"CHEVE · CERÍA",  answer:"Cervecería", hint:"El lugar más sagrado de la noche" },
+  { clue:"CHABA · LADA",   answer:"Chabalada",  hint:"¿Ya saben dónde están? 😉" },
+];
+
+const CIRC = 175.9;
+const TIME = 25;
+
+let players    = {};
+let allAnswers = {};
+let qIdx       = 0;
+let timerInt   = null;
+let timeLeft   = TIME;
+
+const gameRef    = ref(db, 'sl/game');
+const playersRef = ref(db, 'sl/players');
+const answersRef = ref(db, 'sl/answers');
+
+function show(id) {
+  ['screen-lobby','screen-question','screen-reveal','screen-results','screen-final']
+    .forEach(s => { document.getElementById(s).style.display = s===id ? 'flex' : 'none'; });
+}
+
+function esc(s='') {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderLeaderboard(id, data) {
+  const sorted = Object.values(data).sort((a,b) => b.score - a.score).slice(0,10);
+  const medals = ['gold','silver','bronze'];
+  document.getElementById(id).innerHTML = sorted.map((p,i) => `
+    <div class="lb-row" style="animation-delay:${i*.05}s">
+      <div class="lb-rank ${medals[i]||''}">${i===0?'🏆':i+1}</div>
+      <div class="lb-name">${esc(p.name)}</div>
+      <div class="lb-score">${p.score} pts</div>
+    </div>`).join('');
+}
+
+onValue(playersRef, snap => {
+  players = snap.val() || {};
+  document.getElementById('player-list').innerHTML = Object.values(players)
+    .map(p => `<div class="player-chip">${esc(p.name)}</div>`).join('');
+  document.getElementById('btn-start').disabled = Object.keys(players).length < 1;
+});
+
+onValue(answersRef, snap => {
+  allAnswers = snap.val() || {};
+  const current = Object.values(allAnswers).filter(a => a.qIdx === qIdx);
+  const total   = Object.keys(players).length;
+  const el      = document.getElementById('answer-count');
+  if (el) el.textContent = total > 0 ? `${current.length} / ${total} respondieron` : '';
+});
+
+function startQuestion(idx) {
+  qIdx     = idx;
+  timeLeft = TIME;
+  const q  = QUESTIONS[idx];
+  document.getElementById('q-counter').textContent = `Palabra ${idx+1} / ${QUESTIONS.length}`;
+  document.getElementById('q-clue').textContent    = q.clue;
+  document.getElementById('q-hint').textContent    = q.hint;
+  document.getElementById('answer-count').textContent = '';
+  set(gameRef, { status:'question', qIdx:idx, startedAt:Date.now(), timeLimit:TIME, totalQ:QUESTIONS.length });
+  const arc = document.getElementById('timer-arc');
+  const num = document.getElementById('timer-num');
+  arc.style.transition = 'none';
+  arc.style.strokeDashoffset = '0';
+  void arc.offsetWidth;
+  arc.style.transition = 'stroke-dashoffset .95s linear';
+  num.textContent = TIME;
+  num.style.color = '#fff';
+  clearInterval(timerInt);
+  timerInt = setInterval(() => {
+    timeLeft--;
+    num.textContent = timeLeft;
+    arc.style.strokeDashoffset = CIRC * (1 - timeLeft / TIME);
+    if (timeLeft <= 5) num.style.color = '#e8352a';
+    if (timeLeft <= 0) clearInterval(timerInt);
+  }, 1000);
+  show('screen-question');
+}
+
+window.revealNow = () => {
+  clearInterval(timerInt);
+  const q       = QUESTIONS[qIdx];
+  const current = Object.values(allAnswers).filter(a => a.qIdx === qIdx);
+  set(gameRef, { status:'reveal', qIdx, answer:q.answer });
+
+  const correctNames = current.filter(a => a.correct).map(a => esc(a.playerName));
+  const answeredSet  = new Set(current.map(a => a.playerName));
+  const wrongNames   = [
+    ...current.filter(a => !a.correct).map(a => esc(a.playerName)),
+    ...Object.values(players).filter(p => !answeredSet.has(p.name)).map(p => esc(p.name))
+  ];
+
+  document.getElementById('reveal-answer').textContent = q.answer;
+  document.getElementById('correct-chips').innerHTML = correctNames.length
+    ? correctNames.map(n => `<div class="rc-chip">${n}</div>`).join('')
+    : '<span class="rc-empty">Nadie lo adivinó 😅</span>';
+  document.getElementById('wrong-chips').innerHTML = wrongNames.length
+    ? wrongNames.map(n => `<div class="rc-chip">${n} 🍺</div>`).join('')
+    : '<span class="rc-empty">¡Todos bien!</span>';
+
+  show('screen-reveal');
+};
+
+window.afterReveal = () => {
+  remove(answersRef);
+  if (qIdx + 1 >= QUESTIONS.length) {
+    showFinal();
+  } else {
+    set(gameRef, { status:'leaderboard', qIdx });
+    renderLeaderboard('leaderboard', players);
+    show('screen-results');
+  }
+};
+
+window.nextQuestion = () => {
+  startQuestion(qIdx + 1);
+};
+
+function showFinal() {
+  set(gameRef, { status:'final' });
+  const sorted = Object.values(players).sort((a,b) => b.score - a.score);
+  const winner = sorted[0];
+  document.getElementById('winner-name').textContent  = winner?.name || '—';
+  document.getElementById('winner-score').textContent = winner ? `${winner.score} puntos` : '';
+  renderLeaderboard('final-leaderboard', players);
+  show('screen-final');
+}
+
+document.getElementById('btn-start').onclick = () => {
+  remove(answersRef);
+  Object.keys(players).forEach(k => update(ref(db,`sl/players/${k}`), {score:0}));
+  startQuestion(0);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sounds Like · La Chabalada</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#e8352a;--white:#f0ece4;--gold:#c9a84c;--green:#2ab55a}
+body{background:#0d0d0d;color:var(--white);font-family:'Space Grotesk',sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1rem;}
+.screen{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes popIn{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
+
+/* ── JOIN ── */
+.join-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#fff;margin-bottom:.2rem;}
+.join-logo span{color:var(--red);}
+.join-sub{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:6px;color:rgba(240,236,228,.28);margin-bottom:2rem;}
+.field-lbl{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:rgba(240,236,228,.32);margin-bottom:.5rem;text-align:left;width:100%;}
+.name-inp{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(240,236,228,.1);border-radius:3px;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;padding:14px 16px;outline:none;margin-bottom:1rem;transition:border-color .15s;text-align:center;}
+.name-inp:focus{border-color:rgba(232,53,42,.5);}
+.name-inp::placeholder{color:rgba(240,236,228,.18);font-weight:300;}
+.btn-join{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:6px;background:var(--red);color:#fff;border:none;padding:14px;cursor:pointer;width:100%;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:background .15s;}
+.btn-join:hover{background:#ff4535;}
+.btn-join:disabled{background:rgba(232,53,42,.25);cursor:not-allowed;}
+
+/* ── WAITING ── */
+.wait-icon{font-size:44px;margin-bottom:1rem;animation:bounce 1.5s ease-in-out infinite;}
+.wait-name{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:#fff;margin-bottom:.25rem;}
+.wait-hint{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:rgba(240,236,228,.28);}
+
+/* ── QUESTION (player) ── */
+#screen-question{max-width:420px;}
+.p-timer{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--red);line-height:1;margin-bottom:.75rem;}
+.p-eyebrow{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:5px;color:rgba(232,53,42,.4);margin-bottom:.75rem;}
+.p-clue{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,9vw,52px);letter-spacing:4px;line-height:1;color:#fff;margin-bottom:.75rem;}
+.p-hint{font-size:12px;font-weight:300;color:rgba(240,236,228,.28);letter-spacing:1px;margin-bottom:1.75rem;}
+.ans-inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(240,236,228,.12);border-radius:4px;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;padding:14px 16px;outline:none;margin-bottom:.875rem;transition:border-color .15s;text-align:center;letter-spacing:1px;}
+.ans-inp:focus{border-color:rgba(232,53,42,.5);}
+.ans-inp::placeholder{color:rgba(240,236,228,.18);font-weight:300;font-size:15px;letter-spacing:1px;}
+.btn-submit{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:6px;background:var(--red);color:#fff;border:none;padding:14px;cursor:pointer;width:100%;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:background .15s,opacity .15s;}
+.btn-submit:hover{background:#ff4535;}
+.btn-submit:disabled{opacity:.3;cursor:not-allowed;}
+
+/* ── ANSWERED (waiting for reveal) ── */
+.answered-icon{font-size:52px;margin-bottom:1rem;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+.answered-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#fff;margin-bottom:.25rem;}
+.answered-sub{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:rgba(240,236,228,.28);}
+.answered-answer{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:rgba(240,236,228,.45);margin-top:.75rem;}
+
+/* ── REVEAL (result) ── */
+.result-icon{font-size:60px;margin-bottom:1rem;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+.result-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;margin-bottom:.25rem;}
+.result-title.correct{color:var(--green);}
+.result-title.wrong{color:var(--red);}
+.result-points{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:rgba(240,236,228,.35);margin-bottom:1rem;}
+.result-word-label{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:5px;color:rgba(240,236,228,.28);margin-bottom:.35rem;}
+.result-word{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:#fff;}
+
+/* ── LEADERBOARD (player) ── */
+.lb-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#fff;margin-bottom:1.5rem;}
+.lb-title span{color:var(--red);}
+.my-rank-lbl{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:rgba(240,236,228,.28);}
+.my-rank{font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--gold);line-height:1;margin:.25rem 0;}
+.my-score{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:rgba(240,236,228,.35);margin-bottom:1.5rem;}
+.next-hint{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:4px;color:rgba(240,236,228,.18);animation:blink 1.3s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── FINAL ── */
+.final-eyebrow{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:6px;color:rgba(201,168,76,.55);margin-bottom:.5rem;}
+.final-winner-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,7vw,48px);color:var(--gold);line-height:1;margin-bottom:.25rem;}
+.final-winner-score{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;color:rgba(240,236,228,.28);}
+.final-you{margin-top:2rem;padding:1.25rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:3px;width:100%;}
+.final-you-rank{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--red);}
+.final-you-lbl{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:4px;color:rgba(240,236,228,.28);}
+</style>
+</head>
+<body>
+
+<!-- JOIN -->
+<div id="screen-join" class="screen">
+  <div class="join-logo">Sounds <span>Like</span></div>
+  <div class="join-sub">La Chabalada · 2006</div>
+  <div class="field-lbl">Tu nombre</div>
+  <input class="name-inp" type="text" id="name-inp" placeholder="¿Cómo te llaman?" maxlength="20" autocomplete="off" autocorrect="off">
+  <button class="btn-join" id="btn-join" disabled>Unirme al juego &#9654;</button>
+</div>
+
+<!-- WAITING -->
+<div id="screen-waiting" class="screen" style="display:none">
+  <div class="wait-icon">&#9203;</div>
+  <div class="wait-name" id="wait-name">—</div>
+  <div class="wait-hint">Esperando que inicie el juego...</div>
+</div>
+
+<!-- QUESTION -->
+<div id="screen-question" class="screen" style="display:none">
+  <div class="p-timer" id="p-timer">25</div>
+  <div class="p-eyebrow">&#9632;&nbsp; ¿Qué palabra suena como? &nbsp;&#9632;</div>
+  <div class="p-clue" id="p-clue">—</div>
+  <div class="p-hint" id="p-hint"></div>
+  <input class="ans-inp" type="text" id="ans-inp" placeholder="Escribe la palabra..." maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="none">
+  <button class="btn-submit" id="btn-submit">Responder &#9654;</button>
+</div>
+
+<!-- ANSWERED (waiting for host reveal) -->
+<div id="screen-answered" class="screen" style="display:none">
+  <div class="answered-icon">&#9203;</div>
+  <div class="answered-title">Enviada</div>
+  <div class="answered-sub">Esperando la respuesta...</div>
+  <div class="answered-answer" id="answered-preview"></div>
+</div>
+
+<!-- RESULT (after reveal) -->
+<div id="screen-result" class="screen" style="display:none">
+  <div class="result-icon" id="result-icon"></div>
+  <div class="result-title" id="result-title"></div>
+  <div class="result-points" id="result-points"></div>
+  <div class="result-word-label">La palabra era</div>
+  <div class="result-word" id="result-word"></div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="screen-lb" class="screen" style="display:none">
+  <div class="lb-title">Tu <span>posición</span></div>
+  <div class="my-rank-lbl">Lugar actual</div>
+  <div class="my-rank" id="my-rank">#—</div>
+  <div class="my-score" id="my-score">0 pts</div>
+  <div class="next-hint">La siguiente palabra viene pronto...</div>
+</div>
+
+<!-- FINAL -->
+<div id="screen-final" class="screen" style="display:none">
+  <div class="final-eyebrow">&#127942; Ganador de Sounds Like</div>
+  <div class="final-winner-name" id="final-winner-name">—</div>
+  <div class="final-winner-score" id="final-winner-score"></div>
+  <div class="final-you">
+    <div class="final-you-rank" id="final-my-rank">#—</div>
+    <div class="final-you-lbl">Tu posición final</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey:      "AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
+  databaseURL: "https://lachabalada-6c3c3-default-rtdb.firebaseio.com",
+  projectId:   "lachabalada-6c3c3",
+  appId:       "1:412828348018:web:2bf7de6ebdd6ba5e8e1ceb"
+});
+const db = getDatabase(app);
+
+const QUESTIONS = [
+  { clue:"TELE · FONO",    answer:"Teléfono",   hint:"Lo usabas para llamar en 2006" },
+  { clue:"AGUA · CATE",    answer:"Aguacate",   hint:"Ingrediente número 1 del guacamole" },
+  { clue:"VACA · SIONES",  answer:"Vacaciones", hint:"Lo que todos querían en la prepa" },
+  { clue:"POLO · CIA",     answer:"Policía",    hint:"La que te para si manejas borracho" },
+  { clue:"CARRO · TERA",   answer:"Carretera",  hint:"Lo que conecta Navojoa con el mundo" },
+  { clue:"CASA · MIENTO",  answer:"Casamiento", hint:"A lo que quizás ya llegaste" },
+  { clue:"BURRO · CRACIA", answer:"Burocracia", hint:"El trámite que nunca termina" },
+  { clue:"MANO · TAZO",    answer:"Manotazo",   hint:"Lo que le das a la mesa cuando pierdes" },
+  { clue:"PEDO · METRO",   answer:"Pedómetro",  hint:"Cuenta tus pasos, no tus pedos" },
+  { clue:"SOL · DADO",     answer:"Soldado",    hint:"El que sirve a su país" },
+  { clue:"CHEVE · CERÍA",  answer:"Cervecería", hint:"El lugar más sagrado de la noche" },
+  { clue:"CHABA · LADA",   answer:"Chabalada",  hint:"¿Ya saben dónde están? 😉" },
+];
+
+const TIME = 25;
+
+let myKey    = null;
+let myName   = '';
+let myAnswer = '';
+let answered = false;
+let lastQIdx = -1;
+let timerInt = null;
+let timeLeft = TIME;
+
+function normalize(s='') {
+  return String(s).toLowerCase()
+    .replace(/\b(el|la|los|las|un|una|de|del)\b/g,' ')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z]/g,'').trim();
+}
+
+function show(id) {
+  ['screen-join','screen-waiting','screen-question','screen-answered',
+   'screen-result','screen-lb','screen-final'].forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.style.display = s===id ? 'flex' : 'none';
+  });
+}
+
+function myRankIn(players) {
+  const sorted = Object.values(players).sort((a,b) => b.score - a.score);
+  const idx    = sorted.findIndex(p => p.name === myName);
+  return idx >= 0 ? idx + 1 : '—';
+}
+
+/* ── JOIN ── */
+const nameInp = document.getElementById('name-inp');
+const btnJoin = document.getElementById('btn-join');
+nameInp.oninput   = () => { btnJoin.disabled = !nameInp.value.trim(); };
+nameInp.onkeydown = e => { if (e.key==='Enter' && nameInp.value.trim()) joinGame(); };
+btnJoin.onclick   = joinGame;
+
+async function joinGame() {
+  myName = nameInp.value.trim();
+  if (!myName) return;
+  btnJoin.disabled = true;
+  const pRef = push(ref(db,'sl/players'));
+  myKey = pRef.key;
+  await set(pRef, { name:myName, score:0 });
+  document.getElementById('wait-name').textContent = myName;
+  show('screen-waiting');
+}
+
+/* ── SUBMIT ANSWER ── */
+const ansInp   = document.getElementById('ans-inp');
+const btnSubmit = document.getElementById('btn-submit');
+
+ansInp.onkeydown = e => { if (e.key==='Enter' && !answered) submitAnswer(); };
+btnSubmit.onclick = submitAnswer;
+
+async function submitAnswer() {
+  if (answered) return;
+  myAnswer = ansInp.value.trim();
+  if (!myAnswer) return;
+  answered = true;
+  clearInterval(timerInt);
+  btnSubmit.disabled = true;
+
+  const q       = QUESTIONS[lastQIdx];
+  const correct = normalize(myAnswer) === normalize(q.answer);
+  const points  = correct ? Math.max(100, Math.round(timeLeft / TIME * 1000)) : 0;
+
+  document.getElementById('answered-preview').textContent = myAnswer;
+  show('screen-answered');
+
+  await push(ref(db,'sl/answers'), { qIdx:lastQIdx, playerKey:myKey, playerName:myName, answer:myAnswer, correct, points });
+
+  if (correct && myKey) {
+    const snap = await new Promise(res => onValue(ref(db,`sl/players/${myKey}`), res, {onlyOnce:true}));
+    const cur  = snap.val()?.score || 0;
+    await update(ref(db,`sl/players/${myKey}`), { score: cur + points });
+  }
+}
+
+/* ── GAME STATE WATCHER ── */
+onValue(ref(db,'sl/game'), snap => {
+  const g = snap.val();
+  if (!g || !myKey) return;
+
+  if (g.status === 'question' && g.qIdx !== lastQIdx) {
+    lastQIdx = g.qIdx;
+    answered = false;
+    myAnswer = '';
+    ansInp.value = '';
+    btnSubmit.disabled = false;
+    showQuestion(g.qIdx, g.startedAt, g.timeLimit);
+  }
+
+  if (g.status === 'reveal') {
+    showResult(g.answer);
+  }
+
+  if (g.status === 'leaderboard') {
+    onValue(ref(db,'sl/players'), pSnap => {
+      const ps   = pSnap.val() || {};
+      const rank = myRankIn(ps);
+      const me   = ps[myKey];
+      document.getElementById('my-rank').textContent  = '#' + rank;
+      document.getElementById('my-score').textContent = (me?.score || 0) + ' pts';
+      show('screen-lb');
+    }, {onlyOnce:true});
+  }
+
+  if (g.status === 'final') {
+    onValue(ref(db,'sl/players'), pSnap => {
+      const ps     = pSnap.val() || {};
+      const sorted = Object.values(ps).sort((a,b) => b.score - a.score);
+      const winner = sorted[0];
+      const rank   = myRankIn(ps);
+      document.getElementById('final-winner-name').textContent  = winner?.name || '—';
+      document.getElementById('final-winner-score').textContent = winner ? winner.score + ' puntos' : '';
+      document.getElementById('final-my-rank').textContent = '#' + rank;
+      show('screen-final');
+    }, {onlyOnce:true});
+  }
+});
+
+function showQuestion(idx, startedAt, timeLimit) {
+  const q = QUESTIONS[idx];
+  if (!q) return;
+  clearInterval(timerInt);
+  const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+  timeLeft = Math.max(0, timeLimit - elapsed);
+
+  document.getElementById('p-clue').textContent  = q.clue;
+  document.getElementById('p-hint').textContent  = q.hint;
+  document.getElementById('p-timer').textContent = timeLeft;
+  document.getElementById('p-timer').style.color = '#e8352a';
+  show('screen-question');
+  ansInp.focus();
+
+  timerInt = setInterval(() => {
+    timeLeft--;
+    const el = document.getElementById('p-timer');
+    if (el) el.textContent = Math.max(0, timeLeft);
+    if (timeLeft <= 0) {
+      clearInterval(timerInt);
+      if (!answered) {
+        answered = true;
+        btnSubmit.disabled = true;
+        document.getElementById('answered-preview').textContent = '(sin respuesta)';
+        show('screen-answered');
+      }
+    }
+  }, 1000);
+}
+
+function showResult(correctAnswer) {
+  const isCorrect = normalize(myAnswer) === normalize(correctAnswer);
+  const q         = QUESTIONS[lastQIdx];
+  const points    = isCorrect ? Math.max(100, Math.round(timeLeft / TIME * 1000)) : 0;
+
+  document.getElementById('result-icon').textContent   = isCorrect ? '✅' : '🍺';
+  document.getElementById('result-title').textContent  = isCorrect ? '¡Correcto!' : '¡Tomas!';
+  document.getElementById('result-title').className    = 'result-title ' + (isCorrect ? 'correct' : 'wrong');
+  document.getElementById('result-points').textContent = isCorrect ? `+${points} puntos` : myAnswer ? `Dijiste: ${myAnswer}` : 'Sin respuesta';
+  document.getElementById('result-word').textContent   = correctAnswer;
+  show('screen-result');
+}
+</script>
+</body>
+</html>
