@@ -35,7 +35,8 @@ body{background:#0d0d0d;color:var(--white);font-family:'Space Grotesk',sans-seri
 #screen-question{max-width:420px;}
 .p-timer{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--red);line-height:1;margin-bottom:.75rem;}
 .p-eyebrow{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:5px;color:rgba(232,53,42,.4);margin-bottom:.75rem;}
-.p-clue{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,9vw,52px);letter-spacing:4px;line-height:1;color:#fff;margin-bottom:.75rem;}
+.p-cat-badge{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;padding:5px 16px;border-radius:2px;display:inline-block;margin-bottom:1.5rem;}
+.p-clue{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(24px,7vw,38px);line-height:1.4;letter-spacing:1px;word-spacing:6px;color:#fff;margin-bottom:1rem;}
 .p-hint{font-size:12px;font-weight:300;color:rgba(240,236,228,.28);letter-spacing:1px;margin-bottom:1.75rem;}
 .ans-inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(240,236,228,.12);border-radius:4px;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;padding:14px 16px;outline:none;margin-bottom:.875rem;transition:border-color .15s;text-align:center;letter-spacing:1px;}
 .ans-inp:focus{border-color:rgba(232,53,42,.5);}
@@ -98,7 +99,8 @@ body{background:#0d0d0d;color:var(--white);font-family:'Space Grotesk',sans-seri
 <!-- QUESTION -->
 <div id="screen-question" class="screen" style="display:none">
   <div class="p-timer" id="p-timer">25</div>
-  <div class="p-eyebrow">&#9632;&nbsp; ¿Qué palabra suena como? &nbsp;&#9632;</div>
+  <div id="p-cat-badge" class="p-cat-badge" style="background:#444;color:#fff;"></div>
+  <div class="p-eyebrow">léelo en voz alta</div>
   <div class="p-clue" id="p-clue">—</div>
   <div class="p-hint" id="p-hint"></div>
   <input class="ans-inp" type="text" id="ans-inp" placeholder="Escribe la palabra..." maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="none">
@@ -155,18 +157,29 @@ const app = initializeApp({
 const db = getDatabase(app);
 
 const QUESTIONS = [
-  { clue:"TELE · FONO",    answer:"Teléfono",   hint:"Lo usabas para llamar en 2006" },
-  { clue:"AGUA · CATE",    answer:"Aguacate",   hint:"Ingrediente número 1 del guacamole" },
-  { clue:"VACA · SIONES",  answer:"Vacaciones", hint:"Lo que todos querían en la prepa" },
-  { clue:"POLO · CIA",     answer:"Policía",    hint:"La que te para si manejas borracho" },
-  { clue:"CARRO · TERA",   answer:"Carretera",  hint:"Lo que conecta Navojoa con el mundo" },
-  { clue:"CASA · MIENTO",  answer:"Casamiento", hint:"A lo que quizás ya llegaste" },
-  { clue:"BURRO · CRACIA", answer:"Burocracia", hint:"El trámite que nunca termina" },
-  { clue:"MANO · TAZO",    answer:"Manotazo",   hint:"Lo que le das a la mesa cuando pierdes" },
-  { clue:"PEDO · METRO",   answer:"Pedómetro",  hint:"Cuenta tus pasos, no tus pedos" },
-  { clue:"SOL · DADO",     answer:"Soldado",    hint:"El que sirve a su país" },
-  { clue:"CHEVE · CERÍA",  answer:"Cervecería", hint:"El lugar más sagrado de la noche" },
-  { clue:"CHABA · LADA",   answer:"Chabalada",  hint:"¿Ya saben dónde están? 😉" },
+  // PARTY
+  { clue:"ke pe doh way",          answer:"Qué pedo, wey",       hint:"El saludo de la noche",                    cat:"PARTY" },
+  { clue:"ya me ri to",            answer:"Ya merito",            hint:"Lo que dicen cuando faltan 2 horas",       cat:"PARTY" },
+  { clue:"yo ran do de ri sa",     answer:"Llorando de risa",     hint:"Cuando un chiste pega de verdad",          cat:"PARTY" },
+  { clue:"an to xi tos",           answer:"Antojitos",            hint:"La botana que todos quieren",              cat:"PARTY" },
+  { clue:"la cha ba la da",        answer:"La Chabalada",         hint:"¿Dónde estás parado?",                     cat:"PARTY" },
+  // SPICY
+  { clue:"no te ra hes",           answer:"No te rajes",          hint:"Lo que dices al que no quiere tomar",      cat:"SPICY" },
+  { clue:"po ne te pe do",         answer:"Ponte pedo",           hint:"El objetivo de la noche",                  cat:"SPICY" },
+  { clue:"bo rra do del ma pa",    answer:"Borrado del mapa",     hint:"El estado de algunos al final",            cat:"SPICY" },
+  { clue:"chu pa ca bras",         answer:"Chupacabras",          hint:"La criatura más misteriosa de México",     cat:"SPICY" },
+  { clue:"ni mo dos",              answer:"Ni modos",             hint:"La resignación hecha frase",               cat:"SPICY" },
+  // POP CULTURE
+  { clue:"ye ni ri be ra",         answer:"Jenni Rivera",         hint:"La Diva de la Banda",                      cat:"POP CULTURE" },
+  { clue:"el cha bo del o cho",    answer:"El Chavo del Ocho",    hint:"No hay, no hay",                           cat:"POP CULTURE" },
+  { clue:"sha ki ra",              answer:"Shakira",              hint:"Las caderas no mienten",                   cat:"POP CULTURE" },
+  { clue:"dad di yan ke",          answer:"Daddy Yankee",         hint:"Gasolina",                                 cat:"POP CULTURE" },
+  { clue:"lu is mi gel",           answer:"Luis Miguel",          hint:"El Sol de México",                         cat:"POP CULTURE" },
+  { clue:"na bo hoa so no ra",     answer:"Navojoa, Sonora",      hint:"El lugar que nos vio crecer",              cat:"POP CULTURE" },
+  { clue:"des pa si to",           answer:"Despacito",            hint:"Luis Fonsi ft. Daddy Yankee",              cat:"POP CULTURE" },
+  { clue:"ma lu ma be bi",         answer:"Maluma Baby",          hint:"Hawái",                                    cat:"POP CULTURE" },
+  { clue:"gru po phir mey",        answer:"Grupo Firme",          hint:"El Güero que nos gusta",                   cat:"POP CULTURE" },
+  { clue:"ser be sa fria",         answer:"Cerveza fría",         hint:"Lo que todos quieren ahora mismo",         cat:"POP CULTURE" },
 ];
 
 const TIME = 25;
@@ -302,6 +315,11 @@ function showQuestion(idx, startedAt, timeLimit) {
   document.getElementById('p-clue').textContent  = q.clue;
   document.getElementById('p-hint').textContent  = q.hint;
   document.getElementById('p-timer').textContent = timeLeft;
+  const badge = document.getElementById('p-cat-badge');
+  badge.textContent = q.cat;
+  const catColors = { 'PARTY': ['#f0c040','#1a1000'], 'SPICY': ['#e8352a','#fff'], 'POP CULTURE': ['#3a9adb','#fff'] };
+  const [bg, fg] = catColors[q.cat] || ['#444','#fff'];
+  badge.style.cssText += `background:${bg};color:${fg};`;
   document.getElementById('p-timer').style.color = '#e8352a';
   show('screen-question');
   ansInp.focus();
