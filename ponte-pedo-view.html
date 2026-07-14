@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ponte Pedo · La Chabalada</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#e8352a;--white:#f0ece4;--gold:#c9a84c}
+body{background:#090909;color:var(--white);font-family:'Oswald',sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1rem;text-align:center;}
+
+.logo{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(232,53,42,.5);margin-bottom:2rem;}
+
+/* WAITING */
+#screen-waiting{}
+.wait-icon{font-size:48px;margin-bottom:1rem;animation:bounce 1.8s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.wait-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#fff;margin-bottom:.35rem;}
+.wait-sub{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:rgba(240,236,228,.25);}
+
+/* CARD */
+#screen-card{display:none;width:100%;max-width:360px;}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.view-card{
+  display:inline-block;background:#fdfaf4;border-radius:12px;
+  width:200px;height:280px;position:relative;
+  box-shadow:0 12px 40px rgba(0,0,0,.7),0 3px 10px rgba(0,0,0,.5);
+  margin:0 auto 2rem;animation:cardIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+.view-corner{position:absolute;display:flex;flex-direction:column;align-items:center;line-height:1;font-family:'Bebas Neue',sans-serif;}
+.view-corner span:first-child{font-size:28px;}
+.view-corner span:last-child{font-size:20px;}
+.view-tl{top:12px;left:14px;}
+.view-br{bottom:12px;right:14px;transform:rotate(180deg);}
+.view-suit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:72px;line-height:1;}
+.view-card.red-card .view-corner,.view-card.red-card .view-suit-center{color:var(--red);}
+.view-card.black-card .view-corner,.view-card.black-card .view-suit-center{color:#111;}
+
+.view-rule-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:#fff;margin-bottom:.6rem;}
+.view-rule-desc{font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;line-height:1.7;color:rgba(240,236,228,.5);max-width:300px;margin:0 auto 1.5rem;letter-spacing:.3px;}
+.view-remaining{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:4px;color:rgba(240,236,228,.2);}
+
+/* DONE */
+#screen-done{display:none;}
+.done-icon{font-size:52px;margin-bottom:1rem;}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--gold);}
+.done-sub{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:rgba(240,236,228,.25);margin-top:.4rem;}
+</style>
+</head>
+<body>
+
+<div class="logo">&#9632;&nbsp; Ponte Pedo · La Chabalada &nbsp;&#9632;</div>
+
+<div id="screen-waiting">
+  <div class="wait-icon">&#127183;</div>
+  <div class="wait-title">Esperando la carta...</div>
+  <div class="wait-sub">El host está repartiendo</div>
+</div>
+
+<div id="screen-card">
+  <div class="view-card" id="view-card">
+    <div class="view-corner view-tl"><span id="v-val-tl"></span><span id="v-suit-tl"></span></div>
+    <div class="view-suit-center" id="v-suit-center"></div>
+    <div class="view-corner view-br"><span id="v-val-br"></span><span id="v-suit-br"></span></div>
+  </div>
+  <div class="view-rule-name" id="v-rule-name"></div>
+  <div class="view-rule-desc" id="v-rule-desc"></div>
+  <div class="view-remaining" id="v-remaining"></div>
+</div>
+
+<div id="screen-done">
+  <div class="done-icon">&#127866;</div>
+  <div class="done-title">¡Se acabaron!</div>
+  <div class="done-sub">Revolviendo la baraja...</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
+  databaseURL:"https://lachabalada-6c3c3-default-rtdb.firebaseio.com",
+  projectId:"lachabalada-6c3c3",
+  appId:"1:412828348018:web:2bf7de6ebdd6ba5e8e1ceb"
+});
+const db = getDatabase(app);
+
+function show(id) {
+  ['screen-waiting','screen-card','screen-done'].forEach(s => {
+    document.getElementById(s).style.display = s===id ? 'block' : 'none';
+  });
+}
+
+onValue(ref(db,'pp/card'), snap => {
+  const d = snap.val();
+  if (!d || d.status === 'waiting') { show('screen-waiting'); return; }
+  if (d.status === 'done') { show('screen-done'); return; }
+
+  const vc = document.getElementById('view-card');
+  vc.className = 'view-card ' + (d.isRed ? 'red-card' : 'black-card');
+  vc.style.animation = 'none';
+  void vc.offsetWidth;
+  vc.style.animation = '';
+
+  document.getElementById('v-val-tl').textContent   = d.val;
+  document.getElementById('v-suit-tl').textContent  = d.suit;
+  document.getElementById('v-val-br').textContent   = d.val;
+  document.getElementById('v-suit-br').textContent  = d.suit;
+  document.getElementById('v-suit-center').textContent = d.suit;
+  document.getElementById('v-rule-name').textContent   = d.ruleName;
+  document.getElementById('v-rule-desc').textContent   = d.ruleDesc;
+  document.getElementById('v-remaining').textContent   = d.remaining > 0 ? `${d.remaining} cartas restantes` : '';
+
+  show('screen-card');
+});
+</script>
+</body>
+</html>

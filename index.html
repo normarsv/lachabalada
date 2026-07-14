@@ -441,6 +441,10 @@ nav {
 .pp-card.open .pp-card-desc { display:block; }
 
 /* ── PONTE PEDO GAME ── */
+.pp-viewer-strip { display:flex; align-items:center; gap:1.25rem; background:var(--gray); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1rem 1.25rem; margin-bottom:2rem; }
+.pp-qr { width:72px; height:72px; border-radius:3px; flex-shrink:0; background:#fff; }
+.pp-viewer-label { font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:5px; color:rgba(240,236,228,.28); margin-bottom:.3rem; }
+.pp-viewer-url { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:2px; color:var(--red); }
 .pp-game-bar { text-align:center; margin-top:3rem; padding-top:2rem; border-top:1px solid rgba(192,40,30,.18); }
 .pp-start-btn {
   font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:6px;
@@ -907,6 +911,15 @@ footer {
     </div>
 
     <div class="pp-game-view" id="pp-game-view">
+
+      <div class="pp-viewer-strip">
+        <img class="pp-qr" id="pp-qr" src="" alt="QR">
+        <div class="pp-viewer-info">
+          <div class="pp-viewer-label">&#9632;&nbsp; Síganlo desde su cel &nbsp;&#9632;</div>
+          <div class="pp-viewer-url">lachabalada.com/ponte-pedo-view.html</div>
+        </div>
+      </div>
+
       <div class="pp-game-counter-wrap">
         <div class="pp-game-counter-label" id="pp-counter-label">Baraja lista</div>
         <div class="pp-game-counter-num"><span id="pp-remaining">52</span><span class="pp-counter-of">/52</span></div>
@@ -1113,6 +1126,9 @@ function startPPGame() {
   document.getElementById('pp-next-btn').style.display      = 'inline-block';
   updatePPCounter();
   document.getElementById('pp-game-view').scrollIntoView({behavior:'smooth', block:'start'});
+  const viewUrl = 'https://lachabalada.com/ponte-pedo-view.html';
+  document.getElementById('pp-qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=144x144&color=090909&bgcolor=ffffff&data=' + encodeURIComponent(viewUrl);
+  if (window._ppSync) window._ppSync({ status:'waiting' });
 }
 
 function dealPPCard() {
@@ -1144,6 +1160,12 @@ function dealPPCard() {
   document.getElementById('pp-shuffle-btn').style.display = done ? 'block'  : 'none';
 
   updatePPCounter();
+  if (window._ppSync) window._ppSync({
+    status: done ? 'done' : 'card',
+    val: card.val, suit: card.suit, isRed,
+    ruleName: rule.name, ruleDesc: rule.desc,
+    remaining: ppDeck.length - ppIdx
+  });
 }
 
 function updatePPCounter() {
@@ -1169,6 +1191,18 @@ document.getElementById('pp-modal').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('pp-modal').classList.contains('open')) closePontePedo();
 });
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const _app = initializeApp({
+  apiKey:"AIzaSyCkdH0PK5OWd9UTsmHtrT327MWnf0jIAbc",
+  databaseURL:"https://lachabalada-6c3c3-default-rtdb.firebaseio.com",
+  projectId:"lachabalada-6c3c3",
+  appId:"1:412828348018:web:2bf7de6ebdd6ba5e8e1ceb"
+}, "pp");
+const _db = getDatabase(_app);
+window._ppSync = (data) => set(ref(_db, 'pp/card'), { ...data, ts: Date.now() });
 </script>
 </body>
 </html>
