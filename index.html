@@ -441,7 +441,7 @@ nav {
 .pp-card.open .pp-card-desc { display:block; }
 
 /* ── PONTE PEDO GAME ── */
-.pp-viewer-strip { display:flex; align-items:center; gap:1.25rem; background:var(--gray); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1rem 1.25rem; margin-bottom:2rem; }
+.pp-viewer-strip { display:flex; align-items:center; gap:1.25rem; background:var(--gray); border:1px solid rgba(240,236,228,.06); border-radius:4px; padding:1rem 1.25rem; margin-top:2rem; }
 .pp-qr { width:72px; height:72px; border-radius:3px; flex-shrink:0; background:#fff; }
 .pp-viewer-label { font-family:'Bebas Neue',sans-serif; font-size:9px; letter-spacing:5px; color:rgba(240,236,228,.28); margin-bottom:.3rem; }
 .pp-viewer-url { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:2px; color:var(--red); }
@@ -912,14 +912,6 @@ footer {
 
     <div class="pp-game-view" id="pp-game-view">
 
-      <div class="pp-viewer-strip">
-        <img class="pp-qr" id="pp-qr" src="" alt="QR">
-        <div class="pp-viewer-info">
-          <div class="pp-viewer-label">&#9632;&nbsp; Síganlo desde su cel &nbsp;&#9632;</div>
-          <div class="pp-viewer-url">lachabalada.com/ponte-pedo-view.html</div>
-        </div>
-      </div>
-
       <div class="pp-game-counter-wrap">
         <div class="pp-game-counter-label" id="pp-counter-label">Baraja lista</div>
         <div class="pp-game-counter-num"><span id="pp-remaining">52</span><span class="pp-counter-of">/52</span></div>
@@ -946,6 +938,15 @@ footer {
         <button class="pp-next-btn" id="pp-next-btn" onclick="dealPPCard()">Siguiente carta &#9654;</button>
         <button class="pp-shuffle-btn" id="pp-shuffle-btn" style="display:none" onclick="startPPGame()">&#9851;&nbsp; Revolver las cartas</button>
       </div>
+
+      <div class="pp-viewer-strip">
+        <img class="pp-qr" id="pp-qr" src="" alt="QR">
+        <div class="pp-viewer-info">
+          <div class="pp-viewer-label">&#9632;&nbsp; Síganlo desde su cel &nbsp;&#9632;</div>
+          <div class="pp-viewer-url">lachabalada.com/ponte-pedo-view.html</div>
+        </div>
+      </div>
+
     </div>
 
   </div>
